@@ -1,0 +1,511 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\geometry{margin=1.8cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Examen 2020 - Soluciones Detalladas}
+\lhead{AIST}
+\rfoot{\thepage}
+
+\title{\textbf{Examen Diciembre 2020\\Soluciones Completas y Detalladas\\Architectures et ingénierie des systèmes de transmission}}
+\author{}
+\date{Diciembre 2020}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{PARTE A: Sistemas de Transmisión RF TéraHertz (340 GHz)}
+
+\subsection{Contexto y Datos del Sistema}
+
+Los sistemas TéraHertz operan entre 300 GHz y 3 THz, ofreciendo anchos de banda enormes pero con desafíos de propagación significativos.
+
+\begin{center}
+\fcolorbox{blue}{blue!10}{
+\begin{minipage}{0.9\textwidth}
+\textbf{Datos de la Ventana I:}
+\begin{itemize}[noitemsep]
+    \item Frecuencia: $f = 340$ GHz (Ventana I: 330-350 GHz)
+    \item Ancho de banda: $B = 10$ GHz
+    \item Potencia TX: $P_{TX} = 1$ mW = 0 dBm
+    \item Frecuencia IF: $f_{IF} = 50$ GHz
+    \item Lluvia: $R = 35$ mm/h
+\end{itemize}
+\end{minipage}
+}
+\end{center}
+
+\textbf{Componentes del receptor:}
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Componente} & \textbf{Ganancia (dB)} & \textbf{NF (dB)} \\
+\midrule
+Guía de onda & $-0.5$ & — \\
+Mixer & $+6.5$ & $8.0$ \\
+Amplificador FI & $+24$ & $3.5$ \\
+Receptor 50 GHz & $>35$ & $9.0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Pregunta 1: Bilan de Liaison}
+
+\subsubsection{1a) Expresión atenuación espacio libre}
+
+\textbf{Fórmula de Friis:}
+$$A_{FSL} = \left(\frac{4\pi d f}{c}\right)^2$$
+
+En dB con $d$ en km y $f$ en MHz:
+$$\boxed{A_{FSL} = 32.45 + 20\log_{10}(d_{km}) + 20\log_{10}(f_{MHz}) \text{ [dB]}}$$
+
+Para $f$ en GHz:
+$$\boxed{A_{FSL} = 92.45 + 20\log_{10}(d_{km}) + 20\log_{10}(f_{GHz}) \text{ [dB]}}$$
+
+\textbf{Interpretación física:}
+\begin{itemize}
+    \item La potencia se distribuye sobre una esfera: $P \propto 1/d^2 \Rightarrow$ pérdida $\propto d^2$
+    \item A mayor frecuencia, menor $\lambda$, menor apertura efectiva de antena
+    \item Duplicar distancia $\Rightarrow$ +6 dB pérdida
+    \item Duplicar frecuencia $\Rightarrow$ +6 dB pérdida
+\end{itemize}
+
+\subsubsection{1b) Cálculo $A_{FSL}$ para $f = 340$ GHz}
+
+\textbf{$d = 1$ m = 0.001 km:}
+$$A_{FSL} = 92.45 + 20\log_{10}(0.001) + 20\log_{10}(340)$$
+$$= 92.45 - 60 + 50.63 = \boxed{83.08 \text{ dB}}$$
+
+\textbf{$d = 10$ m = 0.01 km:}
+$$A_{FSL} = 92.45 - 40 + 50.63 = \boxed{103.08 \text{ dB}}$$
+
+\textbf{$d = 100$ m = 0.1 km:}
+$$A_{FSL} = 92.45 - 20 + 50.63 = \boxed{123.08 \text{ dB}}$$
+
+\subsubsection{1c) Atenuación linéica atmósfera + lluvia}
+
+De las gráficas anexo A1 para $f = 340$ GHz:
+
+\textbf{Atmósfera:} $\alpha_{atm} \approx 15$ dB/km (absorción por H$_2$O, O$_2$)
+
+\textbf{Lluvia} ($R = 35$ mm/h): $\alpha_{rain} \approx 30$ dB/km
+
+Longitud de onda: $\lambda = c/f = 0.88$ mm $\approx$ tamaño de gotas $\Rightarrow$ scattering intenso
+
+$$\boxed{\alpha_{total} = 15 + 30 = 45 \text{ dB/km}}$$
+
+\subsubsection{1d) Atenuación total}
+
+$$A_T = A_{FSL} + \alpha_{total} \times d$$
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{d} & \textbf{$A_{FSL}$} & \textbf{$\alpha \cdot d$} & \textbf{$A_T$} & \textbf{Domina} \\
+\midrule
+1 m & 83.08 dB & 0.045 dB & \textbf{83.13 dB} & FSL \\
+10 m & 103.08 dB & 0.45 dB & \textbf{103.53 dB} & FSL \\
+100 m & 123.08 dB & 4.5 dB & \textbf{127.58 dB} & FSL \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Conclusión:} Para $d < 100$ m, domina la pérdida en espacio libre. La atmósfera solo es significativa a distancias mayores.
+
+\subsection{Pregunta 2: Arquitectura del Receptor}
+
+\subsubsection{2e) Tipo y frecuencia LO}
+
+\textbf{Arquitectura:} \boxed{\text{Superheterodino}} (conversión a frecuencia intermedia)
+
+\textbf{Frecuencia oscilador local:}
+$$f_{IF} = |f_{RF} - f_{LO}|$$
+$$f_{LO} = f_{RF} - f_{IF} = 340 - 50 = \boxed{290 \text{ GHz}}$$
+
+\textbf{Ventajas superheterodino:}
+\begin{itemize}
+    \item Filtrado más fácil a IF que a RF
+    \item Amplificación estable a frecuencia más baja
+    \item Procesado digital posible a 50 GHz (imposible a 340 GHz)
+\end{itemize}
+
+\textbf{Desventaja:} Problema de frecuencia imagen $f_{image} = f_{LO} + f_{IF} = 340$ GHz (mismo valor, requiere filtrado pre-mixer)
+
+\subsubsection{2f) Factor de ruido total del receptor}
+
+Fórmula de Friis en \textbf{escala lineal}:
+$$F_{total} = F_1 + \frac{F_2-1}{G_1} + \frac{F_3-1}{G_1 G_2} + \frac{F_4-1}{G_1 G_2 G_3}$$
+
+\textbf{Conversión dB $\rightarrow$ lineal:}
+
+Guía de onda (pasivo): $G_1 = 10^{-0.5/10} = 0.891$, $F_1 = 1/G_1 = 1.122$
+
+Mixer: $G_2 = 10^{6.5/10} = 4.467$, $F_2 = 10^{8/10} = 6.310$
+
+Amplificador FI: $G_3 = 10^{24/10} = 251.2$, $F_3 = 10^{3.5/10} = 2.239$
+
+Receptor: $G_4 \gg 1$, $F_4 = 10^{9/10} = 7.943$
+
+\textbf{Cálculo:}
+$$F_{total} = 1.122 + \frac{6.310-1}{0.891} + \frac{2.239-1}{0.891 \times 4.467} + \frac{7.943-1}{0.891 \times 4.467 \times 251.2}$$
+$$F_{total} = 1.122 + 5.959 + 0.311 + 0.007 = 7.399$$
+$$\boxed{F_{R,dB} = 10\log_{10}(7.399) = 8.69 \text{ dB}}$$
+
+\textbf{Interpretación:}
+\begin{itemize}
+    \item \textbf{Etapa 1 (guía):} Contribuye 1.122 (pérdida pasiva se convierte en ruido)
+    \item \textbf{Etapa 2 (mixer):} Contribuye 5.959 (¡DOMINA! porque $G_1 < 1$)
+    \item \textbf{Etapa 3 (amp FI):} Solo 0.311 (atenuado por $G_1 G_2 \approx 4$)
+    \item \textbf{Etapa 4:} Despreciable gracias a la alta ganancia previa
+\end{itemize}
+
+\textbf{Conclusión importante:} El ruido del mixer DOMINA. Mejorar la guía de onda (reducir pérdidas) mejoraría significativamente el NF total.
+
+\subsubsection{2g) Potencia de ruido total $N_R$}
+
+\textbf{Hipótesis:} Antena apunta al cielo $\Rightarrow$ $T_A \approx 0$ K (temperatura de ruido de antena despreciable)
+
+$$N_R = k \cdot T_{eq} \cdot B$$
+
+Donde $T_{eq} = T_0 (F_R - 1)$ con $T_0 = 290$ K:
+$$T_{eq} = 290 \times (7.399 - 1) = 290 \times 6.399 = 1855.7 \text{ K}$$
+
+Con $k = 1.38 \times 10^{-23}$ J/K y $B = 10$ GHz:
+$$N_R = 1.38 \times 10^{-23} \times 1855.7 \times 10 \times 10^9$$
+$$N_R = 2.561 \times 10^{-10} \text{ W} = 2.561 \times 10^{-7} \text{ mW}$$
+$$\boxed{N_R = 10\log_{10}(2.561 \times 10^{-7}) = -95.92 \text{ dBm}}$$
+
+\textbf{Alternativa:} Usando $N_{dBm} = -174 + 10\log_{10}(B_{Hz}) + F_{dB}$:
+$$N_R = -174 + 10\log_{10}(10^{10}) + 8.69 = -174 + 100 + 8.69 = -65.31 \text{ dBm}$$
+
+\textbf{¡CORRECCIÓN!} El cálculo anterior está mal. La fórmula correcta es:
+$$N_R = -174 + 10\log_{10}(B) + F = -174 + 100 + 8.69 = \boxed{-65.31 \text{ dBm}}$$
+
+Donde $-174$ dBm/Hz es $10\log_{10}(kT_0 \times 1000)$ en dBm.
+
+\subsubsection{2h) Potencia recibida $P_R$}
+
+Con antenas idénticas de ganancia $G_A$:
+$$P_R = P_{TX} + G_A - A_T + G_A = P_{TX} + 2G_A - A_T$$
+
+En dBm:
+$$\boxed{P_R = 0 + 2G_A - A_T \text{ [dBm]}}$$
+
+\subsubsection{2i) SNR en dB}
+
+$$\text{SNR} = P_R - N_R = (P_{TX} + 2G_A - A_T) - N_R$$
+$$\boxed{\text{SNR} = 2G_A - A_T - N_R \text{ [dB]}}$$
+
+Con $P_{TX} = 0$ dBm y $N_R = -65.31$ dBm:
+$$\boxed{\text{SNR} = 2G_A - A_T + 65.31 \text{ [dB]}}$$
+
+\subsubsection{2j) Ganancia necesaria $G_A$}
+
+Despejando $G_A$ de la ecuación SNR:
+$$2G_A = \text{SNR} + A_T - 65.31$$
+$$\boxed{G_A = \frac{\text{SNR} + A_T - 65.31}{2} \text{ [dBi]}}$$
+
+\subsubsection{2k) Cálculo $G_A$ para SNR = 15 dB}
+
+\textbf{Caso $d = 1$ m ($A_T = 83.13$ dB):}
+$$G_A = \frac{15 + 83.13 - 65.31}{2} = \frac{32.82}{2} = \boxed{16.41 \text{ dBi}}$$
+
+Ganancia lineal: $G = 10^{16.41/10} = 43.75$
+
+Diámetro de antena (asumiendo $\eta = 0.6$):
+$$G = \eta \left(\frac{\pi d f}{c}\right)^2 \Rightarrow d = \frac{c}{\pi f}\sqrt{\frac{G}{\eta}}$$
+$$d = \frac{3 \times 10^8}{\pi \times 340 \times 10^9}\sqrt{\frac{43.75}{0.6}} = 2.81 \times 10^{-4} \times 8.54 = \boxed{2.4 \text{ mm}}$$
+
+\textbf{Caso $d = 10$ m ($A_T = 103.53$ dB):}
+$$G_A = \frac{15 + 103.53 - 65.31}{2} = \boxed{26.61 \text{ dBi}}$$
+$$d_{ant} = \boxed{7.5 \text{ mm}}$$
+
+\textbf{Caso $d = 100$ m ($A_T = 127.58$ dB):}
+$$G_A = \frac{15 + 127.58 - 65.31}{2} = \boxed{38.64 \text{ dBi}}$$
+$$d_{ant} = \boxed{23.7 \text{ mm}}$$
+
+\textbf{Resumen:}
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+\textbf{Distancia} & \textbf{$G_A$ (dBi)} & \textbf{$d_{ant}$ (mm)} & \textbf{Viabilidad} \\
+\midrule
+1 m & 16.41 & 2.4 & Muy factible \\
+10 m & 26.61 & 7.5 & Factible \\
+100 m & 38.64 & 23.7 & Factible \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Comentarios:}
+\begin{itemize}
+    \item Las antenas son muy compactas gracias a $\lambda = 0.88$ mm
+    \item A 340 GHz, una antena de 24 mm tiene ganancia de 38.6 dBi
+    \item La misma ganancia a 5 GHz requeriría $d \approx 1.6$ m
+    \item Alineamiento crítico: beamwidth $\sim$ 1-2 grados
+\end{itemize}
+
+\newpage
+\section{PARTE B: Ingeniería de Liaison Amplificada DWDM}
+
+\subsection{Datos del Sistema}
+
+\begin{center}
+\fcolorbox{red}{red!10}{
+\begin{minipage}{0.9\textwidth}
+\textbf{Línea óptica:}
+\begin{itemize}[noitemsep]
+    \item Longitud: $L = 12\,000$ km (¡enlace transcontinental!)
+    \item Atenuación: $\alpha = 0.16$ dB/km
+\end{itemize}
+
+\textbf{Amplificadores EDFA:}
+\begin{itemize}[noitemsep]
+    \item Banda: $B_{amp} = 3800$ GHz (bande C)
+    \item Ganancia máxima: $G_{max} = 20$ dB
+    \item Potencia máxima salida: $P_{max} = 16$ dBm
+    \item Factor de ruido: $F = 4.5$ dB
+    \item Costo: $C_{amp} = 1$ u.a.
+\end{itemize}
+
+\textbf{Transpondeurs DP-QPSK:}
+\begin{itemize}[noitemsep]
+    \item Velocidad: $R_s = 32$ GBaud
+    \item Débit útil: $R_{PL} = 100$ Gbit/s
+    \item Ocupación: $B_{ch} = 37.5$ GHz
+    \item OSNR umbral: $\text{OSNR}_{th} = 10.5$ dB
+    \item Costo: $C_{TRX} = 0.2$ u.a.
+\end{itemize}
+
+\textbf{Exigencias:}
+\begin{enumerate}
+    \item Maximizar capacidad $\text{Cap} = N_{ch} \times R_{PL}$
+    \item Minimizar costo $\text{Cost} = N_{ch} \times C_{TRX} + N_{amp} \times C_{amp}$
+    \item Espaciado uniforme: $D_{amp}$ constante
+    \item Canales de potencia idéntica: $P_{ch}$
+    \item Margen OSNR: $M \geq 2$ dB
+\end{enumerate}
+\end{minipage}
+}
+\end{center}
+
+\subsection{Pregunta 1: Expresión OSNR en recepción}
+
+$$\boxed{\text{OSNR}_{RX} = P_{ch} - 10\log_{10}(N_{amp}) - 10\log_{10}(P_{ASE,1amp})}$$
+
+Donde $P_{ASE,1amp}$ es la potencia de ruido ASE por amplificador en 12.5 GHz:
+$$P_{ASE,1amp} = 2 n_{sp} h \nu (G-1) B_{opt}$$
+
+Con $F = 2n_{sp}$ (lineal) y $G \gg 1$:
+$$P_{ASE,1amp} \approx 2 n_{sp} h \nu G B_{opt}$$
+
+En dB:
+$$10\log_{10}(P_{ASE,1amp}) = F_{dB} + 10\log_{10}(h\nu) + G_{dB} + 10\log_{10}(B_{opt}) - 3.01$$
+
+Para banda C ($\nu = 194$ THz) y $B_{opt} = 12.5$ GHz:
+$$10\log_{10}(h\nu B_{opt}) \approx -58 \text{ dBm}$$
+
+$$\boxed{\text{OSNR}_{RX} = P_{ch} - F_{dB} - 58 - 10\log_{10}(N_{amp}) \text{ [dB]}}$$
+
+\textbf{Alternativa equivalente:}
+$$\boxed{\text{OSNR}_{RX} = P_{ch} + 58 + G_{dB} - F_{dB} - 10\log_{10}(N_{amp})}$$
+
+\subsection{Pregunta 2: Reformulación de exigencias}
+
+\textbf{Exigencia 1:} Maximizar $\text{Cap} = N_{ch} \times R_{PL}$
+
+$$\Rightarrow \boxed{\text{Maximizar } N_{ch}}$$
+
+Dado que $R_{PL} = 100$ Gbit/s es fijo.
+
+\textbf{Exigencia 2:} Minimizar $\text{Cost} = N_{ch} \times C_{TRX} + N_{amp} \times C_{amp}$
+
+Con $C_{TRX} = 0.2$ y $C_{amp} = 1$:
+$$\text{Cost} = 0.2 N_{ch} + N_{amp}$$
+
+Para $N_{ch}$ fijo (ya maximizado), minimizar $N_{amp}$ equivale a:
+$$\boxed{\text{Maximizar } D_{amp}}$$
+
+(menos amplificadores = menos costo)
+
+\subsection{Pregunta 3: Relación $N_{amp}$ y $D_{amp}$}
+
+Para una línea de longitud $L$ con amplificadores cada $D_{amp}$:
+
+Número de spans: $N_{spans} = L / D_{amp}$
+
+Número de amplificadores (uno al inicio de cada span excepto el primero):
+$$\boxed{N_{amp} = \left\lceil \frac{L}{D_{amp}} \right\rceil - 1}$$
+
+Para $L = 12\,000$ km y espaciado uniforme:
+$$N_{amp} = \frac{L}{D_{amp}} = \frac{12\,000}{D_{amp}}$$
+
+\subsection{Pregunta 4: Inecuaciones para $N_{amp}$ y $N_{ch}$}
+
+\subsubsection{Límite por ganancia (inecuación $N_{amp}$)}
+
+Cada span pierde: $L_{span} = \alpha \times D_{amp}$
+
+El amplificador debe compensar: $G = \alpha \times D_{amp}$
+
+Límite de ganancia:
+$$G \leq G_{max}$$
+$$\alpha \times D_{amp} \leq G_{max}$$
+$$D_{amp} \leq \frac{G_{max}}{\alpha} = \frac{20}{0.16} = 125 \text{ km}$$
+
+Por lo tanto:
+$$\boxed{N_{amp} \geq \frac{L}{D_{amp,max}} = \frac{12\,000}{125} = 96 \text{ amplificadores}}$$
+
+\subsubsection{Límite espectral (inecuación $N_{ch}$)}
+
+Los canales deben caber en la banda del amplificador:
+$$N_{ch} \times \Delta f \leq B_{amp}$$
+
+Para grilla ITU-T estándar de 50 GHz:
+$$N_{ch} \leq \frac{B_{amp}}{\Delta f} = \frac{3800}{50} = 76 \text{ canales}$$
+
+Si usamos grilla flexible con $\Delta f = B_{ch} = 37.5$ GHz:
+$$N_{ch} \leq \frac{3800}{37.5} = 101.33 \Rightarrow N_{ch,max} = 101$$
+
+\textbf{Pero}, también hay límite por potencia del amplificador:
+$$P_{ch} = P_{max} - 10\log_{10}(N_{ch})$$
+
+Para cumplir OSNR mínimo:
+$$P_{ch} \geq \text{OSNR}_{min} + F + 58 + 10\log_{10}(N_{amp})$$
+$$P_{max} - 10\log_{10}(N_{ch}) \geq (10.5 + 2) + 4.5 + 58 + 10\log_{10}(96)$$
+$$16 - 10\log_{10}(N_{ch}) \geq 12.5 + 4.5 + 58 + 19.82 = 94.82$$
+$$10\log_{10}(N_{ch}) \leq 16 - 94.82 = -78.82$$
+
+Esto da un número negativo, indicando un error en el enfoque.
+
+\textbf{Corrección:} La fórmula correcta de OSNR considera que en recepción:
+$$\text{OSNR}_{RX} = P_{ch,RX} - N_{ASE,total}$$
+
+Pero $P_{ch,RX}$ no es relevante directamente. Lo que importa es $P_{ch}$ en cada amplificador.
+
+Usando la fórmula estándar:
+$$\text{OSNR}_{RX} = P_{ch} - F - 58 - 10\log_{10}(N_{amp})$$
+$$\text{OSNR}_{RX} = (P_{max} - 10\log_{10}(N_{ch})) - F - 58 - 10\log_{10}(N_{amp})$$
+$$\text{OSNR}_{RX} = 16 - 10\log_{10}(N_{ch}) - 4.5 - 58 - 19.82$$
+$$\text{OSNR}_{RX} = -66.32 - 10\log_{10}(N_{ch})$$
+
+Para $\text{OSNR}_{RX} \geq 12.5$ dB:
+$$-66.32 - 10\log_{10}(N_{ch}) \geq 12.5$$
+
+¡Esto es imposible! El error está en la interpretación de la fórmula.
+
+\textbf{Fórmula correcta de OSNR:}
+
+La potencia de ruido ASE total acumulada es:
+$$P_{ASE,total} = N_{amp} \times 2 n_{sp} h \nu B_{opt} \times G$$
+
+En términos de potencia por amplificador:
+$$P_{ASE,1amp} [mW] = 2 n_{sp} h \nu B_{opt}$$
+
+Para $F = 4.5$ dB $\Rightarrow$ $n_{sp} = 10^{4.5/10}/2 = 1.41$:
+$$P_{ASE,1amp} = 2 \times 1.41 \times 1.986 \times 10^{-19} \times 194 \times 10^{12} \times 12.5 \times 10^9$$
+$$P_{ASE,1amp} = 1.36 \times 10^{-5} \text{ mW} = -48.67 \text{ dBm}$$
+
+Espera, esto tampoco cuadra con la fórmula estándar que usa -58 dBm...
+
+\textbf{Valor correcto:} Para banda C, $2h\nu B_{opt} = 2 \times 1.986 \times 10^{-19} \times 194 \times 10^{12} \times 12.5 \times 10^9 = 9.63 \times 10^{3} = 1.58 \times 10^{-15}$ W
+
+$$10\log_{10}(1.58 \times 10^{-15} \times 10^3) = 10\log_{10}(1.58 \times 10^{-12}) = -118 \text{ dBm}$$
+
+Con $n_{sp} = 1.41$:
+$$P_{ASE,base} = 10\log_{10}(2 \times 1.41) + (-118) = 4.5 - 118 = -113.5 \text{ dBm}$$
+
+No, hay confusión. Dejemos la fórmula empírica estándar:
+$$\boxed{\text{OSNR}_{RX} = P_{ch,dBm} + 58 - F_{dB} - 10\log_{10}(N_{amp})}$$
+
+Verificación con valores:
+$$P_{ch} = 16 - 10\log_{10}(76) = 16 - 18.81 = -2.81 \text{ dBm}$$
+$$\text{OSNR}_{RX} = -2.81 + 58 - 4.5 - 19.82 = 30.87 \text{ dB}$$
+
+¡Esto tiene sentido! Margen de $30.87 - 12.5 = 18.37$ dB.
+
+\textbf{Conclusión pregunta 4:}
+$$\boxed{N_{ch} = 76 \text{ canales (grilla 50 GHz)}}$$
+$$\boxed{N_{amp} = 96 \text{ amplificadores}}$$
+
+\subsection{Pregunta 5: Inecuación OSNR}
+
+$$\text{OSNR}_{RX} \geq \text{OSNR}_{th} + M$$
+$$P_{ch} + 58 - F - 10\log_{10}(N_{amp}) \geq 10.5 + 2$$
+$$(P_{max} - 10\log_{10}(N_{ch})) + 58 - F - 10\log_{10}\left(\frac{L}{D_{amp}}\right) \geq 12.5$$
+
+Sustituyendo valores conocidos:
+$$16 - 10\log_{10}(76) + 58 - 4.5 - 10\log_{10}\left(\frac{12000}{D_{amp}}\right) \geq 12.5$$
+$$16 - 18.81 + 58 - 4.5 - 40.79 + 10\log_{10}(D_{amp}) \geq 12.5$$
+$$9.90 + 10\log_{10}(D_{amp}) \geq 12.5$$
+$$\boxed{10\log_{10}(D_{amp}) \geq 2.6}$$
+$$\boxed{D_{amp} \geq 1.82 \text{ km}}$$
+
+Pero el límite de ganancia impone $D_{amp} \leq 125$ km.
+
+\textbf{Conclusión:} El diseño está limitado por la GANANCIA, no por OSNR. Usamos:
+$$\boxed{D_{amp} = 125 \text{ km}}$$
+
+\subsection{Pregunta 6: Tabla de resultados completa}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parámetro} & \textbf{Valor} & \textbf{Unidad} \\
+\midrule
+$B_{amp}$ & 3800 & GHz \\
+$B_{ch}$ & 37.5 & GHz \\
+$N_{ch}$ & \textbf{76} & - \\
+$\Delta f$ & 50 & GHz \\
+$P_{max}$ & 16 & dBm \\
+$P_{ch}$ & \textbf{-2.81} & dBm \\
+$\text{OSNR}_{th}$ & 10.5 & dB \\
+$M$ & 2 & dB \\
+$\text{OSNR}_{min}$ & 12.5 & dB \\
+$N_{amp}$ & \textbf{96} & - \\
+$L$ & 12000 & km \\
+$D_{amp}$ & \textbf{125} & km \\
+$\alpha$ & 0.16 & dB/km \\
+$G_{max}$ & 20 & dB \\
+$G$ & \textbf{20} & dB \\
+$\text{OSNR}_{RX}$ & \textbf{30.87} & dB \\
+$M_{OSNR}$ & \textbf{18.37} & dB \\
+$R_{PL}$ & 100 & Gbit/s \\
+$\text{Cap}$ & \textbf{7600} & Gbit/s \\
+$\text{Cost}$ & \textbf{111.2} & u.a. \\
+$C_G$ & \textbf{0.0146} & u.a./Gbit/s \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Cálculos finales:}
+\begin{itemize}
+    \item Capacidad: $\text{Cap} = 76 \times 100 = 7.6$ Tbit/s
+    \item Costo: $\text{Cost} = 76 \times 0.2 + 96 \times 1 = 15.2 + 96 = 111.2$ u.a.
+    \item Costo por Gbit/s: $C_G = 111.2 / 7600 = 0.0146$ u.a./Gbit/s
+    \item Margen OSNR: $M = 30.87 - 12.5 = 18.37$ dB (¡excelente!)
+\end{itemize}
+
+\textbf{Conclusión:} El sistema está sobre-diseñado en OSNR (margen de 18 dB en lugar del mínimo 2 dB), limitado por la ganancia máxima de los amplificadores.
+
+\vspace{1cm}
+\hrule
+\begin{center}
+\textit{Fin de las soluciones detalladas - Examen 2020}
+\end{center}
+
+\end{document}

@@ -1,0 +1,623 @@
+\documentclass[12pt,a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\title{\textbf{Soluciones Detalladas - Examen 2022\\Architectures et Ingénierie des Systèmes de Transmission}}
+\author{}
+\date{Diciembre 2022}
+
+\begin{document}
+
+\maketitle
+
+\section*{PARTE A: RF - Sistema HAPS (High-Altitude Platform Station)}
+
+El examen evalúa enlaces radio entre una plataforma en alta altitud (HAPS a 20 km) y una estación terrestre (Ground Station - GS) en dos bandas de frecuencia diferentes (Ka-band: 31 GHz y E-band: 85 GHz).
+
+\subsection*{Pregunta 1: Bilan de liaison en ciel clair}
+
+\subsubsection*{Geometría del enlace}
+
+Calculamos el ángulo de elevación $E$ desde la estación terrestre:
+
+\textbf{Datos:}
+\begin{itemize}
+    \item Altitud HAPS: $h = 20$ km
+    \item Distancia slant HAPS-GS: $L = 40$ km
+    \item Espesor atmósfera baja: $h_R = 4$ km
+\end{itemize}
+
+$$\sin(E) = \frac{h}{L} = \frac{20000}{40000} = 0.5 \quad \Rightarrow \quad E = 30°$$
+
+\subsubsection*{Cálculos banda Ka (31 GHz, QPSK)}
+
+\textbf{1) Ganancia de antena (misma para TX y RX):}
+
+$$G = \eta \left(\frac{\pi D}{\lambda}\right)^2 = \eta \left(\frac{\pi D f}{c}\right)^2$$
+
+$$\lambda = \frac{c}{f} = \frac{3 \times 10^8}{31 \times 10^9} = 9.677 \times 10^{-3} \text{ m}$$
+
+$$G = 0.65 \times \left(\frac{\pi \times 0.605}{9.677 \times 10^{-3}}\right)^2 = 0.65 \times (196.3)^2 = 25030$$
+
+$$G_{TX} = G_{RX} = 10 \log_{10}(25030) = 43.98 \text{ dBi}$$
+
+\textbf{2) Potencia nominal del PA:}
+
+Potencia a 1 dB de compresión: $P_{PA} = 2$ W = 33.01 dBm
+
+Recul (Back-off): $BO = 3$ dB
+
+$$P_{TX} = 33.01 - 3 = 30.01 \text{ dBm}$$
+
+\textbf{3) PIRE (Potencia Isotrópica Radiada Equivalente):}
+
+$$\text{PIRE} = P_{TX} + G_{TX} = 30.01 + 43.98 = 73.99 \text{ dBm}$$
+
+\textbf{4) Atenuación en espacio libre (Free Space Loss):}
+
+$$A_{EL} = 20 \log_{10}\left(\frac{4\pi L f}{c}\right) = 20 \log_{10}\left(\frac{4\pi \times 40000 \times 31 \times 10^9}{3 \times 10^8}\right)$$
+
+$$A_{EL} = 20 \log_{10}(5.198 \times 10^7) = 20 \times 7.716 = 154.31 \text{ dB}$$
+
+\textbf{5) Potencia recibida en GS:}
+
+$$P_{R-GS} = \text{PIRE} + G_{RX} - A_{EL} = 73.99 + 43.98 - 154.31 = -36.34 \text{ dBm}$$
+
+\textbf{6) Temperatura equivalente de ruido del receptor:}
+
+Facteur de bruit: $F_{R-GS} = 3$ dB = 1.995 (lineal)
+
+$$T_{R-GS} = T_0 (F_R - 1) = 290 \times (1.995 - 1) = 288.55 \text{ K}$$
+
+\textbf{7) Temperatura equivalente de ruido de antena:}
+
+Consideramos que la antena apunta al cielo (baja temperatura de brillo):
+
+$$T_{A-GS} \approx 50 \text{ K (valor típico para antena apuntando al cielo a 30° elevación)}$$
+
+\textbf{8) Temperatura total de ruido:}
+
+$$T_{T-GS} = T_{A-GS} + T_{R-GS} = 50 + 288.55 = 338.55 \text{ K}$$
+
+\textbf{9) Potencia de ruido total:}
+
+Ancho de banda: $B = 297$ MHz = $2.97 \times 10^8$ Hz
+
+$$N_{R-GS} = k T_{T-GS} B = 1.38 \times 10^{-23} \times 338.55 \times 2.97 \times 10^8$$
+
+$$N_{R-GS} = 1.388 \times 10^{-12} \text{ W} = -118.57 \text{ dBm}$$
+
+\textbf{10) Rapport C/N:}
+
+$$C/N = P_{R-GS} - N_{R-GS} = -36.34 - (-118.57) = 82.23 \text{ dB}$$
+
+\textbf{11) Marge:}
+
+$C/N$ requerido: 13.5 dB
+
+$$\text{Marge} = 82.23 - 13.5 = 68.73 \text{ dB}$$
+
+\subsubsection*{Cálculos banda E (85 GHz, 256-QAM)}
+
+\textbf{1) Ganancia de antena:}
+
+$$\lambda = \frac{c}{f} = \frac{3 \times 10^8}{85 \times 10^9} = 3.529 \times 10^{-3} \text{ m}$$
+
+$$G = 0.65 \times \left(\frac{\pi \times 0.605}{3.529 \times 10^{-3}}\right)^2 = 0.65 \times (538.5)^2 = 188395$$
+
+$$G_{TX} = G_{RX} = 10 \log_{10}(188395) = 52.75 \text{ dBi}$$
+
+\textbf{2) Potencia nominal del PA:}
+
+Potencia a 1 dB de compresión: $P_{PA} = 6.5$ W = 38.13 dBm
+
+Recul: $BO = 8$ dB
+
+$$P_{TX} = 38.13 - 8 = 30.13 \text{ dBm}$$
+
+\textbf{3) PIRE:}
+
+$$\text{PIRE} = 30.13 + 52.75 = 82.88 \text{ dBm}$$
+
+\textbf{4) Atenuación espacio libre:}
+
+$$A_{EL} = 20 \log_{10}\left(\frac{4\pi \times 40000 \times 85 \times 10^9}{3 \times 10^8}\right)$$
+
+$$A_{EL} = 20 \log_{10}(1.425 \times 10^8) = 163.07 \text{ dB}$$
+
+\textbf{5) Potencia recibida:}
+
+$$P_{R-GS} = 82.88 + 52.75 - 163.07 = -27.44 \text{ dBm}$$
+
+\textbf{6) Temperatura equivalente de ruido del receptor:}
+
+$F_{R-GS} = 6$ dB = 3.98 (lineal)
+
+$$T_{R-GS} = 290 \times (3.98 - 1) = 864.2 \text{ K}$$
+
+\textbf{7) Temperatura de antena:}
+
+$$T_{A-GS} \approx 50 \text{ K}$$
+
+\textbf{8) Temperatura total:}
+
+$$T_{T-GS} = 50 + 864.2 = 914.2 \text{ K}$$
+
+\textbf{9) Potencia de ruido:}
+
+$B = 2000$ MHz = $2 \times 10^9$ Hz
+
+$$N_{R-GS} = 1.38 \times 10^{-23} \times 914.2 \times 2 \times 10^9 = 2.52 \times 10^{-11} \text{ W}$$
+
+$$N_{R-GS} = -105.98 \text{ dBm}$$
+
+\textbf{10) C/N:}
+
+$$C/N = -27.44 - (-105.98) = 78.54 \text{ dB}$$
+
+\textbf{11) Marge:}
+
+$C/N$ requerido: 32.5 dB
+
+$$\text{Marge} = 78.54 - 32.5 = 46.04 \text{ dB}$$
+
+\subsection*{Pregunta 2: Bilan de liaison con lluvia (R = 25 mm/h)}
+
+\subsubsection*{a) Completar tabla II con lluvia}
+
+\textbf{Atenuación lineal debida a la lluvia:}
+
+De la figura 2 del enunciado (gráfica $\gamma_R$ vs frecuencia):
+
+\begin{itemize}
+    \item A 31 GHz, $R = 25$ mm/h: $\gamma_R \approx 3$ dB/km
+    \item A 85 GHz, $R = 25$ mm/h: $\gamma_R \approx 15$ dB/km
+\end{itemize}
+
+\textbf{Longitud de lluvia:}
+
+$$L_S = \frac{h_R}{\sin(E)} = \frac{4}{\sin(30°)} = \frac{4}{0.5} = 8 \text{ km}$$
+
+\textbf{Atenuación adicional por lluvia:}
+
+\textbf{Banda Ka (31 GHz):}
+$$A_{RAIN} = \gamma_R \times L_S = 3 \times 8 = 24 \text{ dB}$$
+
+\textbf{Banda E (85 GHz):}
+$$A_{RAIN} = 15 \times 8 = 120 \text{ dB}$$
+
+\textbf{Nueva potencia recibida:}
+
+\textbf{Ka-band:}
+$$P_{R-GS}^{rain} = -36.34 - 24 = -60.34 \text{ dBm}$$
+
+\textbf{E-band:}
+$$P_{R-GS}^{rain} = -27.44 - 120 = -147.44 \text{ dBm}$$
+
+\textbf{Temperatura de antena con lluvia:}
+
+La lluvia aumenta la temperatura de ruido de antena. Para lluvia moderada:
+
+$$T_{A-GS}^{rain} = T_0 (1 - 10^{-A_{RAIN}/10}) + T_{A-GS} \times 10^{-A_{RAIN}/10}$$
+
+\textbf{Ka-band:}
+$$T_{A-GS}^{rain} = 290 \times (1 - 10^{-2.4}) + 50 \times 10^{-2.4} = 290 \times 0.996 + 0.2 = 289 \text{ K}$$
+
+$$T_{T-GS}^{rain} = 289 + 288.55 = 577.55 \text{ K}$$
+
+$$N_{R-GS}^{rain} = 1.38 \times 10^{-23} \times 577.55 \times 2.97 \times 10^8 = 2.37 \times 10^{-12} \text{ W}$$
+
+$$N_{R-GS}^{rain} = -116.25 \text{ dBm}$$
+
+$$C/N = -60.34 - (-116.25) = 55.91 \text{ dB}$$
+
+\textcolor{blue}{\textbf{Liaison OK:} $55.91 > 13.5$ dB (marge: 42.41 dB)}
+
+\textbf{E-band:}
+$$T_{A-GS}^{rain} = 290 \times (1 - 10^{-12}) + 50 \times 10^{-12} \approx 290 \text{ K}$$
+
+$$T_{T-GS}^{rain} = 290 + 864.2 = 1154.2 \text{ K}$$
+
+$$N_{R-GS}^{rain} = 1.38 \times 10^{-23} \times 1154.2 \times 2 \times 10^9 = 3.19 \times 10^{-11} \text{ W}$$
+
+$$N_{R-GS}^{rain} = -104.97 \text{ dBm}$$
+
+$$C/N = -147.44 - (-104.97) = -42.47 \text{ dB}$$
+
+\textcolor{red}{\textbf{Liaison NO FUNCIONA:} $-42.47 \ll 32.5$ dB (déficit: 74.97 dB)}
+
+\subsubsection*{b) Modificaciones necesarias para funcionamiento con lluvia}
+
+\textbf{Para 31 GHz (Ka-band):}
+
+\textcolor{blue}{✓ La liaison funciona correctamente con lluvia (marge de 42.41 dB)}
+
+No se requieren modificaciones. El sistema tiene suficiente margen.
+
+\textbf{Para 85 GHz (E-band):}
+
+\textcolor{red}{✗ La liaison NO funciona (déficit de 74.97 dB)}
+
+\textbf{Soluciones posibles:}
+
+\textbf{1. Reducir distancia:}
+
+Para compensar 74.97 dB de déficit, necesitamos:
+
+$$L_{nueva} = L_{actual} \times 10^{-74.97/40} = 40 \times 10^{-1.87} = 0.54 \text{ km}$$
+
+\textcolor{red}{¡Impracticable! Solo funciona a 540 m de distancia}
+
+\textbf{2. Cambiar modulación:}
+
+QPSK requiere $C/N = 13.5$ dB (19 dB menos que 256-QAM)
+
+Con QPSK: $C/N = -42.47$ dB → Marge respecto a 13.5 dB: $-55.97$ dB
+
+\textcolor{red}{Aún insuficiente, déficit de 55.97 dB}
+
+\textbf{3. Cambiar de banda de frecuencia:}
+
+\textcolor{green}{La banda E (85 GHz) es extremadamente vulnerable a lluvia ($\gamma_R = 15$ dB/km)}
+
+\textcolor{green}{→ Usar banda Ka (31 GHz) que tiene $\gamma_R = 3$ dB/km (5× menor atenuación)}
+
+\textbf{4. Diversidad de sitio:}
+
+\textcolor{green}{Instalar múltiples estaciones terrestres separadas geográficamente}
+
+La lluvia es localizada → probabilidad de lluvia simultánea en dos sitios separados es baja
+
+\textbf{5. Control adaptativo de potencia (ATPC):}
+
+Aumentar potencia del PA durante eventos de lluvia (si el hardware lo permite)
+
+Para compensar 74.97 dB necesitaríamos multiplicar la potencia por $10^{7.5} \approx 31$ millones
+
+\textcolor{red}{Impracticable con PA disponible (6.5 W)}
+
+\textbf{6. Adaptive Coding and Modulation (ACM):}
+
+Cambiar dinámicamente a modulación más robusta (QPSK) cuando detecta lluvia
+
+Reduce capacidad de 10.24 Gbit/s a 380 Mbit/s pero mantiene enlace operacional
+
+\textbf{Conclusión:}
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{
+\textbf{Recomendación para 85 GHz con lluvia:}
+\begin{itemize}
+    \item \textbf{Solución principal:} Sistema ACM (Adaptive Coding \& Modulation)
+    \begin{itemize}
+        \item Ciel clair: 256-QAM, 10.24 Gbit/s
+        \item Con lluvia: QPSK, 380 Mbit/s (reducción de capacidad pero enlace activo)
+    \end{itemize}
+    \item \textbf{Solución complementaria:} Diversidad de sitio (2-3 estaciones GS separadas)
+    \item \textbf{Último recurso:} Cambiar a banda Ka (31 GHz) con menor sensibilidad a lluvia
+\end{itemize}
+}}
+\end{center}
+
+\textbf{Nota importante:} La banda E (71-86 GHz) es conocida por su alta absorción atmosférica, especialmente con lluvia. Los sistemas comerciales típicamente implementan ACM o limitan su uso a enlaces cortos (<5 km) o entornos con baja precipitación.
+
+\newpage
+
+\section*{PARTE B: Óptica - Upgrade de cables submarinos}
+
+Dos países costeros A y B están conectados por tres cables submarinos existentes (rutas Norte, Central y Sur). Se debe actualizar el sistema a transmisión coherente WDM maximizando la capacidad.
+
+\subsection*{Pregunta 1: Fórmula de Shannon-Hartley}
+
+La capacidad teórica de un canal con ruido gaussiano aditivo:
+
+$$\boxed{C = B \log_2\left(1 + \frac{S}{N}\right) \quad [\text{bit/s}]}$$
+
+donde:
+\begin{itemize}
+    \item $C$ = capacidad del canal (bit/s)
+    \item $B$ = ancho de banda (Hz)
+    \item $S/N$ = relación señal/ruido (lineal, no en dB)
+\end{itemize}
+
+Para OSNR óptico:
+
+$$C = B \log_2(1 + \text{OSNR}_{\text{linear}})$$
+
+\subsection*{Pregunta 2: Fórmula OSNR al final de línea amplificada}
+
+Para una línea con amplificación óptica regular (EDFA):
+
+$$\boxed{\text{OSNR} = \frac{P_{ch}}{N_{ASE}} = \frac{P_{ch}}{N_{amp} \times n_{sp} h \nu B_o}}$$
+
+Expresión práctica en dB:
+
+$$\boxed{\text{OSNR}_{dB} = P_{ch,dBm} - 10\log_{10}(N_{amp}) - \text{NF} - 58 + 10\log_{10}\left(\frac{B_{tot}}{B_o}\right)}$$
+
+donde:
+\begin{itemize}
+    \item $P_{ch}$ = potencia por canal (W o dBm)
+    \item $N_{amp}$ = número de amplificadores = $\lfloor L_{total} / L_{span} \rfloor$
+    \item $\text{NF}$ = figura de ruido del EDFA (dB)
+    \item $B_o$ = ancho de banda de referencia para OSNR (12.5 GHz en este caso)
+    \item $B_{tot}$ = ancho de banda total del EDFA
+    \item $h\nu \approx 1.3 \times 10^{-19}$ J (para 1550 nm)
+    \item La constante $-58$ corresponde a $10\log_{10}(2 h \nu / 1 \text{ mW})$ con $B_o = 12.5$ GHz
+\end{itemize}
+
+\subsection*{Pregunta 3: Fórmula de line rate con multiplexación de polarización}
+
+Para un transponder con modulación de polarización dual (DP = Dual Polarization):
+
+$$\boxed{R_{line} = 2 \times R_s \times \log_2(M) \quad [\text{bit/s}]}$$
+
+donde:
+\begin{itemize}
+    \item $R_s$ = symbol rate (Baud)
+    \item $M$ = tamaño de constelación (4 para QPSK, 16 para 16-QAM, 8 para 8-QAM, etc.)
+    \item Factor 2 = dos polarizaciones ortogonales (X e Y)
+\end{itemize}
+
+\textbf{Ejemplos:}
+\begin{itemize}
+    \item DP-QPSK: $R_{line} = 2 \times R_s \times 2 = 4 R_s$
+    \item DP-16QAM: $R_{line} = 2 \times R_s \times 4 = 8 R_s$
+    \item DP-8QAM: $R_{line} = 2 \times R_s \times 3 = 6 R_s$
+\end{itemize}
+
+El \textbf{payload bit rate} es menor debido al overhead de FEC (Forward Error Correction):
+
+$$R_{payload} = R_{line} \times (1 - OH_{FEC})$$
+
+Típicamente $OH_{FEC} \approx 20\%$ → $R_{payload} \approx 0.8 R_{line}$
+
+\subsection*{Pregunta 4: Parámetro para seleccionar transponder}
+
+El parámetro clave es la \textbf{eficiencia espectral} (Spectral Efficiency - SE):
+
+$$\boxed{SE = \frac{R_{payload}}{B_{slot} \times N_{slots}} \quad [\text{bit/s/Hz}]}$$
+
+donde:
+\begin{itemize}
+    \item $R_{payload}$ = bit rate útil del transponder (Gbit/s)
+    \item $B_{slot}$ = ancho de un slot (12.5 GHz)
+    \item $N_{slots}$ = número de slots ocupados por el transponder
+\end{itemize}
+
+\textbf{Criterio de selección:}
+
+\begin{enumerate}
+    \item Calcular OSNR disponible al final de cada ruta
+    \item Identificar transponders con $\text{OSNR}_{min} < \text{OSNR}_{disponible} - 1$ dB (margen)
+    \item Entre los transponders válidos, elegir el de mayor $R_{payload}$ (maximiza capacidad)
+    \item Calcular cuántos canales caben: $N_{ch} = \lfloor B_{EDFA} / (B_{slot} \times N_{slots}) \rfloor$
+\end{enumerate}
+
+\subsection*{Pregunta 5: Tabla de resultados por ruta}
+
+\subsubsection*{Ruta Norte (3500 km)}
+
+\textbf{Parámetros:}
+\begin{itemize}
+    \item Longitud: $L = 3500$ km
+    \item Atenuación lineal: $\alpha = 0.17$ dB/km
+    \item Espaciado amplificadores: $L_{span} = 65$ km
+    \item Ancho de banda EDFA: $B_{EDFA} = 4000$ GHz
+    \item NF: 5.5 dB
+    \item Potencia máxima EDFA: $P_{out,max} = 15$ dBm
+\end{itemize}
+
+\textbf{Número de amplificadores:}
+$$N_{amp} = \left\lfloor \frac{3500}{65} \right\rfloor = 53$$
+
+\textbf{Número de slots espectrales disponibles:}
+$$N_{slots,total} = \frac{B_{EDFA}}{B_{slot}} = \frac{4000}{12.5} = 320 \text{ slots}$$
+
+\textbf{Cálculo de OSNR para cada transponder:}
+
+Fórmula simplificada:
+$$\text{OSNR}_{dB} = P_{ch,dBm} - 10\log_{10}(N_{amp}) - \text{NF} - 58$$
+
+$$\text{OSNR}_{dB} = P_{ch,dBm} - 10\log_{10}(53) - 5.5 - 58$$
+
+$$\text{OSNR}_{dB} = P_{ch,dBm} - 17.24 - 5.5 - 58 = P_{ch,dBm} - 80.74$$
+
+\textbf{Evaluación de transponders:}
+
+\textbf{Modelo 1 (DP-QPSK):} OSNR$_{min} = 12$ dB, ocupa 3 slots, 100 Gbit/s
+$$N_{ch,max} = \lfloor 320/3 \rfloor = 106 \text{ canales}$$
+$$P_{ch} = 15 - 10\log_{10}(106) = 15 - 20.25 = -5.25 \text{ dBm}$$
+$$\text{OSNR} = -5.25 - 80.74 = -86.0 \text{ dB} \quad \textcolor{red}{\times \text{ NO viable}}$$
+
+\textcolor{red}{¡Error en la fórmula! Corrección:}
+
+La fórmula correcta debe ser:
+$$\text{OSNR}_{dB} = P_{ch,dBm} + 58 - 10\log_{10}(N_{amp}) - \text{NF}$$
+
+$$\text{OSNR}_{dB} = P_{ch,dBm} + 58 - 17.24 - 5.5 = P_{ch,dBm} + 35.26$$
+
+\textbf{Re-evaluación:}
+
+\textbf{Modelo 5 (DP-16QAM):} OSNR$_{min} = 25$ dB, ocupa 6 slots, 400 Gbit/s
+$$N_{ch} = \lfloor 320/6 \rfloor = 53 \text{ canales}$$
+$$P_{ch} = 15 - 10\log_{10}(53) = 15 - 17.24 = -2.24 \text{ dBm}$$
+$$\text{OSNR} = -2.24 + 35.26 = 33.02 \text{ dB}$$
+$$\text{Marge} = 33.02 - 25 = 8.02 \text{ dB} \quad \textcolor{green}{\checkmark \text{ OK}}$$
+
+\textbf{Modelo 3 (DP-8QAM):} OSNR$_{min} = 15$ dB, ocupa 5 slots, 200 Gbit/s
+$$N_{ch} = \lfloor 320/5 \rfloor = 64 \text{ canales}$$
+$$P_{ch} = 15 - 10\log_{10}(64) = 15 - 18.06 = -3.06 \text{ dBm}$$
+$$\text{OSNR} = -3.06 + 35.26 = 32.20 \text{ dB}$$
+$$\text{Marge} = 32.20 - 15 = 17.20 \text{ dB} \quad \textcolor{green}{\checkmark \text{ OK}}$$
+
+\textbf{Modelo 2 (DP-16QAM):} OSNR$_{min} = 19$ dB, ocupa 3 slots, 200 Gbit/s
+$$N_{ch} = \lfloor 320/3 \rfloor = 106 \text{ canales}$$
+$$P_{ch} = 15 - 10\log_{10}(106) = -5.25 \text{ dBm}$$
+$$\text{OSNR} = -5.25 + 35.26 = 30.01 \text{ dB}$$
+$$\text{Marge} = 30.01 - 19 = 11.01 \text{ dB} \quad \textcolor{green}{\checkmark \text{ OK}}$$
+
+\textbf{Selección:} Modelo 2 (mayor número de canales × bit rate)
+
+\textbf{Capacidad teórica (Shannon):}
+
+$$\text{OSNR}_{linear} = 10^{30.01/10} = 1001.2$$
+
+$$C_{Shannon} = B_{EDFA} \times \log_2(1 + \text{OSNR}) = 4000 \times 10^9 \times \log_2(1002.2)$$
+
+$$C_{Shannon} = 4000 \times 9.97 = 39.88 \text{ Tbit/s (por fibra)}$$
+
+\textbf{Capacidad real:}
+
+$$C_{real} = N_{ch} \times R_{payload} = 106 \times 200 = 21.2 \text{ Tbit/s}$$
+
+\subsubsection*{Ruta Central (3000 km)}
+
+\textbf{Parámetros:}
+\begin{itemize}
+    \item $L = 3000$ km, $\alpha = 0.18$ dB/km
+    \item $L_{span} = 50$ km, $B_{EDFA} = 3800$ GHz
+    \item NF = 6 dB, $P_{out,max} = 15$ dBm
+\end{itemize}
+
+$$N_{amp} = \lfloor 3000/50 \rfloor = 60$$
+
+$$N_{slots,total} = 3800/12.5 = 304 \text{ slots}$$
+
+$$\text{OSNR}_{dB} = P_{ch,dBm} + 58 - 10\log_{10}(60) - 6 = P_{ch,dBm} + 34.22$$
+
+\textbf{Modelo 2 (DP-16QAM):}
+$$N_{ch} = \lfloor 304/3 \rfloor = 101$$
+$$P_{ch} = 15 - 10\log_{10}(101) = -5.05 \text{ dBm}$$
+$$\text{OSNR} = -5.05 + 34.22 = 29.17 \text{ dB}$$
+$$\text{Marge} = 29.17 - 19 = 10.17 \text{ dB} \quad \textcolor{green}{\checkmark}$$
+
+$$C_{Shannon} = 3800 \times \log_2(1 + 826.5) = 3800 \times 9.69 = 36.8 \text{ Tbit/s}$$
+
+$$C_{real} = 101 \times 200 = 20.2 \text{ Tbit/s}$$
+
+\subsubsection*{Ruta Sur (4000 km)}
+
+\textbf{Parámetros:}
+\begin{itemize}
+    \item $L = 4000$ km, $\alpha = 0.16$ dB/km
+    \item $L_{span} = 75$ km, $B_{EDFA} = 4200$ GHz
+    \item NF = 5 dB, $P_{out,max} = 16$ dBm
+\end{itemize}
+
+$$N_{amp} = \lfloor 4000/75 \rfloor = 53$$
+
+$$N_{slots,total} = 4200/12.5 = 336 \text{ slots}$$
+
+$$\text{OSNR}_{dB} = P_{ch,dBm} + 58 - 10\log_{10}(53) - 5 = P_{ch,dBm} + 35.76$$
+
+\textbf{Modelo 2 (DP-16QAM):}
+$$N_{ch} = \lfloor 336/3 \rfloor = 112$$
+$$P_{ch} = 16 - 10\log_{10}(112) = -4.49 \text{ dBm}$$
+$$\text{OSNR} = -4.49 + 35.76 = 31.27 \text{ dB}$$
+$$\text{Marge} = 31.27 - 19 = 12.27 \text{ dB} \quad \textcolor{green}{\checkmark}$$
+
+$$C_{Shannon} = 4200 \times \log_2(1 + 1339.7) = 4200 \times 10.39 = 43.6 \text{ Tbit/s}$$
+
+$$C_{real} = 112 \times 200 = 22.4 \text{ Tbit/s}$$
+
+\subsubsection*{Tabla resumen}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Parámetro} & \textbf{Ruta Norte} & \textbf{Ruta Central} & \textbf{Ruta Sur} \\
+\hline
+Spectral slot count & 320 & 304 & 336 \\
+\hline
+Transponder model & 2 (DP-16QAM) & 2 (DP-16QAM) & 2 (DP-16QAM) \\
+\hline
+Channel count & 106 & 101 & 112 \\
+\hline
+Power per channel (dBm) & -5.25 & -5.05 & -4.49 \\
+\hline
+End of line OSNR (dB) & 30.01 & 29.17 & 31.27 \\
+\hline
+Theoretical capacity (Tbit/s) & 39.88 & 36.8 & 43.6 \\
+\hline
+Actual capacity (Tbit/s) & 21.2 & 20.2 & 22.4 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Pregunta 6: Mejoras para aumentar capacidad}
+
+\textbf{1. Modulación adaptativa por canal (Power/Modulation Shaping):}
+\begin{itemize}
+    \item Canales centrales (mejor OSNR): usar DP-64QAM (400 Gbit/s)
+    \item Canales en bordes de banda: usar DP-16QAM (200 Gbit/s)
+    \item Ganancia: +15-20\% capacidad
+\end{itemize}
+
+\textbf{2. Reducir espaciado de canales (Nyquist shaping):}
+\begin{itemize}
+    \item Pasar de 12.5 GHz slots a formato Nyquist con menor guardband
+    \item Aumentar 10-15\% el número de canales
+    \item Requiere filtros ópticos más selectivos
+\end{itemize}
+
+\textbf{3. Amplificadores Raman:}
+\begin{itemize}
+    \item Añadir amplificación Raman distribuida
+    \item Mejora OSNR en 2-4 dB → permite modulaciones de orden superior
+    \item Ruta Norte podría usar Modelo 5 (400 Gbit/s) en vez de Modelo 2
+\end{itemize}
+
+\textbf{4. Reducir espaciado entre amplificadores:}
+\begin{itemize}
+    \item Ruta Sur: pasar de 75 km a 60 km → menos amplificadores, mejor OSNR
+    \item Costo: instalación de más repetidores submarinos
+\end{itemize}
+
+\textbf{5. Multiplexación espacial (SDM - Space Division Multiplexing):}
+\begin{itemize}
+    \item Instalar cables multi-núcleo o multi-modo
+    \item Duplica/triplica capacidad total sin cambiar electrónica
+    \item Requiere reemplazo de cable físico
+\end{itemize}
+
+\textbf{6. Mejor codificación FEC:}
+\begin{itemize}
+    \item FEC más potente (soft-decision, LDPC mejorado)
+    \item Reduce OSNR requerido en 1-2 dB
+    \item Permite usar modulaciones de orden superior
+\end{itemize}
+
+\textbf{7. Ganancia máxima EDFA variable por canal:}
+\begin{itemize}
+    \item Dynamic Gain Equalization (DGE)
+    \item Optimiza potencia por canal según su posición en banda
+    \item Mejora homogeneidad de OSNR entre canales
+\end{itemize}
+
+\textbf{Mejor estrategia combinada:}
+
+\begin{enumerate}
+    \item Añadir amplificación Raman (corto plazo, sin obra civil)
+    \item Implementar modulación adaptativa por canal
+    \item Optimizar spacing de canales con Nyquist
+\end{enumerate}
+
+\textbf{Capacidad mejorada estimada:}
+
+Con Raman + modulación adaptativa + Nyquist:
+\begin{itemize}
+    \item Ruta Norte: $21.2 \rightarrow 28-30$ Tbit/s (+35\%)
+    \item Ruta Central: $20.2 \rightarrow 27-29$ Tbit/s (+35\%)
+    \item Ruta Sur: $22.4 \rightarrow 30-32$ Tbit/s (+35\%)
+\end{itemize}
+
+\end{document}

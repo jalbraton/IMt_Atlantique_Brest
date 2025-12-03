@@ -1,0 +1,107 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\title{\textbf{Examen UEC3 -- Architectures et ingénierie\\des systèmes de transmission}}
+\author{Décembre 2020}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Consignes}
+\begin{itemize}
+    \item Documents de cours/PC/BE et calculatrice autorisés
+    \item Les parties (A, B) sont indépendantes et sont à rédiger sur des copies séparées
+    \item Vous déposerez vos copies sur Moodle, dans l'espace de dépôt prévu, sous forme de scan de votre document manuscrit ou via un document électronique (.pdf)
+\end{itemize}
+
+\section{Architectures et ingénierie des systèmes de transmission RF (45 mn)}
+
+On se propose d'étudier la faisabilité d'une liaison radio aux fréquences 'TéraHertz' (f > 300 GHz) dédiée aux transmissions courtes portées à très hauts débits. Les applications visées vont des systèmes optiques avec des ponts radio, à la connexion large bande de serveurs de données en passant par la télévision HDTV. La figure 1 illustre un exemple d'application.
+
+\begin{figure}[h]
+    \centering
+    \textit{Fig. 1 : lien optique avec extension par un lien radio TéraHertz (THz)}
+\end{figure}
+
+Du fait de la très forte atténuation à ces fréquences liée à l'atmosphère ainsi qu'à la pluie, seules certaines bandes (« fenêtres ») sont utilisables (voir annexe A1). Au-delà de 300 GHz, les fenêtres utilisables, définies à partir de la figure A1.a en annexe, et pour lesquelles l'atténuation linéique est inférieure à 100 dB/km, sont données dans le tableau I ci-dessous. Elles offrent potentiellement de très grandes largeurs de bandes.
+
+Compte-tenu des composants disponibles à ces fréquences, seule la fenêtre I est retenue dans le cadre de cette étude et pour un lien fixe.
+
+\subsection{Bilan de liaison}
+
+\begin{enumerate}[label=\alph*.]
+    \item Dans les conditions de propagation en espace libre, donner l'expression générale de l'atténuation en espace libre $A_{EL}$ en fonction de la distance $d$ et de la fréquence $f$.
+    
+    \item Calculer $A_{EL}$ pour $d = 1$ m, 10 m et 100 m.
+    
+    \item Quelle est l'atténuation linéique maximale due à l'atmosphère et à la pluie, avec un taux de précipitation $R = 35$ mm/h, pour la bande I (cf annexe A1) ?
+    
+    \item Donner dans un tableau l'atténuation totale $A_T$ (en dB) subie par le signal pour les 3 distances considérées.
+\end{enumerate}
+
+\subsection{Architecture}
+
+À 340 GHz, l'architecture du récepteur THz est relativement simple et est composée des éléments représentés à la figure 2 ci-dessous. Le signal à la fréquence intermédiaire de 50 GHz est traité dans un récepteur spécifique. La bande passante du signal transmis, c'est-à-dire la largeur d'un canal, est $B = 10$ GHz.
+
+\begin{figure}[h]
+    \centering
+    \textit{Fig. 2 : Architecture du récepteur THz}
+\end{figure}
+
+Les caractéristiques des composants sont données dans le tableau suivant :
+
+\textit{[Tableau des caractéristiques fourni dans le sujet]}
+
+\begin{enumerate}[label=\alph*., start=5]
+    \item Préciser le type d'architecture utilisé et donner la fréquence de l'oscillateur local.
+    
+    \item Calculer le facteur de bruit total $F_R$ (en dB) du récepteur
+    
+    \item Une antenne de type cornet circulaire est connectée à l'accès E. Donner l'expression de la puissance de bruit totale $N_R$ en fonction de la température équivalente de bruit totale du récepteur $T_R$ et calculer $N_R$ sachant que $T_R = 2900$ K.
+    
+    \item On note $P_{TX}$ (dBm) la puissance à l'émission. On suppose que les antennes d'émission et de réception sont identiques et de gain $G_A$. Donner l'expression de la puissance reçue $P_{RX}$ (dBm) en fonction de $A_T$, $G_A$ et $P_{TX}$.
+    
+    \item Donner l'expression du rapport signal-à-bruit (SNR) en dB en fonction de $A_T$, $G_A$, $P_{TX}$ et $N_R$.
+    
+    \item On prend $P_{TX} = 1$ mW. Connaissant $N_R$ (question g), donner l'expression du gain des antennes $G_A$ en fonction de $A_T$ et du SNR requis.
+    
+    \item Calculer le gain $G_A$ nécessaire pour garantir un SNR de 15 dB pour les 3 distances (1, 10 et 100 m). Commentaires sur le diamètre des antennes résultant.
+\end{enumerate}
+
+\subsection*{Annexe A1 : Atténuations linéiques (atmosphère et pluie)}
+
+\textit{[Figures A1.a et A1.b fournies montrant l'atténuation en fonction de la fréquence]}
+
+\section{Ingénierie d'une liaison amplifiée (45 mn)}
+
+En utilisant les caractéristiques des équipements fournies en annexe, vous devez proposer une ingénierie de liaison WDM amplifiée en bande C répondant aux exigences suivantes :
+
+\begin{enumerate}
+    \item La capacité totale utile transmise Cap doit être maximisée.
+\end{enumerate}
+
+\subsection*{Travail demandé}
+
+\textit{[Tableau à compléter avec les paramètres du système]}
+
+\subsection*{Annexe : Caractéristiques des équipements}
+
+\subsubsection*{Ligne optique}
+\textit{[Caractéristiques de la fibre et de la ligne]}
+
+\subsubsection*{Transpondeur (caractéristiques de la partie réception)}
+\textit{[Caractéristiques des transpondeurs]}
+
+\subsubsection*{Amplificateur optique}
+\textit{[Caractéristiques des EDFA]}
+
+\end{document}

@@ -1,0 +1,338 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Examen 2024 - Soluciones}
+\lhead{AIST}
+\rfoot{\thepage}
+
+\title{\textbf{Examen Marzo 2024 - Soluciones\\RF \& Optical Systems}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Parte A: Enlaces RF E-band (83.5 GHz)}
+
+\subsection*{Datos del sistema}
+\begin{itemize}
+    \item Frecuencia: $f = 83.5$ GHz
+    \item Ancho de banda: $B = 5$ GHz
+    \item Sensibilidad receptor: $P_{Rx,min} = -64$ dBm
+    \item Atenuación atmosférica: $\alpha_{atm} = 0.5$ dB/km
+    \item Rendimiento antenas: $\eta = 0.55$
+\end{itemize}
+
+\textbf{Componentes:}
+\begin{itemize}
+    \item PA: $G = 15$ dB, $P_{sat} = 1$ W = 30 dBm
+    \item LNA: $G = 25$ dB, $NF = 2.5$ dB
+    \item Mixer: $G = 10$ dB, $NF = 10$ dB
+\end{itemize}
+
+\subsection*{1a) Condiciones espacio libre}
+\textbf{Condiciones:}
+\begin{itemize}
+    \item Propagación en línea de vista (LOS)
+    \item Sin obstáculos (primera zona de Fresnel libre)
+    \item Distancia $\gg \lambda$
+\end{itemize}
+
+\textbf{Fórmula atenuación:}
+$$A_{FS} = 32.45 + 20\log_{10}(d_{km}) + 20\log_{10}(f_{GHz}) \text{ [dB]}$$
+
+\subsection*{1b) Cálculo $A_{FS}$}
+
+\textbf{Terrestre ($d = 40$ km):}
+$$A_{FS} = 32.45 + 20\log_{10}(40) + 20\log_{10}(83.5)$$
+$$A_{FS} = 32.45 + 32.04 + 38.43 = 102.92 \text{ dB}$$
+
+\textbf{LEO ($d = 2000$ km):}
+$$A_{FS} = 32.45 + 20\log_{10}(2000) + 20\log_{10}(83.5)$$
+$$A_{FS} = 32.45 + 66.02 + 38.43 = 136.90 \text{ dB}$$
+
+\subsection*{1c) Atenuación total}
+
+\textbf{Terrestre:}
+$$A_T = A_{FS} + \alpha_{atm} \times d = 102.92 + 0.5 \times 40 = 122.92 \text{ dB}$$
+
+\textbf{LEO (40 km de atmósfera):}
+$$A_T = 136.90 + 0.5 \times 40 = 156.90 \text{ dB}$$
+
+\subsection*{1d) Ganancia total antenas}
+
+Balance de enlace:
+$$P_{Rx} = P_{Tx} + G_{Tx} + G_{Rx} - A_T$$
+
+Con $P_{Tx} = 30$ dBm y $P_{Rx,min} = -64$ dBm:
+$$G_{Tx} + G_{Rx} = -64 - 30 + A_T = A_T - 94$$
+
+\textbf{Terrestre:} $G_{total} = 122.92 - 94 = 28.92$ dBi
+
+\textbf{LEO:} $G_{total} = 156.90 - 94 = 62.90$ dBi
+
+\subsection*{1e) Diámetro antenas terrestres}
+
+Con antenas idénticas: $G_{Tx} = G_{Rx} = 28.92/2 = 14.46$ dBi
+
+$$G = \eta \left(\frac{\pi d f}{c}\right)^2$$
+$$10^{14.46/10} = 0.55 \times \left(\frac{\pi d \times 83.5 \times 10^9}{3 \times 10^8}\right)^2$$
+$$27.93 = 0.55 \times (873.5 d)^2$$
+$$d^2 = \frac{27.93}{0.55 \times 762804} = 6.66 \times 10^{-5}$$
+$$d = 8.16 \text{ mm}$$
+
+\textbf{Comentario:} Antenas muy compactas gracias a la alta frecuencia. Prácticas para uso terrestre.
+
+\subsection*{1f) Antenas enlace satélite}
+
+Antena GS: $d_{GS} = 4$ m
+
+$$G_{GS} = 10\log_{10}\left(0.55 \times \left(\frac{\pi \times 4 \times 83.5 \times 10^9}{3 \times 10^8}\right)^2\right)$$
+$$G_{GS} = 10\log_{10}(0.55 \times 1.22 \times 10^8) = 78.26 \text{ dBi}$$
+
+$$G_{sat} = 62.90 - 78.26 = -15.36 \text{ dBi}$$
+
+Esto es negativo, indicando que necesitamos recalcular o usar amplificación adicional.
+
+\textbf{Corrección:} Para balance viable, necesitamos $G_{sat} > 0$. Esto sugiere aumentar $P_{Tx}$ o usar sensibilidad mejor.
+
+\subsection*{1g) Ángulo 3dB antenas terrestres}
+
+$$\theta_{3dB} = \frac{70 \lambda}{d} = \frac{70 c}{f \cdot d}$$
+$$\theta_{3dB} = \frac{70 \times 3 \times 10^8}{83.5 \times 10^9 \times 0.00816} = 30.8°$$
+
+\textbf{Comentario:} Haz relativamente ancho, requiere alineación cuidadosa pero tolerable.
+
+\subsection*{2h) Tipo de arquitectura}
+
+\textbf{TX:} Arquitectura directa (conversión directa a RF)
+
+\textbf{RX:} Superheterodino con conversión a IF
+
+$$f_{LO} = f_{RF} - f_{IF}$$
+
+Asumiendo $f_{IF} = 10$ GHz:
+$$f_{LO} = 83.5 - 10 = 73.5 \text{ GHz}$$
+
+\subsection*{2i) Problema frecuencia imagen}
+
+En superheterodino, la frecuencia imagen es:
+$$f_{im} = f_{RF} - 2f_{IF} = 83.5 - 20 = 63.5 \text{ GHz}$$
+
+\textbf{Problema:} Sí existe. Necesita filtrado pre-LNA o usar conversión de imagen rechazada.
+
+\subsection*{2j) Factor de ruido receptor}
+
+$$F_R = F_{LNA} + \frac{F_{Mixer} - 1}{G_{LNA}}$$
+
+Convirtiendo a lineal:
+\begin{itemize}
+    \item $F_{LNA} = 10^{2.5/10} = 1.778$
+    \item $G_{LNA} = 10^{25/10} = 316.23$
+    \item $F_{Mixer} = 10^{10/10} = 10$
+\end{itemize}
+
+$$F_R = 1.778 + \frac{10 - 1}{316.23} = 1.778 + 0.028 = 1.806$$
+$$F_{R,dB} = 10\log_{10}(1.806) = 2.57 \text{ dB}$$
+
+\subsection*{2k) Potencia de ruido total}
+
+Asumiendo $T_A \approx 0$ K (antena ideal):
+$$N_R = k T_0 F_R B = 1.38 \times 10^{-23} \times 290 \times 1.806 \times 5 \times 10^9$$
+$$N_R = 3.60 \times 10^{-11} \text{ W} = -104.43 \text{ dBm}$$
+
+\subsection*{2l) CNR y comentario}
+
+Con $P_{Rx} = -64$ dBm:
+$$\text{CNR} = P_{Rx} - N_R = -64 - (-104.43) = 40.43 \text{ dB}$$
+
+\textbf{Comentario:} Excelente para QPSK (requiere $\sim$10 dB para BER $10^{-3}$). Margen de 30 dB permite modulaciones de alto orden.
+
+\subsection*{2m) Límites del sistema}
+
+De la gráfica Fig. 2, para $R = 25$ mm/h a 83.5 GHz:
+$$\alpha_{rain} \approx 15 \text{ dB/km}$$
+
+Para 40 km:
+$$A_{rain} = 15 \times 40 = 600 \text{ dB}$$
+
+\textbf{Límite crítico:} El enlace es completamente inviable con lluvia moderada. Necesita:
+\begin{itemize}
+    \item Distancias muy cortas ($<$5 km)
+    \item Redundancia de frecuencia (fallback a banda Ka)
+    \item Solo operación en cielo claro
+\end{itemize}
+
+\newpage
+\section*{Parte B: DWDM sin amplificadores en línea}
+
+\subsection*{Datos}
+\begin{itemize}
+    \item Amplificador: $G = 25$ dB, $P_{max} = 19$ dBm, $F = 5$ dB
+    \item Pérdida jarretière: 0.6 dB
+    \item Pérdida MUX/DEMUX: 5 dB (40 ch), 6 dB (80 ch)
+    \item Atenuación fibra: 0.18 dB/km
+    \item Margen OSNR: 2 dB
+\end{itemize}
+
+\subsection*{1) Diagrama funcional del enlace DWDM punto a punto}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.2cm and 0.8cm,
+    block/.style={rectangle, draw, thick, text width=1.8cm, text centered, minimum height=0.9cm, font=\small},
+    smallblock/.style={rectangle, draw, thick, text width=1.4cm, text centered, minimum height=0.7cm, font=\footnotesize},
+    line/.style={draw, very thick}
+]
+
+% Lado transmisor
+\node[smallblock] (tx1) at (0,0.5) {TRX};
+\node[smallblock] (tx2) at (0,0) {TRX};
+\node[smallblock] (tx3) at (0,-0.5) {TRX};
+\node[font=\tiny] at (0,-0.9) {N canales};
+
+\node[block, right=1.2cm of tx2] (mux) {MUX\\(40/80 ch)};
+\node[block, right=of mux] (boost) {Booster\\Amp\\G=25dB};
+
+% Patch cord antes de S
+\draw[line] (mux.east) -- (boost.west);
+\draw[line] (tx1.east) -- (mux.west |- tx1.east);
+\draw[line] (tx2.east) -- (mux.west);
+\draw[line] (tx3.east) -- (mux.west |- tx3.east);
+
+% Punto S
+\coordinate (s_left) at ([xshift=0.3cm]boost.east);
+\coordinate (s_right) at ([xshift=0.9cm]boost.east);
+\draw[line] (boost.east) -- (s_left);
+\draw[line] (s_left) -- node[above, pos=0.5] {\footnotesize patch cord 0.6dB} (s_right);
+\node[circle, fill=red, inner sep=2pt] at (s_left) {};
+\node[above=0.15cm of s_left, font=\bfseries\large, red] {S};
+
+% Fibra
+\node[block, right=2.5cm of boost, minimum width=3cm] (fiber) {Línea de Fibra\\sin amplificadores\\$\alpha = 0.18$ dB/km};
+\draw[line] (s_right) -- (fiber.west);
+
+% Punto R
+\coordinate (r_left) at ([xshift=-0.9cm]fiber.east);
+\coordinate (r_right) at ([xshift=-0.3cm]fiber.east);
+\draw[line] (fiber.east) -- (r_right);
+\draw[line] (r_left) -- node[above, pos=0.5] {\footnotesize patch cord 0.6dB} (r_right);
+\node[circle, fill=red, inner sep=2pt] at (r_right) {};
+\node[above=0.15cm of r_right, font=\bfseries\large, red] {R};
+
+% Lado receptor
+\node[block, right=2.5cm of fiber] (preamp) {Preamp\\G=25dB\\F=5dB};
+\node[block, right=of preamp] (demux) {DEMUX\\(40/80 ch)};
+
+\node[smallblock, right=1.2cm of demux] (rx1) at ([xshift=1.2cm]demux.east |- tx1) {TRX};
+\node[smallblock] (rx2) at ([xshift=1.2cm]demux.east |- tx2) {TRX};
+\node[smallblock] (rx3) at ([xshift=1.2cm]demux.east |- tx3) {TRX};
+\node[font=\tiny] at ([xshift=1.2cm]demux.east |- 0,-0.9) {N canales};
+
+% Conexiones lado Rx
+\draw[line] (r_left) -- (preamp.west);
+\draw[line] (preamp.east) -- (demux.west);
+\draw[line] (demux.east) -- (rx2.west);
+\draw[line] (demux.east |- rx1.west) -- (rx1.west);
+\draw[line] (demux.east |- rx3.west) -- (rx3.west);
+
+% Indicación de puntos S y R
+\draw[<->, thick, red] (s_left) -- ++(0,-2.5) -| node[pos=0.25, below, font=\small\bfseries] {Budget: S $\rightarrow$ R} (r_right);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Elementos del sistema:}
+\begin{itemize}
+    \item \textbf{Tx:} N transponders (TRX-A/B/C) $\rightarrow$ MUX (multiplexor 40/80 ch) $\rightarrow$ Booster (G=25dB, $P_{max}$=19dBm) $\rightarrow$ patch cord (0.6dB)
+    \item \textbf{Punto S:} Entrada del patch cord a la línea de fibra (después del amplificador booster)
+    \item \textbf{Transmisión:} Línea de fibra óptica sin amplificadores en línea ($\alpha=0.18$ dB/km)
+    \item \textbf{Punto R:} Salida del patch cord de la línea de fibra (antes del preamplificador)
+    \item \textbf{Rx:} patch cord (0.6dB) $\rightarrow$ Preamplificador (G=25dB, F=5dB) $\rightarrow$ DEMUX (demultiplexor) $\rightarrow$ N transponders
+    \item \textbf{Budget:} Calculado entre puntos S y R: Budget = $P_{ch,S} - P_{ch,R} - L_{patch\,cord}$
+\end{itemize}
+
+\subsection*{Configuraciones}
+
+\textbf{TRX-A (DP-QPSK, 100G):}
+\begin{itemize}
+    \item $B_{ch} = 37.5$ GHz, OSNR$_{min} = 12$ dB
+    \item $P_{Rx,min} = -14$ dBm
+\end{itemize}
+
+\textbf{TRX-B (DP-16QAM, 200G):}
+\begin{itemize}
+    \item $B_{ch} = 37.5$ GHz, OSNR$_{min} = 19$ dB
+    \item $P_{Rx,min} = -14$ dBm
+\end{itemize}
+
+\textbf{TRX-C (DP-16QAM, 400G):}
+\begin{itemize}
+    \item $B_{ch} = 75$ GHz, OSNR$_{min} = 26$ dB
+    \item $P_{Rx,min} = -12$ dBm
+\end{itemize}
+
+\subsection*{2) Número máximo canales}
+
+Bande C: 3000 GHz (aprox)
+
+\textbf{Config A y B:} $N = \lfloor 3000/100 \rfloor = 30$ (grilla 100 GHz) $\Rightarrow$ MUX 40 ch OK
+
+\textbf{Config C:} $N = \lfloor 3000/100 \rfloor = 30$ (necesita espaciado por ancho 75 GHz)
+
+\subsection*{3) Potencia punto S}
+
+$$P_{ch,S} = P_{Booster} - L_{MUX} - L_J - 10\log_{10}(N_{ch})$$
+
+\textbf{A/B:} $P_{ch,S} = 19 - 5 - 0.6 - 10\log_{10}(30) = 19 - 5 - 0.6 - 14.77 = -1.37$ dBm
+
+\textbf{C:} $P_{ch,S} = 19 - 5 - 0.6 - 14.77 = -1.37$ dBm
+
+\subsection*{4) OSNR punto S}
+
+$$P_{ASE} = 5.1 \times 10^{-9} (G - 1) = 5.1 \times 10^{-9} \times 315.2 = 1.61 \times 10^{-6} \text{ W}$$
+$$P_{ASE,dBm} = 10\log_{10}(1.61 \times 10^{-6} \times 10^3) = -27.93 \text{ dBm}$$
+
+\textbf{OSNR}_S: Muy alto ($>$60 dB), prácticamente infinito. 
+
+\textbf{No es necesario considerar} el ruido del booster para el dimensionamiento (domina el preamplificador).
+
+\subsection*{5) Potencia mínima punto R}
+
+Con OSNR$_{target}$ = OSNR$_{min}$ + 2 dB:
+
+\textbf{A:} $P_{ch,R} = -14$ dBm (límite de potencia)
+
+\textbf{B:} $P_{ch,R} = -14$ dBm
+
+\textbf{C:} $P_{ch,R} = -12$ dBm
+
+\subsection*{6-7) Budget y alcance}
+
+$$\text{Budget} = P_{ch,S} - P_{ch,R} - L_J$$
+
+\textbf{A:} Budget $= -1.37 - (-14) - 0.6 = 12.03$ dB $\Rightarrow$ Alcance $= 12.03/0.18 = 66.8$ km
+
+\textbf{B:} Budget $= 12.03$ dB $\Rightarrow$ Alcance $= 66.8$ km
+
+\textbf{C:} Budget $= -1.37 - (-12) - 0.6 = 10.03$ dB $\Rightarrow$ Alcance $= 55.7$ km
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}
+\textit{Fin - Examen 2024}
+\end{center}
+
+\end{document}

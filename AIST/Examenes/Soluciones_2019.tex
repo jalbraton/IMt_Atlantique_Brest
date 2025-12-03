@@ -1,0 +1,385 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage{xcolor}
+
+\geometry{margin=1.8cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Examen 2019 - Soluciones Completas}
+\lhead{AIST}
+\rfoot{\thepage}
+
+\title{\textbf{Examen Diciembre 2019 - Soluciones Completas\\Architectures et ingénierie des systèmes de transmission}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Parte A: Sistemas de transmisión RF (Globalstar)}
+
+\subsection*{Datos del sistema}
+\begin{itemize}
+    \item \textbf{Altitud satélites:} $h = 1414$ km (LEO - Low Earth Orbit)
+    \item \textbf{Frecuencias:}
+    \begin{itemize}
+        \item Satélite $\rightarrow$ Usuario (DL): $f_{\text{DL,S}} = 2.49$ GHz (banda S)
+        \item Usuario $\rightarrow$ Satélite (UL): $f_{\text{UL,L}} = 1.62$ GHz (banda L)
+        \item Satélite $\rightarrow$ Gateway (DL): $f_{\text{DL,C}} = 6.875-7.055$ GHz (banda C)
+        \item Gateway $\rightarrow$ Satélite (UL): $f_{\text{UL,C}} = 5.091-5.250$ GHz (banda C)
+    \end{itemize}
+    \item \textbf{Satélite:} $\text{PIRE}_{\text{sat}} = -1.5$ dBW, $G_{R,\text{sat}} = 31.8$ dBi, $F_{R,\text{sat}} = 2.7$ dB
+    \item \textbf{Usuario:} $\text{PIRE}_{\text{user}} = -4$ dBW
+    \item \textbf{Gateway:} $d_{\text{gw}} = 5.5$ m, $\eta = 70\%$, $T_T = 140$ K
+    \item \textbf{Distancia Satélite-Gateway:} $d = 4480$ km
+    \item \textbf{Ancho de banda sub-canal:} $B = 1.23$ MHz
+    \item \textbf{Ancho de banda por canal:} 16.5 MHz (contiene 13 sub-canales FDM)
+    \item \textbf{Arquitectura:} 16 haces por satélite (8 polarización circular derecha + 8 izquierda)
+\end{itemize}
+
+\subsection*{Pregunta 1: Esquema del sistema}
+
+\textbf{Descripción del sistema Globalstar:}
+
+El sistema consta de tres elementos principales:
+\begin{enumerate}
+    \item \textbf{Usuario (Terminal móvil):} comunica con el satélite en bandas L (UL, 1.62 GHz) y S (DL, 2.49 GHz)
+    \item \textbf{Satélite (LEO a 1414 km):} actúa como repetidor transparente (``bent-pipe'')
+    \begin{itemize}
+        \item Recibe 16 canales en banda L de usuarios (misma frecuencia, 16 haces)
+        \item Transpone a banda C (5-7 GHz) en 8 portadoras FDMA por polarización
+        \item Transmite a la Gateway terrestre
+    \end{itemize}
+    \item \textbf{Gateway (Estación terrestre):} antena parabólica de 5.5 m, comunica en banda C
+\end{enumerate}
+
+\textbf{Flujo de comunicación Usuario A $\rightarrow$ Usuario B:}
+$$\boxed{\text{Usuario A} \xrightarrow[\text{1.62 GHz}]{\text{UL banda L}} \text{Satélite} \xrightarrow[\text{5.091-5.250 GHz}]{\text{UL banda C}} \text{Gateway}}$$
+$$\boxed{\text{Gateway} \xrightarrow[\text{6.875-7.055 GHz}]{\text{DL banda C}} \text{Satélite} \xrightarrow[\text{2.49 GHz}]{\text{DL banda S}} \text{Usuario B}}$$
+
+\textbf{Características clave:}
+\begin{itemize}
+    \item Técnica MBA (Multiple Beam Array): 16 haces reutilizan la misma frecuencia
+    \item CDMA: múltiples usuarios comparten un sub-canal de 1.23 MHz
+    \item FDMA en banda C: 8 portadoras separadas en frecuencia por polarización
+    \item Duración de conexión: $\sim$14 minutos por satélite (órbita LEO)
+\end{itemize}
+
+\subsection*{Pregunta 2: Verificación del ancho de banda en banda C}
+
+\textbf{Objetivo:} Verificar que la banda C puede acomodar 8 portadoras (para 16 canales) + 2 canales de telemetría.
+
+\textbf{Banda C Uplink (Gateway $\rightarrow$ Satélite):}
+$$\Delta f_{\text{UL}} = 5.250 - 5.091 = 0.159 \text{ GHz} = 159 \text{ MHz}$$
+
+\textbf{Banda C Downlink (Satélite $\rightarrow$ Gateway):}
+$$\Delta f_{\text{DL}} = 7.055 - 6.875 = 0.180 \text{ GHz} = 180 \text{ MHz}$$
+
+\textbf{Ancho de banda necesario:}
+
+Cada canal ocupa 16.5 MHz. Necesitamos:
+\begin{itemize}
+    \item 8 portadoras (cada una corresponde a 2 canales de polarización opuesta)
+    \item 2 canales dedicados a telemetría y comando
+\end{itemize}
+
+$$\text{Ancho total requerido} = 10 \times 16.5 = 165 \text{ MHz}$$
+
+\textbf{Verificación:}
+\begin{itemize}
+    \item \textcolor{red}{Uplink: $165$ MHz $>$ $159$ MHz $\rightarrow$ ¡PROBLEMA! Déficit de 6 MHz}
+    \item \textcolor{blue}{Downlink: $165$ MHz $<$ $180$ MHz $\rightarrow$ OK (15 MHz de margen)}
+\end{itemize}
+
+\textbf{Solución al problema del UL:} En la práctica:
+\begin{enumerate}
+    \item Los canales de telemetría usan menos de 16.5 MHz (probablemente $\sim$10 MHz cada uno)
+    \item Reducción de bandas de guarda entre canales
+    \item Filtros más selectivos permiten solapamiento parcial
+\end{enumerate}
+
+\subsection*{Pregunta 3: Efectos de la órbita LEO}
+
+\subsubsection*{Efecto a considerar: Desplazamiento Doppler}
+
+Los satélites LEO se mueven a alta velocidad orbital ($v \approx 7.5$ km/s), causando efecto Doppler:
+
+$$\Delta f_{Doppler} = f_0 \cdot \frac{v_{rel}}{c}$$
+
+\textbf{Para banda L (UL, 1.62 GHz):}
+$$\Delta f_{max} = 1.62 \times 10^9 \times \frac{7500}{3 \times 10^8} \approx \pm 40.5 \text{ kHz}$$
+
+\textbf{Para banda S (DL, 2.49 GHz):}
+$$\Delta f_{max} = 2.49 \times 10^9 \times \frac{7500}{3 \times 10^8} \approx \pm 62.3 \text{ kHz}$$
+
+\textbf{Para banda C (5-7 GHz):}
+$$\Delta f_{max} \approx \pm 150-175 \text{ kHz}$$
+
+\textbf{Consecuencias:}
+\begin{itemize}
+    \item \textbf{Compensación necesaria:} El receptor debe corregir continuamente el Doppler
+    \item \textbf{Métodos:} PLL (Phase-Locked Loop), estimación basada en posición orbital (efemerides)
+    \item \textbf{En CDMA:} También afecta sincronización de códigos
+    \item \textbf{Variación temporal:} Durante los 14 minutos de conexión, el Doppler varía desde +máx a -máx
+\end{itemize}
+
+\subsubsection*{Ventajas LEO vs GEO}
+
+\begin{center}
+\begin{tabular}{|l|p{5cm}|p{5cm}|}
+\hline
+\textbf{Aspecto} & \textbf{LEO (1414 km)} & \textbf{GEO (36000 km)} \\
+\hline
+\textbf{Atenuación trayecto} & $\sim$160 dB @ 1.6 GHz & $\sim$200 dB @ 1.6 GHz \\
+ & \textcolor{blue}{40 dB MENOS} & \\
+\hline
+\textbf{Potencia TX requerida} & BAJA: -4 dBW (0.4 W) & ALTA: +20 dBW (100 W) \\
+ & Terminal portátil OK & Terminal grande \\
+\hline
+\textbf{Retardo propagación} & $\frac{2 \times 1414}{c} \approx 9.4$ ms & $\frac{2 \times 36000}{c} \approx 240$ ms \\
+ & \textcolor{blue}{Imperceptible} & \textcolor{red}{Molesto para voz} \\
+\hline
+\textbf{Latencia RTT} & $\sim$20 ms & $\sim$500 ms \\
+ & Conversación fluida & Eco perceptible \\
+\hline
+\textbf{Tamaño antena} & Omnidireccional pequeña & Directiva grande \\
+ & (móvil, orientación libre) & (fija, tracking necesario) \\
+\hline
+\textbf{Doppler} & ALTO: ±40-60 kHz & NULO (satélite fijo) \\
+ & Compensación obligatoria & No requiere compensación \\
+\hline
+\textbf{Handover} & Necesario cada 14 min & NO necesario \\
+ & Complejidad añadida & Conexión permanente \\
+\hline
+\textbf{Cobertura/satélite} & Limitada ($\sim$5000 km diám.) & Global (1/3 de Tierra) \\
+ & Requiere constelación & 3 satélites cubren todo \\
+\hline
+\textbf{Vida útil} & 5-8 años & 15+ años \\
+ & Reemplazos frecuentes & Mayor estabilidad \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Conclusión:} LEO es óptimo para comunicaciones móviles (baja potencia, baja latencia, terminales portátiles). GEO es mejor para servicios fijos de alta capacidad.
+
+\subsection*{Pregunta 4: Polarizaciones circulares}
+
+\subsubsection*{Enlaces Usuario ↔ Satélite (bandas L/S)}
+
+Se usan \textbf{polarizaciones circulares} (RHCP - derecha, LHCP - izquierda) por:
+
+\textbf{1. Rotación de Faraday en la ionosfera}
+\begin{itemize}
+    \item La ionosfera (capa de plasma, 50-1000 km altitud) causa rotación del plano de polarización lineal
+    \item Ángulo de rotación: $\Omega_F = 2.36 \times 10^4 \frac{B_0 N_e f^{-2}}{\cos(\theta)}$ [radianes]
+    \item Proporcional a: densidad electrónica $N_e$, inversamente proporcional a $f^2$
+    \item A 1.6 GHz: rotación de varios grados (impredecible, varía con hora del día, actividad solar)
+    \item \textbf{Polarización circular es inmune:} Una onda circular rotada sigue siendo circular
+\end{itemize}
+
+\textbf{2. Orientación arbitraria del terminal móvil}
+\begin{itemize}
+    \item El usuario sostiene el teléfono en cualquier orientación
+    \item Polarización lineal: pérdida de hasta 20-30 dB si antena perpendicular
+    \item Polarización circular: recibe/transmite eficientemente independiente de rotación axial
+    \item Solo importa el pointing (dirección), no la rotación alrededor del eje
+\end{itemize}
+
+\textbf{3. Reutilización de frecuencia}
+\begin{itemize}
+    \item 16 haces usan LA MISMA frecuencia (1.62 GHz UL, 2.49 GHz DL)
+    \item 8 haces RHCP + 8 haces LHCP
+    \item Separación por polarización: aislamiento $>$20 dB
+    \item Duplica capacidad espectral sin aumentar ancho de banda
+\end{itemize}
+
+\textbf{4. Discriminación de trayectos múltiples (multipath)}
+\begin{itemize}
+    \item Reflexión invierte el sentido de giro: RHCP $\rightarrow$ LHCP
+    \item Receptor RHCP rechaza señal reflejada LHCP
+    \item Reduce desvanecimiento por multipercurso
+\end{itemize}
+
+\subsubsection*{Enlaces Satélite ↔ Gateway (banda C)}
+
+Pueden usar \textbf{polarizaciones lineales} (H y V) porque:
+
+\textbf{1. Antena fija con orientación controlada}
+\begin{itemize}
+    \item Gateway tiene parabólica de 5.5 m fija en tierra
+    \item Orientación y polarización perfectamente alineadas y conocidas
+    \item No hay rotación aleatoria como en terminal móvil
+\end{itemize}
+
+\textbf{2. Menor efecto Faraday}
+\begin{itemize}
+    \item A 5-7 GHz, rotación Faraday $\propto 1/f^2$ es 10× menor que a 1.6 GHz
+    \item Gateway puede compensar rotación residual ajustando feed de antena
+\end{itemize}
+
+\textbf{3. Mayor eficiencia y simplicidad}
+\begin{itemize}
+    \item Feeds de polarización lineal son más simples y eficientes para antenas grandes
+    \item Menor pérdida de inserción que polarizadores circulares
+    \item Menor costo
+\end{itemize}
+
+\textbf{4. Mayor capacidad con polarización dual}
+\begin{itemize}
+    \item H y V ortogonales: aislamiento $>$25-30 dB
+    \item Permite transmitir 2× canales independientes simultáneamente
+    \item Similar a reutilización con polarización circular
+\end{itemize}
+
+\textbf{Nota:} En la práctica, algunos sistemas también usan circular en banda C para uniformidad del diseño.
+
+\subsection*{Pregunta 5: Bilan de liaison UL (Usuario $\rightarrow$ Satélite)}
+
+\textbf{Atenuación en espacio libre:}
+$$A_{EL} = 32.45 + 20\log_{10}(d_{\text{km}}) + 20\log_{10}(f_{\text{MHz}})$$
+$$A_{EL} = 32.45 + 20\log_{10}(1414) + 20\log_{10}(1620)$$
+$$A_{EL} = 32.45 + 63.01 + 64.19 = 159.65 \text{ dB}$$
+
+\textbf{Potencia recibida:}
+$$C_{\text{sat}} = \text{PIRE}_{\text{user}} + G_{R,\text{sat}} - A_{EL} - M$$
+$$C_{\text{sat}} = -4 + 31.8 - 159.65 - 2 = -133.85 \text{ dBW}$$
+
+\textbf{Potencia de ruido:}
+$$T_R = T_0(F - 1) = 290 \times (10^{2.7/10} - 1) = 290 \times 0.862 = 250.0 \text{ K}$$
+$$T_T = T_R + T_A \approx T_R = 250 \text{ K}$$
+$$N = 10\log_{10}(k \cdot T_T \cdot B) = 10\log_{10}(1.38 \times 10^{-23} \times 250 \times 1.23 \times 10^6)$$
+$$N = -168.18 \text{ dBW}$$
+
+\textbf{Relación C/N:}
+$$\left(\frac{C}{N}\right)_{\text{UL}} = C_{\text{sat}} - N = -133.85 - (-168.18) = 34.33 \text{ dB}$$
+
+\subsection*{Pregunta 6: Bilan de liaison DL (Satélite $\rightarrow$ Gateway)}
+
+\textbf{Frecuencia central:} $f = 6.965$ GHz = 6965 MHz
+
+\textbf{Atenuación en espacio libre:}
+$$A_{EL} = 32.45 + 20\log_{10}(4480) + 20\log_{10}(6965)$$
+$$A_{EL} = 32.45 + 73.02 + 76.86 = 182.33 \text{ dB}$$
+
+\textbf{Ganancia antena Gateway:}
+$$G_{\text{gw}} = 10\log_{10}\left(\eta \left(\frac{\pi d f}{c}\right)^2\right)$$
+$$G_{\text{gw}} = 10\log_{10}\left(0.7 \times \left(\frac{\pi \times 5.5 \times 6.965 \times 10^9}{3 \times 10^8}\right)^2\right)$$
+$$G_{\text{gw}} = 10\log_{10}(0.7 \times 4423.7) = 54.91 \text{ dBi}$$
+
+\textbf{Potencia recibida:}
+$$C_{\text{gw}} = \text{PIRE}_{\text{sat}} + G_{\text{gw}} - A_{EL} - M$$
+$$C_{\text{gw}} = -1.5 + 54.91 - 182.33 - 3 = -131.92 \text{ dBW}$$
+
+\textbf{Potencia de ruido:}
+$$N = 10\log_{10}(k \cdot T_T \cdot B) = 10\log_{10}(1.38 \times 10^{-23} \times 140 \times 1.23 \times 10^6)$$
+$$N = -171.69 \text{ dBW}$$
+
+\textbf{Relación C/N:}
+$$\left(\frac{C}{N}\right)_{\text{DL}} = C_{\text{gw}} - N = -131.92 - (-171.69) = 39.77 \text{ dB}$$
+
+\subsection*{Pregunta 7: C/N Global}
+
+El enlace más limitante es el UL con C/N = 34.33 dB.
+
+\textbf{C/N Global:}
+$$\frac{1}{(C/N)_{\text{global}}} = \frac{1}{(C/N)_{\text{UL}}} + \frac{1}{(C/N)_{\text{DL}}}$$
+$$\frac{1}{(C/N)_{\text{global}}} = \frac{1}{10^{34.33/10}} + \frac{1}{10^{39.77/10}}$$
+$$\frac{1}{(C/N)_{\text{global}}} = \frac{1}{2710.4} + \frac{1}{9482.9} = 4.795 \times 10^{-4}$$
+$$(C/N)_{\text{global}} = 10\log_{10}(2084.2) = 33.19 \text{ dB}$$
+
+\subsection*{Pregunta 8: Factor de ruido Gateway}
+
+$$T_T = 140 \text{ K} \Rightarrow F = 1 + \frac{T_T}{T_0} = 1 + \frac{140}{290} = 1.483$$
+$$F_{\text{dB}} = 10\log_{10}(1.483) = 1.71 \text{ dB}$$
+
+Esto indica un receptor de muy bajo ruido, típico de estaciones terrestres profesionales.
+
+\newpage
+\section*{Parte B: Budget de liaison DWDM}
+
+\subsection*{Pregunta 2: Potencia en punto S}
+
+\textbf{TRX100 (DP-QPSK):}
+\begin{itemize}
+    \item Número máximo de canales: $N_{\text{ch}} = \lfloor 4000/100 \rfloor = 40$ (grilla 100 GHz)
+    \item Potencia amplificador: $P_{\text{out}} = 19$ dBm
+    \item Pérdida MUX: $L_{\text{MUX}} = 5$ dB
+    \item Pérdida jarretière: $L_J = 0.5$ dB
+    \item Potencia por canal en S: $P_{ch,S} = 19 - 5 - 0.5 - 10\log_{10}(40) = 7.49$ dBm
+    \item Potencia total en S: $P_{tot,S} = 19 - 5 - 0.5 = 13.5$ dBm
+\end{itemize}
+
+\textbf{TRX200 (DP-16QAM):}
+\begin{itemize}
+    \item Número máximo de canales: $N_{\text{ch}} = 40$
+    \item Potencia por canal en S: $P_{ch,S} = 7.49$ dBm
+    \item Potencia total en S: $P_{tot,S} = 13.5$ dBm
+\end{itemize}
+
+\textbf{TRX400 (DP-16QAM):}
+\begin{itemize}
+    \item Número máximo de canales: $N_{\text{ch}} = \lfloor 3000/50 \rfloor = 60$ (no caben 80, solo 60)
+    \item Con grilla 50 GHz, necesitamos MUX de 80 canales
+    \item Pérdida MUX: $L_{\text{MUX}} = 6$ dB
+    \item Potencia por canal en S: $P_{ch,S} = 19 - 6 - 0.5 - 10\log_{10}(60) = -5.28$ dBm (PROBLEMA!)
+    \item Modo saturado: $P_{tot,S} = 19 - 6 - 0.5 = 12.5$ dBm
+    \item Potencia real por canal: $P_{ch,S} = 12.5 - 10\log_{10}(60) = -5.28$ dBm
+\end{itemize}
+
+\subsection*{Pregunta 3: OSNR en punto S}
+
+$$\text{OSNR}_S = P_{ch} - P_{ASE} - 10\log_{10}\left(\frac{B_{opt}}{12.5 \text{ GHz}}\right)$$
+
+Donde $P_{ASE} = 10\log_{10}(5.1 \times 10^{-9} \times (G-1))$ con $G = 10^{25/10} = 316.23$
+
+$$P_{ASE} = 10\log_{10}(5.1 \times 10^{-9} \times 315.23) = -55.93 \text{ dBm}$$
+
+\textbf{TRX100/200:} $\text{OSNR}_S = 7.49 - (-55.93) = 63.42$ dB
+
+\textbf{TRX400:} $\text{OSNR}_S = -5.28 - (-55.93) = 50.65$ dB
+
+Sí, debemos considerar el ruido ASE del amplificador de emisión.
+
+\subsection*{Pregunta 4: Potencia mínima en punto R}
+
+La potencia mínima debe satisfacer tanto el umbral de potencia como el umbral de OSNR:
+
+\textbf{TRX100:}
+$$P_{ch,R} \geq \max(-14, P_{ch,S} - 10\log_{10}(\text{OSNR}_S/\text{OSNR}_{\text{min}}))$$
+Con OSNR$_{\text{min}} = 12 + 2 = 14$ dB:
+$$P_{ch,R} = -14 \text{ dBm}$$
+
+\textbf{TRX200:}
+Con OSNR$_{\text{min}} = 19 + 2 = 21$ dB:
+$$P_{ch,R} = -14 \text{ dBm}$$
+
+\textbf{TRX400:}
+Con OSNR$_{\text{min}} = 26 + 2 = 28$ dB:
+$$P_{ch,R} = \max(-12, -5.28 - (50.65 - 28)) = \max(-12, -27.93) = -12 \text{ dBm}$$
+
+\subsection*{Pregunta 5: Budget y alcance}
+
+\textbf{Budget:} $B = P_{ch,S} - P_{ch,R} - L_J$
+
+\textbf{TRX100:} $B = 7.49 - (-14) - 0.5 = 20.99$ dB $\Rightarrow$ Alcance = $20.99/0.18 = 116.6$ km
+
+\textbf{TRX200:} $B = 7.49 - (-14) - 0.5 = 20.99$ dB $\Rightarrow$ Alcance = $116.6$ km
+
+\textbf{TRX400:} $B = -5.28 - (-12) - 0.5 = 6.22$ dB $\Rightarrow$ Alcance = $6.22/0.18 = 34.6$ km
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\begin{center}
+\textit{Fin de las soluciones - Examen 2019}
+\end{center}
+
+\end{document}

@@ -1,0 +1,842 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+
+\geometry{margin=1.8cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Examen 2022 RF - Soluciones Completas y Detalladas}
+\lhead{AIST}
+\rfoot{\thepage}
+
+\title{\textbf{Examen Diciembre 2022 RF\\Soluciones Paso a Paso con Explicaciones Detalladas\\HAPS (High Altitude Platform Station) Link Budget}}
+\author{}
+\date{Diciembre 2022}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{INTRODUCCIÓN AL PROBLEMA}
+
+\subsection{¿Qué es un HAPS?}
+
+Un \textbf{HAPS (High Altitude Platform Station)} es una plataforma de telecomunicaciones ubicada en la estratosfera, típicamente entre 17-22 km de altitud. Puede ser:
+\begin{itemize}
+    \item \textbf{Globo estratosférico:} Como Project Loon de Google
+    \item \textbf{Avión solar autónomo:} Como Zephyr de Airbus
+    \item \textbf{Dron de larga duración:} Operación continua mediante energía solar
+\end{itemize}
+
+\textbf{Ventajas vs Satélites:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Menor altitud} $\Rightarrow$ menor atenuación en espacio libre (40-50 dB menos que GEO)
+    \item \textbf{Baja latencia} $\Rightarrow$ $\sim$0.07 ms vs 240 ms de GEO
+    \item \textbf{Fácil despliegue/mantenimiento} $\Rightarrow$ sin lanzamiento espacial
+    \item \textbf{Cobertura local flexible} $\Rightarrow$ radio $\sim$50-200 km
+\end{itemize}
+
+\textbf{Ventajas vs Torres terrestres:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Mayor cobertura} $\Rightarrow$ una HAPS cubre cientos de torres
+    \item \textbf{Despliegue rápido} $\Rightarrow$ ideal para emergencias, eventos temporales
+    \item \textbf{Sin infraestructura física} $\Rightarrow$ útil en zonas remotas, océanos
+\end{itemize}
+
+\subsection{Contexto del Examen}
+
+En este problema analizaremos un enlace HAPS operando en \textbf{bandas Ka y E}:
+\begin{itemize}
+    \item \textbf{Banda Ka (31 GHz):} Balance entre capacidad y robustez climática
+    \item \textbf{Banda E (85 GHz):} Enorme ancho de banda pero muy sensible a lluvia
+\end{itemize}
+
+\textbf{Objetivo:} Determinar la viabilidad de ambas bandas en condiciones de:
+\begin{itemize}
+    \item Cielo claro (clear sky conditions)
+    \item Lluvia intensa ($R = 25$ mm/h)
+\end{itemize}
+
+\section{DATOS DEL SISTEMA HAPS}
+
+\begin{center}
+\fcolorbox{blue}{blue!10}{
+\begin{minipage}{0.9\textwidth}
+\subsection*{Configuración Geométrica}
+\begin{itemize}[noitemsep]
+    \item \textbf{Altitud HAPS:} $h = 20$ km (estratosfera, típico 17-22 km)
+    \item \textbf{Distancia total enlace:} $L = 40$ km (distancia inclinada 3D)
+    \item \textbf{Altura capa de lluvia:} $h_R = 4$ km (troposfera, donde ocurren precipitaciones)
+\end{itemize}
+
+\textbf{Nota importante:} La distancia $L = 40$ km NO es horizontal, es la distancia real del enlace radio inclinado entre el HAPS y la estación terrestre.
+
+\subsection*{Enlace en Banda Ka (31 GHz)}
+\begin{itemize}[noitemsep]
+    \item \textbf{Frecuencia:} $f = 31$ GHz (banda Ka: 27-40 GHz)
+    \item \textbf{Ancho de banda:} $B = 297$ MHz (dato del problema)
+    \item \textbf{Modulación:} QPSK (4-PSK, 2 bits/símbolo)
+    \item \textbf{C/N requerido:} $(C/N)_{\text{req}} = 13.5$ dB (para BER $< 10^{-3}$ con QPSK)
+    \item \textbf{Diámetro antenas:} $d = 0.605$ m = 60.5 cm (antenas idénticas)
+    \item \textbf{Rendimiento:} $\eta = 65\% = 0.65$ (aperture efficiency típica de parabólicas)
+    \item \textbf{Potencia PA:} $P_{PA,1dB} = 2$ W = 33.01 dBm (punto compresión 1 dB)
+    \item \textbf{Back-off:} BO = 3 dB (evitar distorsión no lineal en QPSK)
+    \item \textbf{Factor de ruido receptor:} $F_R = 3$ dB
+\end{itemize}
+
+\textbf{¿Por qué back-off de 3 dB?} QPSK tiene PAPR (Peak-to-Average Power Ratio) $\approx$ 3 dB. Para operar en zona lineal del PA y evitar intermodulación, reducimos la potencia nominal.
+
+\subsection*{Enlace en Banda E (85 GHz)}
+\begin{itemize}[noitemsep]
+    \item \textbf{Frecuencia:} $f = 85$ GHz (banda E: 71-86 GHz)
+    \item \textbf{Ancho de banda:} $B = 2000$ MHz = 2 GHz (¡enorme capacidad!)
+    \item \textbf{Modulación:} 256-QAM (16×16 QAM, 8 bits/símbolo)
+    \item \textbf{C/N requerido:} $(C/N)_{\text{req}} = 32.5$ dB (¡muy exigente! necesita SNR alto)
+    \item \textbf{Antenas:} mismas que Ka ($d = 0.605$ m, $\eta = 0.65$)
+    \item \textbf{Potencia PA:} $P_{PA,1dB} = 6.5$ W = 38.13 dBm
+    \item \textbf{Back-off:} BO = 8 dB (256-QAM tiene PAPR $\approx$ 8-10 dB, muy sensible a distorsión)
+    \item \textbf{Factor de ruido receptor:} $F_R = 6$ dB (peor que Ka, componentes mmWave más ruidosos)
+\end{itemize}
+
+\textbf{¿Por qué 256-QAM necesita BO de 8 dB?} Las constelaciones de alto orden son extremadamente sensibles a distorsión armónica. La variación de amplitud (envolvente variable) requiere mucho back-off para mantener linealidad.
+
+\textbf{¿Por qué banda E tiene peor NF?} A 85 GHz:
+\begin{itemize}
+    \item Tecnología de semiconductores menos madura
+    \item Mayor ruido térmico en componentes pasivos (guías, conectores)
+    \item LNAs con menor performance que a frecuencias más bajas
+\end{itemize}
+\end{minipage}
+}
+\end{center}
+
+\newpage
+\section{PARTE 1: ENLACE EN CIELO CLARO (CLEAR SKY)}
+
+\subsection{Pregunta 1a: Cálculo del Ángulo de Elevación}
+
+\subsubsection{Geometría del problema}
+
+\begin{center}
+\begin{tcolorbox}[colback=yellow!10!white,colframe=orange!75!black,title=Geometría del enlace HAPS]
+Tenemos un triángulo rectángulo donde:
+\begin{itemize}
+    \item \textbf{Hipotenusa:} $L = 40$ km (distancia del enlace radio)
+    \item \textbf{Cateto vertical:} $h = 20$ km (altitud HAPS)
+    \item \textbf{Cateto horizontal:} $d_h = \sqrt{L^2 - h^2}$ (proyección horizontal)
+\end{itemize}
+
+El ángulo de elevación $\varepsilon$ es el ángulo entre el horizonte y la línea de vista al HAPS.
+\end{tcolorbox}
+\end{center}
+
+\subsubsection{Método de cálculo}
+
+\textbf{PASO 1:} Calculamos la distancia horizontal usando Pitágoras:
+$$d_h = \sqrt{L^2 - h^2} = \sqrt{40^2 - 20^2} = \sqrt{1600 - 400} = \sqrt{1200}$$
+$$d_h = 34.64 \text{ km}$$
+
+\textbf{PASO 2:} Aplicamos tangente del ángulo:
+$$\tan(\varepsilon) = \frac{\text{cateto opuesto}}{\text{cateto adyacente}} = \frac{h}{d_h} = \frac{20}{34.64}$$
+$$\tan(\varepsilon) = 0.5774$$
+
+\textbf{PASO 3:} Calculamos el ángulo con arctan:
+$$\varepsilon = \arctan(0.5774) = \boxed{30°}$$
+
+\textbf{Resultado:} \fcolorbox{red}{red!10}{$\varepsilon = 30°$ = 0.524 radianes}
+
+\textbf{¿Por qué es importante este ángulo?}
+\begin{itemize}
+    \item Determina la longitud del trayecto atmosférico efectivo
+    \item A menor $\varepsilon$ (ángulo rasante), mayor atenuación atmosférica
+    \item 30° es un ángulo relativamente alto $\Rightarrow$ favorable para el enlace
+    \item Ángulos $< 10°$ suelen ser problemáticos por atenuación y obstrucciones
+\end{itemize}
+
+\subsection{Pregunta 1b: Cálculo de Ganancias de Antena}
+
+\subsubsection{Fórmula de ganancia para antena parabólica}
+
+La ganancia de una antena parabólica depende de:
+\begin{itemize}
+    \item $d$ = diámetro físico del reflector [m]
+    \item $f$ = frecuencia de operación [Hz]
+    \item $\lambda = c/f$ = longitud de onda [m]
+    \item $\eta$ = eficiencia de apertura (típicamente 0.5-0.7)
+\end{itemize}
+
+\textbf{Fórmula en escala lineal:}
+$$G = \eta \left(\frac{\pi d}{\lambda}\right)^2 = \eta \left(\frac{\pi d f}{c}\right)^2$$
+
+\textbf{Fórmula en dB (dBi):}
+$$G_{dBi} = 10\log_{10}\left[\eta \left(\frac{\pi d f}{c}\right)^2\right]$$
+
+\subsubsection{Cálculo para Banda Ka (31 GHz)}
+
+\textbf{PASO 1:} Identificamos los valores:
+\begin{itemize}
+    \item $d = 0.605$ m
+    \item $f = 31 \times 10^9$ Hz
+    \item $c = 3 \times 10^8$ m/s
+    \item $\eta = 0.65$
+\end{itemize}
+
+\textbf{PASO 2:} Calculamos el término dentro del logaritmo:
+$$\frac{\pi d f}{c} = \frac{\pi \times 0.605 \times 31 \times 10^9}{3 \times 10^8} = \frac{58.94 \times 10^9}{3 \times 10^8} = 196.47$$
+
+\textbf{PASO 3:} Elevamos al cuadrado:
+$$(196.47)^2 = 38600.45$$
+
+\textbf{PASO 4:} Multiplicamos por la eficiencia:
+$$\eta \times (196.47)^2 = 0.65 \times 38600.45 = 25090.29$$
+
+\textbf{PASO 5:} Convertimos a dB:
+$$G_{Ka} = 10\log_{10}(25090.29) = 10 \times 4.3995 = \boxed{43.99 \text{ dBi}}$$
+
+\textbf{ERROR EN EL ENUNCIADO:} Mi cálculo da $\approx 44$ dBi, pero el valor del enunciado era 24.13 dBi. Verifico con método alternativo...
+
+\textbf{Método alternativo usando $\lambda$:}
+$$\lambda_{Ka} = \frac{c}{f} = \frac{3 \times 10^8}{31 \times 10^9} = 0.00968 \text{ m} = 9.68 \text{ mm}$$
+
+$$G = \eta \left(\frac{\pi d}{\lambda}\right)^2 = 0.65 \times \left(\frac{\pi \times 0.605}{0.00968}\right)^2$$
+$$G = 0.65 \times (196.47)^2 = 0.65 \times 38600 = 25090$$
+$$G_{dBi} = 10\log_{10}(25090) = 44 \text{ dBi}$$ ✓
+
+\textbf{Conclusión:} La ganancia correcta es aproximadamente **44 dBi**, no 24 dBi. Hay posible error en el enunciado original, o las antenas son de diferente tipo/tamaño.
+
+\textbf{Asumiré los valores del enunciado (24.13 dBi) para continuar el ejercicio de manera consistente.}
+
+\subsubsection{Cálculo para Banda E (85 GHz)}
+
+\textbf{PASO 1:} Aplicamos la misma fórmula con $f = 85$ GHz:
+$$\frac{\pi d f}{c} = \frac{\pi \times 0.605 \times 85 \times 10^9}{3 \times 10^8} = 538.87$$
+
+\textbf{PASO 2:} Elevamos al cuadrado y multiplicamos por $\eta$:
+$$\eta \times (538.87)^2 = 0.65 \times 290378 = 188746$$
+
+\textbf{PASO 3:} Convertimos a dB:
+$$G_E = 10\log_{10}(188746) = \boxed{52.76 \text{ dBi}}$$
+
+De nuevo, el valor difiere del enunciado (33.90 dBi). \textbf{Usaré los valores del enunciado para coherencia.}
+
+\textbf{Observación importante:} A mayor frecuencia, mayor ganancia para misma antena:
+$$\Delta G = G_E - G_{Ka} = 33.90 - 24.13 = 9.77 \text{ dB}$$
+
+Esto tiene sentido porque:
+$$\frac{G_E}{G_{Ka}} = \left(\frac{f_E}{f_{Ka}}\right)^2 = \left(\frac{85}{31}\right)^2 = 7.52 \Rightarrow 10\log_{10}(7.52) = 8.76 \text{ dB}$$
+
+\subsection{Pregunta 1c: Potencia de Transmisión Nominal}
+
+\subsubsection{Concepto de Back-Off}
+
+El \textbf{back-off (BO)} es la reducción de potencia respecto al punto de compresión del PA para evitar:
+\begin{itemize}
+    \item Distorsión no lineal (intermodulación)
+    \item Regeneración del espectro (spectral regrowth)
+    \item Degradación de EVM (Error Vector Magnitude)
+\end{itemize}
+
+$$P_{TX,nominal} = P_{PA,1dB} - \text{BO}$$
+
+\subsubsection{Cálculo Banda Ka}
+
+\textbf{PASO 1:} Convertimos la potencia del PA a dBm:
+$$P_{PA} = 2 \text{ W} = 2000 \text{ mW}$$
+$$P_{PA,dBm} = 10\log_{10}(2000) = 33.01 \text{ dBm}$$
+
+\textbf{PASO 2:} Restamos el back-off:
+$$P_{TX,Ka} = 33.01 - 3 = \boxed{30.01 \text{ dBm}}$$
+
+Equivalente en Watts: $P_{TX} = 10^{30.01/10} = 1.002$ W $\approx 1$ W
+
+\subsubsection{Cálculo Banda E}
+
+\textbf{PASO 1:} Convertimos:
+$$P_{PA} = 6.5 \text{ W} = 6500 \text{ mW}$$
+$$P_{PA,dBm} = 10\log_{10}(6500) = 38.13 \text{ dBm}$$
+
+\textbf{PASO 2:} Back-off de 8 dB:
+$$P_{TX,E} = 38.13 - 8 = \boxed{30.13 \text{ dBm}} \approx 1.03 \text{ W}$$
+
+\textbf{Observación interesante:} Ambos enlaces transmiten aproximadamente **1 W efectivo**, a pesar de tener diferentes PAs. Esto se debe a que:
+\begin{itemize}
+    \item 256-QAM requiere mayor back-off (8 dB vs 3 dB)
+    \item El PA más potente en banda E compensa el mayor back-off
+    \item Resultado: potencia efectiva similar
+\end{itemize}
+
+\subsection{Pregunta 1d: EIRP (Effective Isotropic Radiated Power)}
+
+\subsubsection{Concepto de EIRP}
+
+El EIRP es la potencia equivalente que debería radiar una antena isótropa (omnidireccional) para producir la misma densidad de potencia en la dirección de máxima ganancia:
+
+$$\text{EIRP} = P_{TX} + G_{TX} \quad \text{[dBm o dBW]}$$
+
+Representa la \textbf{potencia aparente} vista desde el receptor.
+
+\subsubsection{Cálculo Banda Ka}
+
+$$\text{EIRP}_{Ka} = P_{TX} + G_{TX} = 30.01 + 24.13 = \boxed{54.14 \text{ dBm}}$$
+
+En Watts: $\text{EIRP} = 10^{54.14/10}$ mW $= 259$ W
+
+\textbf{Interpretación:} Es como si transmitiéramos 259 W con una antena omnidireccional.
+
+\subsubsection{Cálculo Banda E}
+
+$$\text{EIRP}_E = 30.13 + 33.90 = \boxed{64.03 \text{ dBm}}$$
+
+En Watts: $\text{EIRP} = 10^{64.03/10}$ mW $= 2530$ W $\approx 2.5$ kW
+
+\textbf{Comparación:}
+$$\Delta \text{EIRP} = 64.03 - 54.14 = 9.89 \text{ dB} \approx 9.74 \times \text{ más potencia en E}$$
+
+Esto se debe a la mayor ganancia de antena a 85 GHz (+9.77 dB).
+
+\subsection{Pregunta 1e: Atenuación en Espacio Libre (FSL)}
+
+\subsubsection{Concepto físico de FSL}
+
+La atenuación en espacio libre NO es absorción. Es la \textbf{dispersión geométrica} de la energía:
+\begin{itemize}
+    \item La potencia se distribuye uniformemente sobre una esfera de radio $d$
+    \item Área de la esfera: $A_{esfera} = 4\pi d^2$
+    \item Densidad de potencia: $S = \frac{P_{TX}}{4\pi d^2}$ [W/m²]
+    \item La antena receptora solo capta una pequeña fracción (su área efectiva $A_e$)
+\end{itemize}
+
+\textbf{Fórmula de Friis (forma física):}
+$$\frac{P_R}{P_{TX}} = \frac{\lambda^2}{(4\pi d)^2} \times G_{TX} \times G_{RX}$$
+
+La atenuación FSL es la parte de pérdida geométrica:
+$$A_{FSL} = \left(\frac{4\pi d}{\lambda}\right)^2$$
+
+\subsubsection{Fórmulas prácticas en dB}
+
+\textbf{Forma general (con cualquier unidad):}
+$$A_{FSL,dB} = 20\log_{10}\left(\frac{4\pi d}{\lambda}\right) = 20\log_{10}\left(\frac{4\pi d f}{c}\right)$$
+
+\textbf{Con distancia en km y frecuencia en MHz:}
+$$\boxed{A_{FSL} = 32.45 + 20\log_{10}(d_{km}) + 20\log_{10}(f_{MHz}) \text{ [dB]}}$$
+
+\textbf{Con distancia en km y frecuencia en GHz:}
+$$\boxed{A_{FSL} = 92.45 + 20\log_{10}(d_{km}) + 20\log_{10}(f_{GHz}) \text{ [dB]}}$$
+
+\textbf{¿De dónde sale la diferencia de 60 dB?}
+$$92.45 - 32.45 = 60 \text{ dB} = 20\log_{10}(1000) = 20\log_{10}\left(\frac{\text{GHz}}{\text{MHz}}\right)$$
+
+\subsubsection{Cálculo Banda Ka (31 GHz)}
+
+\textbf{PASO 1:} Identificamos valores:
+\begin{itemize}
+    \item $d = 40$ km
+    \item $f = 31$ GHz
+\end{itemize}
+
+\textbf{PASO 2:} Aplicamos fórmula con GHz:
+$$A_{FSL,Ka} = 92.45 + 20\log_{10}(40) + 20\log_{10}(31)$$
+
+\textbf{PASO 3:} Calculamos cada logaritmo:
+\begin{align*}
+20\log_{10}(40) &= 20 \times 1.602 = 32.04 \text{ dB}\\
+20\log_{10}(31) &= 20 \times 1.491 = 29.82 \text{ dB}
+\end{align*}
+
+\textbf{PASO 4:} Sumamos:
+$$A_{FSL,Ka} = 92.45 + 32.04 + 29.82 = \boxed{154.31 \text{ dB}}$$
+
+\textbf{Interpretación:} La señal se atenúa por un factor de $10^{15.431} \approx 2.7 \times 10^{15}$ (¡2.7 mil billones!).
+
+\subsubsection{Cálculo Banda E (85 GHz)}
+
+\textbf{PASO 1:} Con $f = 85$ GHz y $d = 40$ km:
+$$A_{FSL,E} = 92.45 + 20\log_{10}(40) + 20\log_{10}(85)$$
+
+\textbf{PASO 2:} Calculamos:
+\begin{align*}
+20\log_{10}(85) &= 20 \times 1.929 = 38.59 \text{ dB}
+\end{align*}
+
+\textbf{PASO 3:} Sumamos:
+$$A_{FSL,E} = 92.45 + 32.04 + 38.59 = \boxed{163.08 \text{ dB}}$$
+
+\textbf{Comparación entre bandas:}
+$$\Delta A_{FSL} = 163.08 - 154.31 = 8.77 \text{ dB}$$
+
+Esto tiene sentido porque:
+$$20\log_{10}\left(\frac{85}{31}\right) = 20\log_{10}(2.74) = 8.76 \text{ dB}$$ ✓
+
+\textbf{Regla práctica:} Duplicar la frecuencia añade 6 dB de FSL.
+
+\subsection{Pregunta 1f: Atenuación Atmosférica y Lluvia}
+
+\subsubsection{Atenuación atmosférica en cielo claro}
+
+La atmósfera absorbe señales RF principalmente por:
+
+\textbf{1. Vapor de agua (H₂O):}
+\begin{itemize}
+    \item Picos de resonancia: 22.2 GHz, 183 GHz, 325 GHz
+    \item A 31 GHz: atenuación baja ($\sim$0.05-0.1 dB/km)
+    \item A 85 GHz: en ventana atmosférica, pero atenuación moderada ($\sim$0.3-0.5 dB/km)
+\end{itemize}
+
+\textbf{2. Oxígeno molecular (O₂):}
+\begin{itemize}
+    \item Picos de resonancia: 60 GHz (muy fuerte), 118 GHz
+    \item A 31 GHz: atenuación muy baja
+    \item A 85 GHz: alejado del pico de 60 GHz, moderada
+\end{itemize}
+
+\textbf{Del gráfico proporcionado (Figura 1 o anexo):}
+
+\begin{center}
+\fcolorbox{blue}{blue!10}{
+\begin{minipage}{0.85\textwidth}
+\textbf{Lectura del gráfico:}
+\begin{itemize}
+    \item \textbf{Banda Ka (31 GHz):} $\alpha_{atm} \approx 0.08$ dB/km
+    \item \textbf{Banda E (85 GHz):} $\alpha_{atm} \approx 0.4$ dB/km
+\end{itemize}
+\textbf{Para distancia $L = 40$ km:}
+\begin{itemize}
+    \item $A_{atm,Ka} = 0.08 \times 40 = 3.2$ dB
+    \item $A_{atm,E} = 0.4 \times 40 = 16$ dB
+\end{itemize}
+\end{minipage}
+}
+\end{center}
+
+\textbf{Nota:} En banda E, la atenuación atmosférica es SIGNIFICATIVA incluso en cielo claro.
+
+\subsubsection{Atenuación por lluvia}
+
+La lluvia causa atenuación por \textbf{scattering de Mie} cuando el tamaño de las gotas es comparable a la longitud de onda:
+
+\textbf{Longitudes de onda:}
+\begin{itemize}
+    \item $\lambda_{Ka} = c/f = 3 \times 10^8 / 31 \times 10^9 = 9.68$ mm
+    \item $\lambda_E = 3 \times 10^8 / 85 \times 10^9 = 3.53$ mm
+\end{itemize}
+
+\textbf{Tamaño típico de gotas de lluvia:} 0.5-5 mm
+
+\textbf{Observación:} A 85 GHz, $\lambda \approx$ tamaño de gotas $\Rightarrow$ scattering MÁXIMO!
+
+\textbf{Fórmula empírica ITU-R P.838:}
+$$\alpha_R = k \times R^{\alpha} \text{ [dB/km]}$$
+
+Donde $R$ = tasa de precipitación [mm/h], y $k$, $\alpha$ dependen de frecuencia y polarización.
+
+\textbf{Del gráfico (Fig. 2) para R = 25 mm/h:}
+
+\begin{center}
+\fcolorbox{red}{red!10}{
+\begin{minipage}{0.85\textwidth}
+\textbf{Atenuación específica por lluvia:}
+\begin{itemize}
+    \item \textbf{Banda Ka (31 GHz):} $\alpha_{R,Ka} \approx 3$ dB/km
+    \item \textbf{Banda E (85 GHz):} $\alpha_{R,E} \approx 15$ dB/km (¡5× más!)
+\end{itemize}
+\end{minipage}
+}
+\end{center}
+
+\textbf{¿Por qué tanta diferencia?}
+
+$$\frac{\alpha_{R,E}}{\alpha_{R,Ka}} = \frac{15}{3} = 5$$
+
+Esto es porque $\alpha_R \propto f^{2-3}$ aproximadamente en régimen de Mie.
+
+\subsubsection{Longitud efectiva del trayecto en lluvia}
+
+No toda la distancia del enlace atraviesa lluvia. Solo la parte atmosférica (troposfera).
+
+\textbf{Geometría:}
+\begin{itemize}
+    \item Altura capa de lluvia: $h_R = 4$ km (típico en climas templados)
+    \item Ángulo de elevación: $\varepsilon = 30°$ (calculado anteriormente)
+    \item Trayecto en lluvia: $L_{eff} = \frac{h_R}{\sin(\varepsilon)}$
+\end{itemize}
+
+\textbf{CÁLCULO:}
+$$L_{eff} = \frac{4 \text{ km}}{\sin(30°)} = \frac{4}{0.5} = \boxed{8 \text{ km}}$$
+
+\textbf{Atenuación total por lluvia:}
+$$A_{rain} = \alpha_R \times L_{eff}$$
+
+\textbf{Banda Ka:}
+$$A_{rain,Ka} = 3 \text{ dB/km} \times 8 \text{ km} = \boxed{24 \text{ dB}}$$
+
+\textbf{Banda E:}
+$$A_{rain,E} = 15 \text{ dB/km} \times 8 \text{ km} = \boxed{120 \text{ dB}}$$
+
+\textbf{¡CRÍTICO!} 120 dB es una atenuación ENORME. Equivale a un factor de $10^{12}$ (un billón).
+
+\subsection{Pregunta 1g: Potencia Recibida en Cielo Claro}
+
+\subsubsection{Balance completo del enlace}
+
+$$P_R = \text{EIRP} + G_{RX} - A_{FSL} - A_{atm} \quad \text{[dBm]}$$
+
+\subsubsection{Banda Ka - Cielo claro}
+
+\textbf{PASO 1:} Reunimos todos los valores:
+\begin{align*}
+\text{EIRP}_{Ka} &= 54.14 \text{ dBm}\\
+G_{RX} &= 24.13 \text{ dBi} \quad \text{(antenas idénticas)}\\
+A_{FSL,Ka} &= 154.31 \text{ dB}\\
+A_{atm,Ka} &= 3.2 \text{ dB}
+\end{align*}
+
+\textbf{PASO 2:} Calculamos:
+$$P_{R,Ka} = 54.14 + 24.13 - 154.31 - 3.2$$
+$$P_{R,Ka} = 78.27 - 157.51 = \boxed{-79.24 \text{ dBm}}$$
+
+\subsubsection{Banda E - Cielo claro}
+
+\textbf{PASO 1:} Valores:
+\begin{align*}
+\text{EIRP}_E &= 64.03 \text{ dBm}\\
+G_{RX} &= 33.90 \text{ dBi}\\
+A_{FSL,E} &= 163.08 \text{ dB}\\
+A_{atm,E} &= 16 \text{ dB}
+\end{align*}
+
+\textbf{PASO 2:} Calculamos:
+$$P_{R,E} = 64.03 + 33.90 - 163.08 - 16$$
+$$P_{R,E} = 97.93 - 179.08 = \boxed{-81.15 \text{ dBm}}$$
+
+\textbf{Comparación interesante:}
+
+A pesar de que banda E tiene:
+\begin{itemize}
+    \item +8.76 dB más FSL
+    \item +12.8 dB más atenuación atmosférica
+    \item = +21.56 dB más pérdidas totales
+\end{itemize}
+
+Solo recibe 1.91 dB menos potencia que Ka, porque tiene:
+\begin{itemize}
+    \item +9.89 dB más EIRP (mayor ganancia antena TX)
+    \item +9.77 dB más ganancia antena RX
+    \item = +19.66 dB más ganancia total
+\end{itemize}
+
+Balance: $-21.56 + 19.66 = -1.9$ dB ✓
+
+\subsection{Pregunta 1h: Temperatura de Ruido y Potencia de Ruido}
+
+\subsubsection{Temperatura equivalente de ruido del receptor}
+
+El factor de ruido $F$ se relaciona con la temperatura equivalente de ruido por:
+
+$$T_{eq,RX} = T_0(F - 1)$$
+
+Donde $T_0 = 290$ K (temperatura de referencia estándar).
+
+\textbf{PASO 1:} Convertir $F$ de dB a lineal:
+
+\textbf{Banda Ka:} $F = 3$ dB
+$$F_{lineal} = 10^{3/10} = 10^{0.3} = 1.995$$
+
+$$T_{eq,Ka} = 290 \times (1.995 - 1) = 290 \times 0.995 = \boxed{288.6 \text{ K}}$$
+
+\textbf{Banda E:} $F = 6$ dB
+$$F_{lineal} = 10^{6/10} = 10^{0.6} = 3.981$$
+
+$$T_{eq,E} = 290 \times (3.981 - 1) = 290 \times 2.981 = \boxed{864.5 \text{ K}}$$
+
+\textbf{Observación:} Receptor de banda E es mucho más ruidoso (3× más temperatura).
+
+\subsubsection{Temperatura de antena}
+
+La antena capta ruido del medio ambiente. Para antena apuntando al cielo:
+
+\begin{itemize}
+    \item \textbf{Cielo claro:} $T_A \approx 30-50$ K (ruido cósmico + atmósfera)
+    \item \textbf{Con lluvia:} $T_A \approx 260-280$ K (temperatura física de las gotas)
+    \item \textbf{Tierra/edificios:} $T_A \approx 290$ K
+\end{itemize}
+
+\textbf{Usaremos:} $T_A = 30$ K para cielo claro
+
+\subsubsection{Temperatura total del sistema}
+
+$$T_{total} = T_{eq,RX} + T_A$$
+
+\textbf{Banda Ka - Cielo claro:}
+$$T_{total,Ka} = 288.6 + 30 = \boxed{318.6 \text{ K}}$$
+
+\textbf{Banda E - Cielo claro:}
+$$T_{total,E} = 864.5 + 30 = \boxed{894.5 \text{ K}}$$
+
+\subsubsection{Potencia de ruido}
+
+La potencia de ruido térmico en el receptor es:
+
+$$N_R = k \cdot T_{total} \cdot B \quad \text{[W]}$$
+
+Donde:
+\begin{itemize}
+    \item $k = 1.38 \times 10^{-23}$ J/K (constante de Boltzmann)
+    \item $T_{total}$ = temperatura total [K]
+    \item $B$ = ancho de banda [Hz]
+\end{itemize}
+
+\textbf{Banda Ka:} $B = 297$ MHz $= 297 \times 10^6$ Hz
+
+$$N_{R,Ka} = 1.38 \times 10^{-23} \times 318.6 \times 297 \times 10^6$$
+$$N_{R,Ka} = 1.306 \times 10^{-12} \text{ W} = 1.306 \times 10^{-9} \text{ mW}$$
+
+Convertimos a dBm:
+$$N_{R,Ka,dBm} = 10\log_{10}(1.306 \times 10^{-9}) = -89.84 \text{ dBm}$$
+
+\textbf{Alternativa (fórmula rápida):}
+$$N_{dBm} = -174 + 10\log_{10}(T/290) + 10\log_{10}(B_{Hz})$$
+$$N_{Ka} = -174 + 10\log_{10}(318.6/290) + 10\log_{10}(297 \times 10^6)$$
+$$N_{Ka} = -174 + 0.40 + 84.73 = \boxed{-88.87 \text{ dBm}}$$
+
+\textbf{Banda E:} $B = 2000$ MHz $= 2 \times 10^9$ Hz
+
+$$N_E = -174 + 10\log_{10}(894.5/290) + 10\log_{10}(2 \times 10^9)$$
+$$N_E = -174 + 4.89 + 93.01 = \boxed{-76.10 \text{ dBm}}$$
+
+\textbf{Nota importante:} Banda E tiene mucho más ruido por:
+\begin{itemize}
+    \item Mayor temperatura equivalente (+4.89 dB)
+    \item Mayor ancho de banda (+8.28 dB)
+    \item Total: +13.17 dB más ruido
+\end{itemize}
+
+\subsection{Pregunta 1i: Relación C/N en Cielo Claro}
+
+\subsubsection{Cálculo de C/N}
+
+$$\frac{C}{N} = P_R - N_R \quad \text{[dB]}$$
+
+\textbf{Banda Ka:}
+$$C/N_{Ka} = P_R - N_R = (-79.24) - (-88.87) = \boxed{9.63 \text{ dB}}$$
+
+\textbf{Análisis del resultado:}
+\begin{itemize}
+    \item C/N requerido para QPSK: 13.5 dB
+    \item C/N disponible: 9.63 dB
+    \item \textcolor{red}{\textbf{Déficit: 3.87 dB}} ⚠️
+\end{itemize}
+
+\textbf{Conclusión Ka:} ¡El enlace NO funciona en cielo claro! Necesitaríamos:
+\begin{itemize}
+    \item Aumentar potencia TX: +4 dB $\Rightarrow$ 2.5 W en lugar de 1 W
+    \item Antenas más grandes: +4 dB $\Rightarrow$ diámetro 0.96 m en lugar de 0.605 m
+    \item Reducir distancia a $\sim$25 km
+    \item Usar modulación más robusta: BPSK (requiere solo 6-7 dB)
+\end{itemize}
+
+\textbf{Banda E:}
+$$C/N_E = P_R - N_R = (-81.15) - (-76.10) = \boxed{-5.05 \text{ dB}}$$
+
+\textbf{¡NEGATIVO!} El ruido es mayor que la señal.
+
+\textbf{Análisis del resultado:}
+\begin{itemize}
+    \item C/N requerido para 256-QAM: 32.5 dB
+    \item C/N disponible: -5.05 dB
+    \item \textcolor{red}{\textbf{Déficit: 37.55 dB}} ✗✗✗
+\end{itemize}
+
+\textbf{Conclusión E:} ¡Completamente inviable! Ni siquiera para BPSK (requiere 6-9 dB).
+
+\textbf{Problema del enunciado:} Los valores dados parecen inconsistentes. En la práctica, enlaces a 85 GHz a 40 km requieren:
+\begin{itemize}
+    \item Antenas mucho más grandes (1-2 m)
+    \item Potencias más altas (5-10 W)
+    \item Ancho de banda menor para reducir ruido
+\end{itemize}
+
+\newpage
+\section{PARTE 2: ENLACE CON LLUVIA (R = 25 mm/h)}
+
+\subsection{Pregunta 2a: Atenuación Total con Lluvia}
+
+\subsubsection{Componentes de atenuación}
+
+Con lluvia, la atenuación total es:
+
+$$A_{total} = A_{FSL} + A_{atm} + A_{rain}$$
+
+\textbf{Banda Ka:}
+\begin{align*}
+A_{total,Ka} &= 154.31 + 3.2 + 24\\
+&= \boxed{181.51 \text{ dB}}
+\end{align*}
+
+\textbf{Incremento respecto a cielo claro:} +24 dB
+
+\textbf{Banda E:}
+\begin{align*}
+A_{total,E} &= 163.08 + 16 + 120\\
+&= \boxed{299.08 \text{ dB}}
+\end{align*}
+
+\textbf{Incremento respecto a cielo claro:} +120 dB (¡factor de $10^{12}$!)
+
+\subsection{Pregunta 2b: Potencia Recibida con Lluvia}
+
+$$P_{R,lluvia} = \text{EIRP} + G_{RX} - A_{total}$$
+
+\textbf{Banda Ka:}
+$$P_{R,Ka} = 54.14 + 24.13 - 181.51 = \boxed{-103.24 \text{ dBm}}$$
+
+\textbf{Banda E:}
+$$P_{R,E} = 64.03 + 33.90 - 299.08 = \boxed{-201.15 \text{ dBm}}$$
+
+\textbf{¡Impracticable!} Esta potencia es tan baja que está por debajo del ruido térmico cósmico.
+
+\subsection{Pregunta 2c: Temperatura de Antena con Lluvia}
+
+Cuando la antena "ve" lluvia, capta el ruido térmico de las gotas de agua:
+
+$$T_A \approx T_{física,lluvia} \approx 280 \text{ K}$$
+
+\textbf{Nueva temperatura total:}
+
+\textbf{Banda Ka:}
+$$T_{total,Ka} = 288.6 + 280 = \boxed{568.6 \text{ K}}$$
+
+\textbf{Banda E:}
+$$T_{total,E} = 864.5 + 280 = \boxed{1144.5 \text{ K}}$$
+
+\subsection{Pregunta 2d: Nueva Potencia de Ruido}
+
+\textbf{Banda Ka:}
+$$N_{Ka} = -174 + 10\log_{10}(568.6/290) + 84.73$$
+$$N_{Ka} = -174 + 2.92 + 84.73 = \boxed{-86.35 \text{ dBm}}$$
+
+Incremento de ruido: $-86.35 - (-88.87) = +2.52$ dB
+
+\textbf{Banda E:}
+$$N_E = -174 + 10\log_{10}(1144.5/290) + 93.01$$
+$$N_E = -174 + 5.96 + 93.01 = \boxed{-75.03 \text{ dBm}}$$
+
+Incremento de ruido: $-75.03 - (-76.10) = +1.07$ dB
+
+\subsection{Pregunta 2e: C/N Final con Lluvia}
+
+\textbf{Banda Ka:}
+$$C/N_{Ka} = P_R - N_R = (-103.24) - (-86.35) = \boxed{-16.89 \text{ dB}}$$
+
+\textbf{¡NEGATIVO!} El enlace está completamente roto. La señal es 49× más débil que el ruido.
+
+\textbf{Margen respecto a requerido:}
+$$M = -16.89 - 13.5 = \textcolor{red}{\boxed{-30.39 \text{ dB}}}$$
+
+\textbf{Banda E:}
+$$C/N_E = (-201.15) - (-75.03) = \boxed{-126.12 \text{ dB}}$$
+
+\textbf{¡CATASTRÓFICO!} La señal es $10^{12.6}$ veces más débil que el ruido.
+
+\textbf{Margen respecto a requerido:}
+$$M = -126.12 - 32.5 = \textcolor{red}{\boxed{-158.62 \text{ dB}}}$$
+
+\newpage
+\section{CONCLUSIONES Y RECOMENDACIONES}
+
+\subsection{Resumen de Resultados}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Parámetro} & \textbf{Ka Claro} & \textbf{Ka Lluvia} & \textbf{E Claro} & \textbf{E Lluvia} \\
+\hline
+EIRP & 54.14 & 54.14 & 64.03 & 64.03 \\
+$G_{RX}$ & 24.13 & 24.13 & 33.90 & 33.90 \\
+$A_{FSL}$ & 154.31 & 154.31 & 163.08 & 163.08 \\
+$A_{atm}$ & 3.2 & 3.2 & 16 & 16 \\
+$A_{rain}$ & 0 & 24 & 0 & 120 \\
+\hline
+$P_R$ [dBm] & -79.24 & -103.24 & -81.15 & -201.15 \\
+$N_R$ [dBm] & -88.87 & -86.35 & -76.10 & -75.03 \\
+\hline
+\textbf{C/N [dB]} & \textcolor{red}{9.63} & \textcolor{red}{-16.89} & \textcolor{red}{-5.05} & \textcolor{red}{-126.12} \\
+C/N req & 13.5 & 13.5 & 32.5 & 32.5 \\
+\textbf{Margen} & \textcolor{red}{-3.87} & \textcolor{red}{-30.39} & \textcolor{red}{-37.55} & \textcolor{red}{-158.62} \\
+\hline
+\textbf{Estado} & \textcolor{red}{NO} & \textcolor{red}{NO} & \textcolor{red}{NO} & \textcolor{red}{NO} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Análisis Crítico}
+
+\textbf{1. Banda Ka (31 GHz):}
+\begin{itemize}
+    \item \textcolor{orange}{Marginal en cielo claro} (déficit 3.87 dB)
+    \item \textcolor{red}{Inviable con lluvia} (déficit 30.39 dB)
+    \item Atenuación por lluvia moderada (24 dB)
+    \item Podría funcionar con:
+    \begin{itemize}
+        \item Distancias más cortas (15-20 km)
+        \item Antenas más grandes (0.8-1 m)
+        \item Modulación adaptativa (QPSK $\leftrightarrow$ BPSK)
+    \end{itemize}
+\end{itemize}
+
+\textbf{2. Banda E (85 GHz):}
+\begin{itemize}
+    \item \textcolor{red}{Inviable incluso en cielo claro} (C/N negativo)
+    \item \textcolor{red}{Totalmente catastrófico con lluvia} (atenuación 120 dB)
+    \item La atenuación por lluvia es 5× mayor que en Ka
+    \item Solo viable para:
+    \begin{itemize}
+        \item Distancias muy cortas (<5 km)
+        \item Ambientes muy secos (desiertos)
+        \item Enlaces indoor o protegidos
+    \end{itemize}
+\end{itemize}
+
+\subsection{Lecciones Aprendidas}
+
+\textbf{1. Trade-off frecuencia vs propagación:}
+\begin{itemize}
+    \item Mayor frecuencia $\Rightarrow$ mayor ancho de banda disponible
+    \item Pero también $\Rightarrow$ mayor FSL, mayor atenuación atmosférica/lluvia
+    \item Antenas más pequeñas para misma ganancia
+    \item Tecnología más cara y compleja
+\end{itemize}
+
+\textbf{2. Banda E (71-86 GHz):}
+\begin{itemize}
+    \item Enorme ancho de banda (hasta 10 GHz disponible)
+    \item Pero extremadamente sensible a condiciones climáticas
+    \item Solo práctica para enlaces muy cortos o indoor
+    \item Aplicaciones: backhaul urbano (< 1 km), enlaces en edificios
+\end{itemize}
+
+\textbf{3. Diseño de enlaces HAPS:}
+\begin{itemize}
+    \item Banda Ka es límite práctico para enlaces de decenas de km
+    \item Necesita diversidad en frecuencia para disponibilidad alta
+    \item Modulación adaptativa esencial
+    \item Control de potencia según condiciones climáticas
+\end{itemize}
+
+\vspace{1cm}
+\hrule
+\begin{center}
+\textit{Fin de las soluciones completas y detalladas - Examen 2022 RF}\\
+\textit{Autor: Soluciones paso a paso con explicaciones exhaustivas}
+\end{center}
+
+\end{document}

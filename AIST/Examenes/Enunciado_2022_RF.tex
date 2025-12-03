@@ -1,0 +1,140 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\title{\textbf{Architectures et ingénierie des systèmes de transmission RF}}
+\author{Décembre 2022}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Modalités}
+
+\begin{itemize}
+    \item Documents de cours/PC/BE, notes personnelles et calculatrice autorisés
+    \item Les parties (RF, Optique) sont indépendantes : les réponses sont à fournir sur les 2 feuilles à rendre
+\end{itemize}
+
+\section*{Introduction}
+
+Bien que plus de la moitié de la population mondiale dispose déjà d'un accès à l'Internet, il est nécessaire de renforcer la connectivité et de fournir davantage de services de télécommunications large bande dans les zones mal desservies. Les systèmes utilisant des stations placées sur des plates-formes à haute altitude (High-Altitude Platform Station - HAPS) pourraient être utilisés pour fournir une connectivité large bande fixe aux utilisateurs ou pour assurer des liaisons de transmission du trafic entre le réseau mobile (5G,\ldots) et le réseau central à des fins de raccordement. Dans certains cas, les stations HAPS peuvent être également mises en service rapidement afin d'assurer des communications en vue du retour à la normale après une catastrophe, par exemple pour prendre le relais en secours des réseaux terrestres endommagés\footnote{\url{https://www.itu.int/fr/mediacentre/backgrounders/Pages/High-altitude-platform-systems.aspx}}.
+
+Les stations HAPS sont des stations d'émission/réception installées sur une plateforme placée à une altitude comprise entre 20 et 50 km et en un point spécifié, fixe par rapport à la Terre.
+
+\section*{Contexte}
+
+On se propose d'étudier le lien radio entre la plateforme (HAPS) et une station au sol (Ground Station - GS), dans les conditions de ciel clair et avec pluie, dans deux bandes de fréquences différentes. Les modulations utilisées sont de type QPSK et 256 QAM et ces modulations nécessitent un recul de puissance (Back-off) de l'amplificateur de puissance (Power Amplifier - PA) pour garantir son fonctionnement linéaire.
+
+La configuration de la liaison étudiée est donnée sur la figure 1 et les paramètres du système sont précisés dans le Tableau I.
+
+\begin{figure}[h]
+    \centering
+    \textit{Fig. 1 : configuration de la liaison entre une plateforme en altitude (HAPS) et une station sol (Ground Station)}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{Paramètres du système selon la bande de fréquence du lien RF}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Paramètre} & \textbf{Lien bande Ka} & \textbf{Lien bande E} & \textbf{unité} \\
+\midrule
+Fréquence de la porteuse RF & 31 & 85 & GHz \\
+modulation & QPSK & 256 QAM & - \\
+Rapport signal à bruit à garantir : C/N & 13.5 & 32.5 & dB \\
+Débit maximal : $D_b$ & 380 & 10 240 & Mbit/s \\
+Largeur de bande du canal radio : B & 297 & 2 000 & MHz \\
+Diamètre des antennes (GS \& HAPS) : $\phi$ & \multicolumn{2}{c}{0.605} & m \\
+Rendement des antennes (GS \& HAPS) : $\eta$ & \multicolumn{2}{c}{65} & \% \\
+Puissance de sortie du PA (@ 1 dB de compression) : $P_{PA-HAPS}$ & 2 & 6.5 & W \\
+Recul de la puissance de sortie\footnotemark : BO & 3 & 8 & dB \\
+Facteur de bruit du récepteur GS : $F_{R-GS}$ & 3 & 6 & dB \\
+\midrule
+Altitude de la plateforme : h & \multicolumn{2}{c}{20} & km \\
+Distance Station sol- HAPS : L & \multicolumn{2}{c}{40} & km \\
+Épaisseur de la basse atmosphère\footnotemark : $h_R$ & \multicolumn{2}{c}{4} & km \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\footnotetext[2]{Le recul de puissance est spécifié par rapport à la puissance à 1 dB de compression. La puissance nominale (en dBm) d'utilisation du PA est la puissance à 1 dB de compression moins le recul (BO).}
+
+\footnotetext[3]{Cette couche de l'atmosphère est prise en compte pour l'évaluation des pertes liées à la pluie sur la « longueur de pluie » notée $L_S$ (voir Fig. 1).}
+
+\textbf{NB :} on néglige les pertes dues aux gaz et molécules présentes dans l'atmosphère
+
+\begin{figure}[h]
+    \centering
+    \textit{Fig. 2 : atténuation linéique (dB/km) due à la pluie en fonction de la fréquence et du taux de précipitation R (en mm/hr)}
+    
+    Source : \url{https://www.e-band.com/index.php?id=86}
+\end{figure}
+
+\section*{Questions}
+
+\subsection*{1) Bilan de liaison en ciel clair}
+
+Compléter le tableau II
+
+\subsection*{2) Bilan de liaison avec pluie pour un taux de précipitation R = 25 mm/h}
+
+\begin{enumerate}[label=\alph*)]
+    \item Compléter le tableau II.
+    
+    \item Compte-tenu du bilan de liaison, quelle(s) modification(s) de la configuration (distance, modulation,\ldots) sont nécessaires pour rendre la liaison fonctionnelle à 31 GHz et/ou à 85 GHz en cas de pluie ? (répondre sur la feuille à rendre)
+\end{enumerate}
+
+\newpage
+
+\section*{Tableau II - bilan de liaison de la liaison : HAPS → GS}
+
+À compléter avec les valeurs calculées ou estimées si besoin (si une valeur est estimée, on justifiera la raison)
+
+\textbf{NB :} On arrondira les valeurs numériques à 2 chiffres maximum après la virgule
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccl}
+\toprule
+\textbf{Paramètre} & \textbf{Lien @ 31 GHz} & \textbf{Lien @ 85 GHz} & \textbf{unité} \\
+\midrule
+\multicolumn{4}{c}{\textbf{Bilan de liaison CIEL CLAIR}} \\
+\midrule
+Angle d'élévation de la station sol (GS) : $\varepsilon$ & & & \\
+Gain antenne (HAPS) : $G_{TX}$ & & & \\
+Puissance nominale du PA (HAPS) : $P_{TX}$ & & & \\
+PIRE (HAPS) & & & \\
+Gain antenne de réception (GS) : $G_{RX}$ & & & \\
+Atténuation en espace libre : $A_{EL}$ & & & \\
+Puissance RF en réception (GS) : $P_{R-GS}$ & & & \\
+Température équivalente de bruit du récepteur (GS) : $T_{R-GS}$ & & & \\
+Température équivalente de bruit d'antenne (GS) : $T_{A-GS}$ & & & \\
+Température équivalente de bruit totale (GS) : $T_{T-GS}$ & & & \\
+Puissance de bruit totale en réception (GS) : $N_{R-GS}$ & & & \\
+Rapport signal-à-bruit (GS) : C/N & & & \\
+Marge par rapport au C/N requis & & & \\
+\midrule
+\multicolumn{4}{c}{\textbf{Bilan de liaison avec PLUIE (R = 25 mm/h)}} \\
+\midrule
+Atténuation linéique : $\alpha_R$ & & & \\
+Longueur de pluie : $L_S$ & & & \\
+Atténuation supplémentaire due à la pluie : $A_{RAIN}$ & & & \\
+Puissance RF en réception (GS) : $P_{R-GS}$ & & & \\
+Température équivalente de bruit d'antenne (GS) : $T_{A-GS}$ & & & \\
+Puissance de bruit totale en réception (GS) : $N_{R-GS}$ & & & \\
+Rapport signal-à-bruit (GS) : C/N & & & \\
+Liaison opérationnelle & * oui * non & * oui * non & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

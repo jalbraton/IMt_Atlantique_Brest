@@ -1,0 +1,98 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\title{\textbf{Examen UEC3 -- Architectures et ingénierie\\des systèmes de transmission}}
+\author{Décembre 2019}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Consignes}
+\begin{itemize}
+    \item Documents de cours/PC/BE et calculatrice autorisés
+    \item Les parties (A, B) sont indépendantes et sont à rédiger sur des copies séparées
+\end{itemize}
+
+\section{Architectures et ingénierie des systèmes de transmission RF (1h)}
+
+Il est fortement conseillé de bien lire le texte d'introduction et de présentation du système.
+
+\subsection*{Introduction -- Système Globalstar}
+
+Globalstar est un système de communications mobiles par satellites avec une constellation de 48 satellites en orbite basse (LEO) pouvant fournir des services de voix et données partout dans le monde. Ces satellites sont placés sur 8 orbites circulaires inclinées, avec 6 satellites par plan orbital. 
+
+Le système Globalstar combine les techniques CDMA et FDMA associées à une technologie multi-faisceaux (MBA) comme illustré sur la figure 1. La durée de connexion d'un utilisateur à un satellite (défilant) est de 14 mn environ, chaque utilisateur étant en vue de plusieurs satellites simultanément.
+
+\subsection*{Données techniques du système Globalstar}
+
+Les 16 canaux (Utilisateur → Satellite) à la même fréquence en bande L, constituant les 16 faisceaux, sont transposés en fréquence à bord du satellite dans la bande C sur 8 porteuses RF par polarisation, pour un accès en mode FDMA (Satellite → Gateway). De même, les 8 porteuses par polarisation en bande C (Gateway → Satellite) sont transposées en bande S (Satellite → Utilisateur) vers les 16 faisceaux.
+
+Deux canaux dédiés à la télémétrie et aux commandes sont également réservés dans la bande C pour les liens UL et DL.
+
+La largeur de bande d'un canal est de 16,5 MHz en bande L ou S. Elle est constituée de 13 sous-canaux FDM de 1,23 MHz (voir fig. 2) et plusieurs utilisateurs peuvent communiquer simultanément sur le même sous-canal de 1,23 MHz grâce à la technique CDMA.
+
+Enfin, dans la situation considérée ici, la station Gateway avec laquelle le satellite est en liaison se trouve à une distance telle que le trajet satellite/station est de 4480 km.
+
+\textbf{NB :} les calculs sont effectués pour la fréquence centrale des différentes bandes et on néglige les effets particuliers liés aux couches de l'atmosphère.
+
+\subsection*{Questions}
+
+\begin{enumerate}
+    \item Reprendre le schéma de la figure 1 et le compléter de façon claire et lisible par l'ensemble des données du système (fréquences, gains des antennes, des récepteurs, distances,\ldots).
+    
+    \item Compte-tenu de la bande allouée pour la liaison Satellite $\rightarrow$ Gateway (UL et DL), vérifier que l'on peut transmettre les 16 faisceaux sur les 8 porteuses, et ce pour les deux polarisations utilisées, ainsi que deux canaux dédiés à la télémétrie et aux commandes.
+    
+    \item Quel effet doit être pris en compte au niveau de la réception (satellite ou utilisateur/gateway) sur les liaisons montantes et descendantes ? Quel est l'avantage majeur d'une orbite LEO par rapport à une orbite GEO du point de vue du système de transmission ?
+    
+    \item Quel est l'intérêt de l'utilisation de polarisations circulaires pour les liaisons avec les utilisateurs. Qu'en est-il pour les liaisons satellite-gateway ?
+\end{enumerate}
+
+On considère un utilisateur au centre de la zone de couverture d'un satellite qui se trouve à la verticale de la zone. Le calcul du bilan de liaison consiste à calculer la puissance reçue C par rapport à la puissance de bruit totale N en entrée du récepteur (satellite, station terrienne), en ne considérant qu'un seul sous-canal.
+
+\begin{enumerate}[resume]
+    \item Écrire et calculer (en dB) le bilan de liaison (rapport C/N) sur le lien montant (UL) `Utilisateur $\rightarrow$ Satellite' en ne tenant compte d'aucune perte atmosphérique ni pertes additionnelles.
+    
+    \item Écrire et calculer (en dB) le bilan de liaison (rapport C/N) sur le lien descendant (DL) `Satellite $\rightarrow$ Gateway' en tenant compte d'une marge de 3 dB.
+    
+    \item Déduire des questions 5 et 6 le lien le plus limitant. Calculer le rapport C/N global (en dB)
+    
+    \item Compte-tenu de la température équivalente de bruit totale de la station terrienne, quel est le facteur de bruit du récepteur ?
+\end{enumerate}
+
+\section{Budget maximal d'une liaison DWDM non amplifiée en ligne (1h)}
+
+On veut estimer le budget maximal de liaisons DWDM point à point à très haut débit sans amplificateurs en ligne pour des applications d'interconnexion de centres de données en contexte métropolitain. Les amplificateurs peuvent cependant être utilisés à l'émission et en réception. Les liaisons doivent respecter les caractéristiques des transpondeurs utilisés (cf annexe) et présenter une marge en OSNR de 2 dB en réception.
+
+\subsection*{Consignes}
+Chaque élément du système, y compris la ligne, est représenté par un rectangle. Les éléments sont reliés entre eux par des jarretières représentées par des traits. On fera figurer sur le schéma les points S et R représentant respectivement l'entrée de la jarretière de connexion à la ligne à l'émission et la sortie de la jarretière de connexion à la ligne en réception.
+
+\subsection*{Questions}
+
+\begin{enumerate}
+    \item Représenter l'architecture du système en indiquant clairement les points S et R.
+    
+    \item Donner la valeur en dBm au point S de la puissance par canal et de la puissance totale pour le nombre maximal de canaux transportables pour 100, 200 et 400 Gbit/s par canal.
+    
+    \item Donner la valeur en dB de l'OSNR d'un canal au centre de la bande C au point S pour chacun des trois cas évoqués précédemment. Doit-on tenir compte du bruit d'ESA à l'émission ?
+    
+    \item Donner pour chacun des 3 cas la valeur en dBm de la puissance par canal minimale à recevoir au point R si on se place au seuil de réception en OSNR des transpondeurs avec la marge de 2 dB (en respectant la puissance minimale en réception bien entendu).
+    
+    \item En déduire pour les trois cas le budget de liaison (pris entre les points S et R) et la portée correspondante pour une atténuation de fibre de 0,18 dB/km.
+\end{enumerate}
+
+\subsection*{Annexe : Caractéristiques des cartes}
+
+Les cartes « transpondeur » comprennent une interface optique d'émission et une interface optique de réception pour un unique canal optique.
+
+\textit{[Les caractéristiques détaillées des transpondeurs 100, 200 et 400 Gbit/s sont fournies dans l'annexe du sujet d'examen]}
+
+\end{document}

@@ -1,0 +1,687 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\geometry{margin=1.8cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Examen 2023 OPT - Soluciones Detalladas}
+\lhead{AIST}
+\rfoot{\thepage}
+
+\title{\textbf{Examen Diciembre 2023 - Parte B\\Soluciones Completas y Detalladas\\Submarine Cable System Design}}
+\author{}
+\date{Diciembre 2023}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{PREGUNTAS TEÓRICAS - Respuestas Detalladas}
+
+\subsection{Pregunta 1: Ventajas de la fibra óptica sobre medios cableados}
+
+\textbf{Por orden de importancia:}
+
+\textbf{1. Ancho de banda extraordinario (>10 THz disponible)}
+\begin{itemize}[leftmargin=*]
+    \item La fibra óptica opera en el infrarrojo cercano ($\sim$1550 nm, $\sim$194 THz)
+    \item Banda C sola: 1530-1565 nm = 4.4 THz
+    \item Bandas C+L: $\sim$10 THz combinadas
+    \item \textbf{vs cable coaxial:} solo MHz-GHz disponibles
+    \item \textbf{Impacto:} Capacidad de Tbit/s por fibra (vs Gbit/s en cobre)
+\end{itemize}
+
+\textbf{2. Atenuación extremadamente baja ($\sim$0.18 dB/km @ 1550 nm)}
+\begin{itemize}[leftmargin=*]
+    \item Mínimo teórico de atenuación en sílice a 1550 nm
+    \item \textbf{Alcance sin amplificación:} 80-100 km posible
+    \item \textbf{vs cable coaxial:} 20-40 dB/km a frecuencias GHz $\Rightarrow$ solo pocos km
+    \item \textbf{vs par trenzado:} inutilizable más allá de 100 m para altas frecuencias
+    \item \textbf{Impacto:} Enlaces transoceánicos posibles (8000+ km)
+\end{itemize}
+
+\textbf{3. Inmunidad a interferencias electromagnéticas (EMI)}
+\begin{itemize}[leftmargin=*]
+    \item Los fotones no son afectados por campos eléctricos/magnéticos
+    \item No hay crosstalk entre fibras adyacentes
+    \item \textbf{vs cobre:} sufre EMI de motores, rayos, equipos industriales
+    \item \textbf{Impacto:} Confiabilidad en entornos electromagnéticamente hostiles
+\end{itemize}
+
+\textbf{Otras ventajas importantes:}
+\begin{itemize}
+    \item \textbf{Tamaño y peso reducido:} Facilita instalación y reduce costos de infraestructura
+    \item \textbf{Seguridad:} Difícil interceptar sin detección (no emite radiación)
+    \item \textbf{Durabilidad:} Vida útil de 25+ años
+    \item \textbf{Baja latencia:} Velocidad $\sim 2/3 c$ (índice $n \approx 1.47$)
+\end{itemize}
+
+\subsection{Pregunta 2: Line rate DP-64QAM a 43.7 GBaud}
+
+\textbf{Fórmula general del line rate:}
+$$R_{line} = N_{pol} \times R_s \times \log_2(M) \times (1 + \text{overhead}_{FEC})$$
+
+Para DP-64QAM:
+\begin{itemize}
+    \item $N_{pol} = 2$ (Dual Polarization)
+    \item $R_s = 43.7$ GBaud (symbol rate)
+    \item $M = 64$ (constelación 64-QAM)
+    \item $\log_2(64) = 6$ bits/symbol
+\end{itemize}
+
+\textbf{Sin considerar overhead FEC:}
+$$R_{line} = 2 \times 43.7 \times 6 = \boxed{524.4 \text{ Gbit/s}}$$
+
+\textbf{Con overhead FEC típico (20\%):}
+$$R_{line} = 524.4 \times 1.20 = \boxed{629.3 \text{ Gbit/s}}$$
+
+\textbf{Interpretación:}
+\begin{itemize}
+    \item Cada símbolo lleva 6 bits de información (6 bits/símbolo)
+    \item Dual polarization duplica la capacidad (usa 2 dimensiones ortogonales)
+    \item A 43.7 GBaud, transmitimos 43.7 mil millones de símbolos por segundo
+    \item La modulación 64-QAM requiere OSNR elevado ($\sim$27-30 dB) para BER aceptable
+\end{itemize}
+
+\subsection{Pregunta 3: Ocupación espectral Nyquist}
+
+\textbf{Teorema de Nyquist:}
+
+Para transmitir una señal a velocidad de símbolo $R_s$ sin interferencia inter-símbolo (ISI), el ancho de banda mínimo requerido es:
+$$\boxed{B_{Nyquist} = \frac{R_s}{2}}$$
+
+Para $R_s = 43.7$ GBaud:
+$$B_{Nyquist} = \frac{43.7}{2} = 21.85 \text{ GHz}$$
+
+\textbf{PERO}, con pulsos Nyquist ideales (sinc, no causal):
+$$\boxed{B_{Nyquist,ideal} = R_s = 43.7 \text{ GHz}}$$
+
+Esto corresponde a eficiencia espectral de 2 bits/s/Hz por dimensión.
+
+\textbf{En práctica}, con roll-off $\beta$ (filtros realizables):
+$$B_{real} = R_s \times (1 + \beta)$$
+
+Para $\beta = 0.01$ (típico en sistemas coherentes modernos):
+$$\boxed{B_{real} = 43.7 \times 1.01 = 44.1 \text{ GHz}}$$
+
+\textbf{Eficiencia espectral:}
+$$\eta = \frac{R_{payload}}{B} = \frac{N_{pol} \times R_s \times \log_2(M)}{R_s(1+\beta)} = \frac{2 \times 6}{1.01} = \boxed{11.88 \text{ bit/s/Hz}}$$
+
+\subsection{Pregunta 4: Factor limitante en sistemas muy largos}
+
+\textbf{Respuesta:} \boxed{\text{OSNR (Optical Signal-to-Noise Ratio)}}
+
+\textbf{Explicación detallada:}
+
+En sistemas con amplificadores en línea, cada EDFA añade ruido ASE (Amplified Spontaneous Emission):
+$$P_{ASE,total} = N_{amp} \times P_{ASE,1amp}$$
+
+La relación señal-ruido óptica:
+$$\text{OSNR} = \frac{P_{signal}}{P_{ASE,total}} \propto \frac{1}{N_{amp}} \propto \frac{1}{L}$$
+
+En dB:
+$$\text{OSNR}_{dB} = P_{ch} + 58 - F - 10\log_{10}(N_{amp})$$
+
+\textbf{Impacto de la distancia:}
+
+Para $L = 8000$ km con $D_{amp} = 70$ km:
+$$N_{amp} = 114 \Rightarrow 10\log_{10}(N_{amp}) = 20.6 \text{ dB de degradación}$$
+
+Cada vez que duplicamos la distancia, perdemos 3 dB de OSNR.
+
+\textbf{Otros factores limitantes (menos críticos):}
+\begin{itemize}
+    \item \textbf{Dispersión cromática:} Compensable digitalmente con DSP
+    \item \textbf{PMD (Polarization Mode Dispersion):} También compensable
+    \item \textbf{Efectos no lineales (Kerr):} SPM, XPM, FWM - mitigables con gestión de potencia
+    \item \textbf{Pérdidas de fibra:} Compensadas por amplificadores
+\end{itemize}
+
+\textbf{Conclusión:} OSNR acumulativo del ruido ASE es EL factor limitante en enlaces transoceánicos.
+
+\subsection{Pregunta 5: Tecnología digital para mejorar performance}
+
+\textbf{Respuesta:} \boxed{\text{DSP (Digital Signal Processing) en receptor coherente}}
+
+\textbf{Funciones del DSP:}
+
+\textbf{1. Compensación de dispersión cromática (CD)}
+\begin{itemize}
+    \item La fibra introduce dispersión: diferentes $\lambda$ viajan a diferentes velocidades
+    \item Parámetro típico: $D = 17$ ps/(nm·km) en SMF-28
+    \item Para 1000 km: dispersión acumulada de 17000 ps/nm
+    \item \textbf{DSP aplica filtro inverso:} $H_{comp}(\omega) = H_{fiber}^{-1}(\omega)$
+    \item \textbf{Antes:} se necesitaban módulos DCF (Dispersion Compensating Fiber) físicos
+\end{itemize}
+
+\textbf{2. Compensación PMD (Polarization Mode Dispersion)}
+\begin{itemize}
+    \item Birrefringencia aleatoria en fibra causa splitting temporal entre polarizaciones
+    \item DSP con ecualización adaptativa (filtros FIR con actualización en tiempo real)
+    \item Algoritmo CMA (Constant Modulus Algorithm) o LMS
+\end{itemize}
+
+\textbf{3. Ecualización de canal}
+\begin{itemize}
+    \item Compensa respuestas no ideales de transmisores/receptores
+    \item Filtros adaptativos multi-tap (típicamente 17-25 taps)
+    \item Matriz de ecualización 2×2 para polarización X e Y
+\end{itemize}
+
+\textbf{4. Recuperación de portadora (Carrier Phase Recovery)}
+\begin{itemize}
+    \item Compensa ruido de fase del láser TX y LO
+    \item Algoritmos: Viterbi-Viterbi, BPS (Blind Phase Search)
+\end{itemize}
+
+\textbf{5. FEC (Forward Error Correction)}
+\begin{itemize}
+    \item \textbf{Hard-decision FEC:} Reed-Solomon, BCH (ganancia $\sim$6 dB)
+    \item \textbf{Soft-decision FEC:} LDPC, Turbo codes (ganancia 9-11 dB)
+    \item Permite BER pre-FEC de $10^{-3}$ → BER post-FEC de $10^{-15}$
+\end{itemize}
+
+\textbf{Ganancia total del DSP:} 15-20 dB en OSNR equivalente (permite alcances 4-10× mayores)
+
+\subsection{Pregunta 6: Link budget típico para 100 km}
+
+\textbf{Cálculo:}
+
+Pérdida de fibra:
+$$L_{fiber} = \alpha \times d = 0.18 \text{ dB/km} \times 100 \text{ km} = 18 \text{ dB}$$
+
+Pérdidas adicionales:
+\begin{itemize}
+    \item Conectores (2×): $2 \times 0.5 = 1$ dB
+    \item Patch cords (2×): $2 \times 0.5 = 1$ dB
+    \item Splice losses: $\sim$0.5 dB
+    \item Margen de sistema: 2 dB
+\end{itemize}
+
+$$\boxed{\text{Budget total} = 18 + 1 + 1 + 0.5 + 2 = 22.5 \text{ dB}}$$
+
+\textbf{Típicamente:} \boxed{20-22 \text{ dB}} para 100 km en banda C
+
+\textbf{Ejemplo de verificación:}
+\begin{itemize}
+    \item Potencia TX: $P_{TX} = +3$ dBm
+    \item Sensibilidad RX: $P_{RX,sens} = -21$ dBm
+    \item Budget disponible: $3 - (-21) = 24$ dB
+    \item Budget necesario: 22.5 dB
+    \item \textbf{Margen:} $24 - 22.5 = 1.5$ dB ✓
+\end{itemize}
+
+\subsection{Pregunta 7: Ventajas de detección coherente}
+
+\textbf{Detección Coherente vs IM-DD (Intensity Modulation - Direct Detection):}
+
+\textbf{1. Recupera amplitud Y fase (vs solo intensidad)}
+\begin{itemize}
+    \item IM-DD: solo detecta $|E|^2$ (intensidad)
+    \item Coherente: detecta $E = A e^{j\phi}$ (campo complejo completo)
+    \item \textbf{Consecuencia:} Permite modulaciones QAM (16QAM, 64QAM, 256QAM)
+\end{itemize}
+
+\textbf{2. Multiplexación de polarización (Dual-Pol)}
+\begin{itemize}
+    \item Usa dos polarizaciones ortogonales (X e Y) como canales independientes
+    \item \textbf{Duplica capacidad} sin añadir ancho de banda
+    \item IM-DD no puede separar polarizaciones eficientemente
+\end{itemize}
+
+\textbf{3. Eficiencia espectral superior}
+\begin{itemize}
+    \item IM-DD OOK/PAM: $\eta < 1$ bit/s/Hz
+    \item Coherente DP-QPSK: $\eta = 4$ bit/s/Hz
+    \item Coherente DP-64QAM: $\eta = 12$ bit/s/Hz
+    \item \textbf{Factor de mejora:} 4-12×
+\end{itemize}
+
+\textbf{4. Compensación digital (DSP)}
+\begin{itemize}
+    \item CD, PMD, efectos no lineales compensables digitalmente
+    \item IM-DD requiere compensación óptica física (costosa, inflexible)
+\end{itemize}
+
+\textbf{5. Mejor sensibilidad}
+\begin{itemize}
+    \item Coherente tiene ganancia de procesado
+    \item Típicamente 3-6 dB mejor que IM-DD
+    \item OSNR requerido más bajo para mismo BER
+\end{itemize}
+
+\textbf{6. Modulación adaptativa}
+\begin{itemize}
+    \item Puede cambiar formato según OSNR disponible (QPSK $\leftrightarrow$ 16QAM $\leftrightarrow$ 64QAM)
+    \item Optimiza capacidad vs alcance
+\end{itemize}
+
+\textbf{Desventajas coherente:}
+\begin{itemize}
+    \item Mayor complejidad (requiere láser LO, DSP potente)
+    \item Mayor costo y consumo de potencia
+    \item Latencia adicional por procesado DSP ($\sim$1-2 μs)
+\end{itemize}
+
+\subsection{Pregunta 8: ¿Módulos DCF necesarios?}
+
+\textbf{Respuesta:} \boxed{\text{NO, ya no son necesarios en sistemas coherentes}}
+
+\textbf{Explicación:}
+
+\textbf{Antes (sistemas IM-DD):}
+\begin{itemize}
+    \item La dispersión cromática causa ensanchamiento del pulso
+    \item ISI (Inter-Symbol Interference) degrada BER
+    \item \textbf{Solución:} DCF (Dispersion Compensating Fiber) con $D < 0$
+    \item DCF añade pérdidas ($\sim$0.5 dB/km) y costo
+    \item Compensación fija, no adaptable
+\end{itemize}
+
+\textbf{Ahora (sistemas coherentes):}
+\begin{itemize}
+    \item El receptor recupera el campo eléctrico completo
+    \item DSP aplica filtro inverso digital: $H_{CD}(\omega) = e^{-j\beta_2 \omega^2 L / 2}$
+    \item \textbf{Ventajas:}
+    \begin{itemize}
+        \item No añade pérdidas físicas
+        \item Adaptable a cualquier longitud de fibra
+        \item Costo marginal (solo DSP)
+        \item Puede compensar dispersión variable en tiempo
+    \end{itemize}
+\end{itemize}
+
+\textbf{Excepción:} Algunos sistemas usan DCF parcial para:
+\begin{itemize}
+    \item Reducir requerimientos de DSP (potencia computacional)
+    \item Mitigar efectos no lineales (pre-compensación óptima)
+    \item Sistemas híbridos coherente/no-coherente
+\end{itemize}
+
+\textbf{Conclusión:} DCF es tecnología legacy, reemplazada por DSP en sistemas modernos.
+
+\newpage
+\section{PROBLEMA: Cable Submarino 8260 km}
+
+\subsection{Datos del Sistema}
+
+\begin{center}
+\fcolorbox{blue}{blue!10}{
+\begin{minipage}{0.9\textwidth}
+\textbf{Línea submarina:}
+\begin{itemize}[noitemsep]
+    \item Longitud total: $L = 8260$ km (ej: Nueva York - Lisboa = 5800 km, esto es más largo)
+    \item Atenuación: $\alpha = 0.18$ dB/km @ 1550 nm
+    \item Pérdida total sin amplificación: $8260 \times 0.18 = 1487$ dB (¡imposible!)
+\end{itemize}
+
+\textbf{Amplificadores EDFA:}
+\begin{itemize}[noitemsep]
+    \item Banda: Banda C = 4 THz (1530-1560 nm aproximadamente)
+    \item Factor de ruido: $F = 5$ dB
+    \item Potencia máxima salida: $P_{max} = 14.3$ dBm
+    \item Ganancia máxima: $G_{max} = 12.6$ dB
+    \item Ganancia ajustable hasta $G_{max}$
+\end{itemize}
+
+\textbf{Transpondeurs DP-8QAM:}
+\begin{itemize}[noitemsep]
+    \item Formato: DP-8QAM (8-ary QAM, dual polarization)
+    \item Débit útil: $R_{PL} = 100$ Gbit/s
+    \item Ocupación espectral: $B_{ch} = 25$ GHz
+    \item OSNR objetivo (target): $\text{OSNR}_{target} = 15$ dB
+    \item Bits por símbolo: $\log_2(8) = 3$ bits
+    \item Polarizaciones: 2 $\Rightarrow$ total 6 bits/símbolo
+\end{itemize}
+
+\textbf{Referencia:}
+\begin{itemize}[noitemsep]
+    \item Banda óptica de referencia: $B_{opt} = 12.5$ GHz
+    \item OSNR infinito en transmisores (ruido ASE solo de amplificadores)
+\end{itemize}
+
+\textbf{Objetivo:} Minimizar costos instalando el número estrictamente suficiente de amplificadores
+\end{minipage}
+}
+\end{center}
+
+\subsection{Pregunta 1: Número de amplificadores y espaciado}
+
+\subsubsection{Espaciado máximo entre amplificadores}
+
+Para mantener la potencia constante, cada amplificador debe compensar exactamente las pérdidas del span:
+
+$$G_{dB} = \alpha \times D_{amp}$$
+
+Con la limitación de ganancia máxima:
+$$G \leq G_{max}$$
+$$\alpha \times D_{amp} \leq G_{max}$$
+$$D_{amp} \leq \frac{G_{max}}{\alpha}$$
+
+Sustituyendo valores:
+$$D_{amp,max} = \frac{12.6 \text{ dB}}{0.18 \text{ dB/km}} = \boxed{70 \text{ km}}$$
+
+\subsubsection{Número de amplificadores}
+
+Para una línea de longitud $L$, necesitamos amplificadores espaciados $D_{amp}$:
+
+Número de spans: $N_{spans} = \lceil L / D_{amp} \rceil$
+
+Si colocamos amplificadores al final de cada span (excepto el último que es el receptor):
+$$N_{amp} = N_{spans} - 1$$
+
+Alternativamente, con $N_{amp}$ amplificadores creamos $N_{amp} + 1$ spans.
+
+Para $L = 8260$ km y $D_{amp} = 70$ km:
+$$N_{spans} = \left\lceil \frac{8260}{70} \right\rceil = \lceil 118 \rceil = 118$$
+$$N_{amp} = 118 - 1 = \boxed{117 \text{ amplificadores}}$$
+
+\textbf{Verificación:}
+
+Espaciado real con 117 amplificadores (crea 118 spans):
+$$D_{amp,real} = \frac{L}{N_{spans}} = \frac{8260}{118} = 70.00 \text{ km}$$ ✓
+
+Ganancia necesaria:
+$$G = \alpha \times D_{amp} = 0.18 \times 70 = 12.6 \text{ dB}$$ ✓ (igual a $G_{max}$)
+
+\textbf{Respuesta:}
+\begin{center}
+\fcolorbox{red}{red!10}{
+\textbf{117 amplificadores espaciados uniformemente cada 70 km}
+}
+\end{center}
+
+\subsection{Pregunta 2: Número máximo de canales}
+
+El número máximo de canales está limitado por DOS factores:
+
+\subsubsection{Límite espectral}
+
+Los canales deben caber en la banda del amplificador:
+$$N_{ch} \times \Delta f \leq B_{amp}$$
+
+Donde $\Delta f$ es el espaciado entre canales (channel spacing).
+
+Con ocupación espectral $B_{ch} = 25$ GHz, el espaciado mínimo es:
+$$\Delta f_{min} = B_{ch} = 25 \text{ GHz}$$
+
+(Grilla óptima sin banda de guarda)
+
+$$N_{ch,spectral} = \left\lfloor \frac{B_{amp}}{\Delta f} \right\rfloor = \left\lfloor \frac{4000}{25} \right\rfloor = \boxed{160 \text{ canales}}$$
+
+\subsubsection{Límite de potencia y OSNR}
+
+La potencia del amplificador debe distribuirse entre todos los canales:
+$$P_{ch} = P_{max} - 10\log_{10}(N_{ch})$$
+
+El OSNR en recepción después de $N_{amp}$ amplificadores es:
+$$\text{OSNR}_{RX} = P_{ch} + 58 - F - 10\log_{10}(N_{amp})$$
+
+Requisito de OSNR:
+$$\text{OSNR}_{RX} \geq \text{OSNR}_{target}$$
+$$P_{ch} + 58 - F - 10\log_{10}(N_{amp}) \geq 15$$
+$$P_{max} - 10\log_{10}(N_{ch}) + 58 - F - 10\log_{10}(N_{amp}) \geq 15$$
+
+Despejando $N_{ch}$:
+$$10\log_{10}(N_{ch}) \leq P_{max} + 58 - F - 10\log_{10}(N_{amp}) - 15$$
+
+Sustituyendo valores:
+\begin{align*}
+10\log_{10}(N_{ch}) &\leq 14.3 + 58 - 5 - 10\log_{10}(117) - 15\\
+&\leq 14.3 + 58 - 5 - 20.68 - 15\\
+&\leq 31.62
+\end{align*}
+
+$$N_{ch,OSNR} \leq 10^{31.62/10} = 10^{3.162} = \boxed{1452 \text{ canales}}$$
+
+\subsubsection{Conclusión}
+
+El límite efectivo es el \textbf{espectral}:
+$$\boxed{N_{ch,max} = 160 \text{ canales}}$$
+
+El límite de OSNR ($\sim$1452) es mucho mayor, indicando que el sistema está sobre-dimensionado en potencia/ruido.
+
+\textbf{Verificación OSNR con 160 canales:}
+$$P_{ch} = 14.3 - 10\log_{10}(160) = 14.3 - 22.04 = -7.74 \text{ dBm}$$
+$$\text{OSNR}_{RX} = -7.74 + 58 - 5 - 20.68 = 24.58 \text{ dB}$$
+$$\text{Margen} = 24.58 - 15 = \boxed{9.58 \text{ dB}} \checkmark$$
+
+\subsection{Pregunta 3: Espaciado entre canales}
+
+Con 160 canales y ocupación espectral de 25 GHz cada uno, para aprovechar óptimamente los 4 THz:
+
+$$\Delta f = \frac{B_{amp}}{N_{ch}} = \frac{4000}{160} = \boxed{25 \text{ GHz}}$$
+
+Esto corresponde a una **grilla óptima** donde:
+$$\Delta f = B_{ch}$$ (sin bandas de guarda)
+
+Los canales están "espalda con espalda" (back-to-back), maximizando la eficiencia espectral.
+
+\textbf{Comparación con grillas ITU-T:}
+\begin{itemize}
+    \item ITU-T 50 GHz: solo 80 canales cabrían $\rightarrow$ 50\% de desperdicio
+    \item ITU-T 12.5 GHz: podrían caber 320 canales, pero cada uno solo usa 25 GHz
+    \item \textbf{Grilla flexible 25 GHz:} óptima para este transpondedor
+\end{itemize}
+
+\subsection{Pregunta 4: Eficiencia espectral del canal}
+
+La eficiencia espectral (spectral efficiency) mide cuántos bits/s se transmiten por Hz de ancho de banda:
+
+$$\eta_{ch} = \frac{R_{payload}}{B_{ch}}$$
+
+Para DP-8QAM a 100 Gbit/s con ocupación de 25 GHz:
+$$\eta_{ch} = \frac{100 \text{ Gbit/s}}{25 \text{ GHz}} = \boxed{4 \text{ bit/s/Hz}}$$
+
+\textbf{Interpretación:}
+
+Con DP-8QAM:
+\begin{itemize}
+    \item 8-QAM lleva $\log_2(8) = 3$ bits por símbolo
+    \item Dual-pol multiplica por 2: $3 \times 2 = 6$ bits/símbolo
+    \item Symbol rate: $R_s = \frac{R_{line}}{6}$ (sin overhead FEC)
+    \item Para $R_{line} = 100$ Gbit/s: $R_s \approx 16.67$ GBaud
+    \item Con roll-off 0.5: $B = R_s \times 1.5 = 25$ GHz
+    \item Eficiencia: $\eta = 6 / 1.5 = 4$ bit/s/Hz ✓
+\end{itemize}
+
+\textbf{Comparación:}
+\begin{itemize}
+    \item DP-QPSK: $\eta = 4$ bit/s/Hz (mismo valor, pero con 32 GBaud)
+    \item DP-16QAM: $\eta = 8$ bit/s/Hz (pero requiere OSNR $\sim$22 dB)
+    \item DP-64QAM: $\eta = 12$ bit/s/Hz (requiere OSNR $\sim$30 dB)
+\end{itemize}
+
+DP-8QAM es un **compromiso** entre DP-QPSK (robusto) y DP-16QAM (eficiente).
+
+\subsection{Pregunta 5: Eficiencia espectral del sistema}
+
+La eficiencia espectral del sistema considera TODOS los canales en TODO el ancho de banda disponible:
+
+$$\eta_{sys} = \frac{N_{ch} \times R_{payload}}{B_{total}}$$
+
+Con $N_{ch} = 160$, $R_{PL} = 100$ Gbit/s y $B_{total} = 4000$ GHz:
+$$\eta_{sys} = \frac{160 \times 100}{4000} = \frac{16000}{4000} = \boxed{4 \text{ bit/s/Hz}}$$
+
+\textbf{Observación importante:}
+
+$$\eta_{sys} = \eta_{ch}$$
+
+Esto ocurre porque usamos grilla óptima sin desperdicio espectral ($\Delta f = B_{ch}$).
+
+Si usáramos grilla 50 GHz con canales de 25 GHz:
+$$\eta_{sys} = \frac{80 \times 100}{4000} = 2 \text{ bit/s/Hz}$$ (¡50\% peor!)
+
+\textbf{Capacidad total del sistema:}
+$$C_{total} = N_{ch} \times R_{PL} = 160 \times 100 = \boxed{16 \text{ Tbit/s}}$$
+
+\subsection{Pregunta 6: ¿Cómo aumentar capacidad sin modificar línea?}
+
+\textbf{Limitación actual:} Estamos limitados por el ancho de banda del amplificador (4 THz), NO por OSNR (tenemos 9.6 dB de margen).
+
+\textbf{Soluciones sin modificar la línea submarina:}
+
+\textbf{1. Activar banda L adicional (L-band amplification)}
+\begin{itemize}
+    \item Banda L: 1565-1625 nm $\approx$ 4 THz adicionales
+    \item Requiere añadir amplificadores L-band en paralelo con C-band
+    \item \textbf{Ganancia:} +100\% capacidad (16 $\rightarrow$ 32 Tbit/s)
+    \item \textbf{Costo:} Moderado (solo EDFAs L-band en estaciones)
+    \item \textbf{Viabilidad:} ALTA (común en sistemas modernos)
+\end{itemize}
+
+\textbf{2. Modulación adaptativa según OSNR}
+\begin{itemize}
+    \item Canales con mejor OSNR (centro de banda) usan 16-QAM o 64-QAM
+    \item Canales en bordes con peor OSNR mantienen 8-QAM o usan QPSK
+    \item Ejemplo: 80 canales DP-16QAM @ 200 Gbit/s + 80 canales DP-8QAM @ 100 Gbit/s
+    \item \textbf{Ganancia:} +30-50% capacidad
+    \item \textbf{Costo:} Bajo (solo firmware de transpondedores)
+    \item \textbf{Viabilidad:} ALTA
+\end{itemize}
+
+\textbf{3. Multiplexación espacial (SDM - Space Division Multiplexing)}
+\begin{itemize}
+    \item Activar más pares de fibras en el cable (cables submarinos tienen 4-8 pares típicamente)
+    \item Cada par es un sistema DWDM independiente
+    \item \textbf{Ganancia:} $\times N_{pares}$ (ej: 4× si activamos 4 pares)
+    \item \textbf{Costo:} Alto (transpondedores, amplificadores por par)
+    \item \textbf{Viabilidad:} ALTA si hay pares no usados
+\end{itemize}
+
+\textbf{4. Probabilistic Constellation Shaping (PCS)}
+\begin{itemize}
+    \item Símbolos no equiprobables (distribución Gaussiana)
+    \item Ganancia Shannon: 0.8-1.2 dB en OSNR equivalente
+    \item Permite usar 64-QAM donde antes requería 16-QAM
+    \item \textbf{Ganancia:} +10-20% capacidad
+    \item \textbf{Costo:} Muy bajo (DSP)
+    \item \textbf{Viabilidad:} MEDIA (requiere transpondedores avanzados)
+\end{itemize}
+
+\textbf{5. FEC más potente}
+\begin{itemize}
+    \item Pasar de SD-FEC (soft-decision) a códigos más avanzados
+    \item Ganancia: 1-2 dB en OSNR $\rightarrow$ permite modulación superior
+    \item \textbf{Costo:} Bajo (DSP mejorado)
+    \item \textbf{Ganancia capacidad:} +10-15%
+\end{itemize}
+
+\textbf{6. Reducir ocupación espectral}
+\begin{itemize}
+    \item Usar roll-off más bajo (ej: 0.1 en vez de 0.5)
+    \item Permite más canales en misma banda
+    \item \textbf{Ganancia:} +20-30% más canales
+    \item \textbf{Desventaja:} Requiere DSP más complejo, filtros más estrictos
+\end{itemize}
+
+\textbf{Tabla resumen:}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Solución} & \textbf{Ganancia} & \textbf{Costo} & \textbf{Viabilidad} \\
+\midrule
+Banda L & +100\% & Moderado & ALTA \\
+Mod. adaptativa & +30-50\% & Bajo & ALTA \\
+SDM (más pares) & +300\% (4 pares) & Alto & ALTA \\
+PCS & +10-20\% & Muy bajo & MEDIA \\
+Mejor FEC & +10-15\% & Bajo & ALTA \\
+Roll-off menor & +20-30\% & Medio & MEDIA \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Mejor estrategia:} Banda L (duplica capacidad) + Modulación adaptativa (añade 30\% más) = **+160\% capacidad total** (16 $\rightarrow$ 42 Tbit/s)
+
+\subsection{Pregunta 7: Capacidad máxima con DP-QPSK}
+
+\textbf{Datos DP-QPSK:}
+\begin{itemize}
+    \item Ocupación espectral: $B_{ch} = 37.5$ GHz (mayor que DP-8QAM)
+    \item Débit útil: $R_{PL} = 100$ Gbit/s (mismo)
+    \item OSNR target: $\text{OSNR}_{target} = 13$ dB (menor que DP-8QAM, más robusto)
+\end{itemize}
+
+\subsubsection{Número máximo de canales}
+
+\textbf{Límite espectral:}
+$$N_{ch} = \left\lfloor \frac{B_{amp}}{\Delta f} \right\rfloor = \left\lfloor \frac{4000}{37.5} \right\rfloor = \left\lfloor 106.67 \right\rfloor = \boxed{106 \text{ canales}}$$
+
+\textbf{Límite OSNR:}
+$$10\log_{10}(N_{ch}) \leq P_{max} + 58 - F - 10\log_{10}(N_{amp}) - \text{OSNR}_{target}$$
+$$10\log_{10}(N_{ch}) \leq 14.3 + 58 - 5 - 20.68 - 13$$
+$$10\log_{10}(N_{ch}) \leq 33.62$$
+$$N_{ch} \leq 2301$$ (muy superior a límite espectral)
+
+\textbf{Conclusión:} Límite es espectral, $N_{ch} = 106$ canales
+
+\subsubsection{Verificación OSNR}
+
+Potencia por canal:
+$$P_{ch} = P_{max} - 10\log_{10}(N_{ch}) = 14.3 - 10\log_{10}(106)$$
+$$P_{ch} = 14.3 - 20.25 = -5.95 \text{ dBm}$$
+
+OSNR en recepción:
+$$\text{OSNR}_{RX} = P_{ch} + 58 - F - 10\log_{10}(N_{amp})$$
+$$\text{OSNR}_{RX} = -5.95 + 58 - 5 - 20.68 = 26.37 \text{ dB}$$
+
+Margen:
+$$M = 26.37 - 13 = \boxed{13.37 \text{ dB}}$$ ✓ (excelente margen)
+
+\subsubsection{Capacidad total}
+
+$$C_{max,QPSK} = N_{ch} \times R_{PL} = 106 \times 100 = \boxed{10.6 \text{ Tbit/s}}$$
+
+\subsubsection{Comparación DP-QPSK vs DP-8QAM}
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Parámetro} & \textbf{DP-QPSK} & \textbf{DP-8QAM} & \textbf{Diferencia} \\
+\midrule
+$B_{ch}$ & 37.5 GHz & 25 GHz & +50\% ancho \\
+$N_{ch}$ & 106 & 160 & -34\% canales \\
+OSNR target & 13 dB & 15 dB & -2 dB (más robusto) \\
+$\eta_{ch}$ & 2.67 bit/s/Hz & 4 bit/s/Hz & -33\% eficiencia \\
+Capacidad & 10.6 Tbit/s & 16 Tbit/s & \textbf{-34\%} \\
+Margen OSNR & 13.37 dB & 9.58 dB & +3.8 dB \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Interpretación:}
+\begin{itemize}
+    \item DP-QPSK es más ROBUSTO (menor OSNR, mayor margen)
+    \item DP-8QAM es más EFICIENTE (50\% más capacidad)
+    \item Para este enlace (OSNR abundante), DP-8QAM es mejor elección
+    \item Para enlaces más largos o degradados, DP-QPSK sería preferible
+\end{itemize}
+
+\textbf{Trade-off alcance vs capacidad:}
+
+Con $\text{OSNR} \propto 1/N_{amp} \propto 1/L$:
+\begin{itemize}
+    \item DP-QPSK alcanza $\sim$50\% más distancia que DP-8QAM
+    \item Pero transporta 34\% menos capacidad
+\end{itemize}
+
+Para este cable específico (8260 km), DP-8QAM ofrece mejor rendimiento global.
+
+\vspace{1cm}
+\hrule
+\begin{center}
+\textit{Fin de las soluciones detalladas - Examen 2023 Parte B}
+\end{center}
+
+\end{document}

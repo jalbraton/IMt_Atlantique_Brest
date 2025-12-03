@@ -1,0 +1,623 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{multicol}
+
+\titleformat{\section}{\large\bfseries\color{blue}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{red}}{\thesubsection}{1em}{}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries Resumen Teor\'ia AIST}\\[0.3cm]
+{\large Arquitecturas e Ingenier\'ia de Sistemas de Transmisi\'on}\\[0.2cm]
+{\normalsize T\'erminos: Espa\~nol | \textit{English} | \textcolor{blue}{\textit{Fran\c{c}ais}}}
+\end{center}
+
+\tableofcontents
+\newpage
+
+\section{Arquitecturas de Emisores y Receptores}
+
+\subsection{Tipos de Arquitecturas}
+
+\textbf{Superheterodino (Superhet) | \textit{Superheterodyne} | \textcolor{blue}{\textit{Superh\'et\'erodyne}}}
+
+Arquitectura cl\'asica que convierte la se\~nal de RF a una frecuencia intermedia (IF) fija mediante un mezclador y un oscilador local (LO). Esta conversi\'on facilita el filtrado y amplificaci\'on de la se\~nal.
+
+\textbf{Principio de funcionamiento:} La se\~nal RF entrante se mezcla con una se\~nal generada por el LO. El mezclador produce la suma y diferencia de frecuencias, seleccion\'andose la diferencia como IF:
+$$f_{IF} = |f_{RF} - f_{LO}|$$
+
+\textbf{Problema de frecuencia imagen:} El mezclador tambi\'en puede mezclar una se\~nal no deseada (imagen) que est\'a separada del LO por la misma IF:
+$$f_{image} = f_{LO} + f_{IF} \quad \text{o} \quad f_{image} = f_{LO} - f_{IF}$$
+Esta frecuencia imagen aparece en la misma IF despu\'es de la mezcla, causando interferencia. Se requiere un \textbf{filtro de imagen} antes del mezclador para rechazarla.
+
+\textbf{Ventajas:} Alta selectividad (filtros IF optimizados), excelente sensibilidad, gran rechazo de frecuencia imagen con filtrado adecuado.
+
+\textbf{Desventajas:} Requiere filtro de imagen (volumen y costo), m\'ultiples etapas de conversi\'on, mayor complejidad.
+
+\textbf{Homodino (Zero-IF) | \textit{Homodyne / Direct conversion} | \textcolor{blue}{\textit{Homodyne / Conversion directe}}}
+
+Arquitectura que convierte directamente la se\~nal RF a banda base, eliminando la necesidad de frecuencia intermedia. El oscilador local opera exactamente a la misma frecuencia que la portadora RF.
+
+\textbf{Principio:} Al hacer $f_{LO} = f_{RF}$, la frecuencia intermedia resultante es cero: $f_{IF} = |f_{RF} - f_{LO}| = 0$. La se\~nal se demodula directamente a componentes I (en fase) y Q (en cuadratura) en banda base.
+
+\textbf{Ventajas principales:} No requiere filtro de imagen (no hay frecuencia imagen problem\'atica), integraci\'on muy sencilla en chips (menor costo y tama\~no), simplicidad arquitectural.
+
+\textbf{Problemas cr\'iticos:}
+
+1. \textbf{DC Offset | \textit{DC Offset} | \textcolor{blue}{\textit{D\'ecalage DC}}}: El OL puede acoplarse a trav\'es de la antena o internamente, mezclarse consigo mismo y generar una componente continua (DC) que satura los amplificadores de banda base. Soluci\'on: circuitos de cancelaci\'on de DC.
+
+2. \textbf{Radiaci\'on del OL | \textit{LO leakage} | \textcolor{blue}{\textit{Fuite d'OL}}}: El oscilador local puede radiar a trav\'es de la antena, causando interferencia a otros sistemas o violando normativas de emisi\'on.
+
+3. \textbf{Ruido 1/f | \textit{Flicker noise} | \textcolor{blue}{\textit{Bruit en 1/f}}}: A frecuencias muy bajas (banda base), el ruido 1/f de los transistores es significativo y degrada el SNR. Este ruido aumenta al disminuir la frecuencia.
+
+\textbf{Low-IF (Near Zero IF) | \textit{Low-IF} | \textcolor{blue}{\textit{Faible FI}}}
+
+Arquitectura de compromiso que utiliza una frecuencia intermedia muy baja, t\'ipicamente 1-2 veces el ancho de banda del canal. Combina ventajas de superheterodino y homodino.
+
+\textbf{Soluci\'on h\'ibrida:} La IF es lo suficientemente baja para facilitar la integraci\'on y reducir requisitos de filtrado, pero lo bastante alta para evitar problemas de DC offset y ruido 1/f del receptor homodino.
+
+\textbf{Rechazo de imagen:} Como la frecuencia imagen est\'a muy cerca de la se\~nal deseada, no se puede usar un filtro RF tradicional. Se emplean t\'ecnicas de procesado en cuadratura:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Arquitectura Hartley:} Usa desfasadores anal\'ogicos de 90\textdegree{} para cancelar la imagen.
+    \item \textbf{Arquitectura Weaver:} Emplea doble conversi\'on en cuadratura para suprimir la imagen mediante procesado digital.
+\end{itemize}
+
+\textbf{Ventajas:} Integraci\'on mejorada (sin filtros RF grandes), DC offset minimizado, menor sensibilidad al ruido 1/f, flexible para m\'ultiples est\'andares.
+
+\subsection{Componentes Clave}
+
+\textbf{Oscilador Local (OL) | \textit{Local Oscillator (LO)} | \textcolor{blue}{\textit{Oscillateur local (OL)}}}
+
+Genera la se\~nal de referencia para la conversi\'on de frecuencia en el mezclador. Su estabilidad y pureza espectral son cr\'iticas para el desempe\~no del sistema.
+
+\textbf{Sintetizador de frecuencia | \textit{Frequency synthesizer} | \textcolor{blue}{\textit{Synth\'etiseur de fr\'equence}}}: Genera frecuencias precisas y programables a partir de un cristal de referencia estable. Permite sintonizar diferentes canales.
+
+\textbf{PLL (Phase-Locked Loop) | \textcolor{blue}{\textit{Boucle \`a verrouillage de phase}}}: Circuito de realimentaci\'on que sincroniza la fase de un VCO (oscilador controlado por voltaje) con la referencia, multiplicando frecuencias y manteniendo estabilidad.
+
+\textbf{Ruido de fase | \textit{Phase noise} | \textcolor{blue}{\textit{Bruit de phase}}}: Fluctuaciones aleatorias en la fase de la se\~nal del oscilador. Degrada la calidad de modulaci\'on (aumenta EVM) y genera interferencia en canales adyacentes. Se mide en dBc/Hz a diferentes offsets de frecuencia.
+
+\textbf{Mezclador | \textit{Mixer} | \textcolor{blue}{\textit{M\'elangeur}}}
+
+Dispositivo no lineal que multiplica dos se\~nales (RF y LO) para realizar conversi\'on de frecuencia. Produce componentes suma y diferencia: $f_{RF} \pm f_{LO}$.
+
+\textbf{Funcionamiento:} Basado en la propiedad trigonom\'etrica: $\cos(A)\cos(B) = \frac{1}{2}[\cos(A-B) + \cos(A+B)]$. En la pr\'actica, genera m\'ultiples arm\'onicos y productos esp\'ureos.
+
+\textbf{P\'erdidas de conversi\'on | \textit{Conversion loss} | \textcolor{blue}{\textit{Pertes de conversion}}}: Atenuaci\'on inherente entre la potencia de entrada RF y la potencia de salida IF. T\'ipicamente 5-10 dB. Un mezclador ideal tendr\'ia -3 dB (divisi\'on de potencia).
+
+\textbf{Productos de intermodulaci\'on}: Cuando entran m\'ultiples se\~nales, el mezclador genera productos $mf_1 \pm nf_2$ donde m,n son enteros. Los de 3er orden ($2f_1-f_2$, $2f_2-f_1$) son especialmente problem\'aticos.
+
+\textbf{LNA (Low Noise Amplifier) | \textit{LNA} | \textcolor{blue}{\textit{Amplificateur \`a faible bruit (LNA)}}}
+
+Primera etapa del receptor que amplifica se\~nales d\'ebiles recibidas por la antena. Es el componente m\'as cr\'itico para la sensibilidad del receptor.
+
+\textbf{Importancia seg\'un Friis:} La f\'ormula de Friis muestra que la figura de ruido de la primera etapa domina el ruido total:
+$$F_{total} = F_1 + \frac{F_2-1}{G_1} + \frac{F_3-1}{G_1G_2} + \cdots$$
+
+Si $G_1$ es grande, las contribuciones de etapas posteriores se vuelven despreciables. Por eso el LNA debe tener:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Bajo NF}: T\'ipicamente 0.5-2 dB para minimizar degradaci\'on del SNR
+    \item \textbf{Alta ganancia}: 15-25 dB para "ocultar" el ruido de etapas siguientes
+    \item \textbf{Linealidad adecuada}: Suficiente IP3 para evitar desensibilizaci\'on con se\~nales fuertes
+\end{itemize}
+
+\textbf{HPA (High Power Amplifier) | \textit{HPA / Power Amplifier (PA)} | \textcolor{blue}{\textit{Amplificateur de puissance (HPA/PA)}}}
+\begin{itemize}[leftmargin=*]
+    \item Última etapa del emisor
+    \item Genera distorsiones no lineales
+    \item Compromiso linealidad vs. eficiencia
+\end{itemize}
+
+\section{Distorsiones en el Amplificador de Potencia}
+
+\subsection{Distorsiones No Lineales}
+
+\textbf{Compresi\'on de ganancia | \textit{Gain compression} | \textcolor{blue}{\textit{Compression de gain}}}
+
+Fen\'omeno no lineal donde la ganancia del amplificador disminuye al aumentar la potencia de entrada. Ocurre cuando el PA se acerca a su l\'imite de operaci\'on.
+
+\textbf{Punto de compresi\'on a 1 dB ($P_{1dB}$):} Potencia de entrada donde la ganancia real es 1 dB menor que la ganancia lineal ideal:
+$$P_{1dB}: \text{Potencia donde } G_{real} = G_{lineal} - 1 \text{ dB}$$
+
+Es una m\'etrica est\'andar para caracterizar el l\'imite de linealidad. M\'as all\'a de $P_{1dB}$, la distorsi\'on aumenta r\'apidamente.
+
+\textbf{Punto de saturaci\'on | \textit{Saturation point} | \textcolor{blue}{\textit{Point de saturation}}}
+
+Regi\'on donde el amplificador alcanza su m\'axima potencia de salida y no puede amplificar m\'as, independientemente del aumento en la entrada. La forma de onda de salida se "recorta" o "clipea".
+
+\textbf{Caracter\'isticas:}
+\begin{itemize}[leftmargin=*]
+    \item M\'axima eficiencia energ\'etica (dispositivos operan en conducci\'on m\'axima)
+    \item Alt\'isima distorsi\'on harm\'onica e intermodulaci\'on
+    \item Ensanchamiento espectral severo (ACPR muy degradado)
+    \item Usado intencionalmente en amplificadores clase C, D, E (eficiencia > linealidad)
+\end{itemize}
+
+\textbf{Back-off (BO) | \textit{Back-off} | \textcolor{blue}{\textit{Recul (Back-off)}}}
+
+T\'ecnica fundamental para operar un PA en regi\'on lineal, sacrificando eficiencia para mantener calidad de se\~nal. Consiste en reducir la potencia nominal de operaci\'on respecto al punto de compresi\'on:
+$$P_{operaci\'on} = P_{1dB} - BO$$
+
+\textbf{Raz\'on del back-off:} Las modulaciones con envolvente variable (QAM, OFDM) tienen picos de potencia instant\'anea muy superiores a la potencia media. Si operamos cerca de $P_{1dB}$, estos picos se comprimen, generando distorsi\'on.
+
+\textbf{Selecci\'on del BO:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{QPSK/8PSK}: 3-5 dB (envolvente casi constante)
+    \item \textbf{16QAM/64QAM}: 6-8 dB (envolvente variable)
+    \item \textbf{OFDM}: 8-12 dB (PAPR muy alto)
+\end{itemize}
+
+\textbf{Compromiso cr\'itico:} Mayor BO $\rightarrow$ mejor linealidad y menor ACPR, pero eficiencia energ\'etica reducida (bater\'ia, disipaci\'on t\'ermica). Las t\'ecnicas de linealizaci\'on (DPD, Doherty) buscan reducir el BO necesario.
+
+\subsection{Intermodulaci\'on}
+
+\textbf{Productos de intermodulaci\'on (IMD) | \textit{Intermodulation products} | \textcolor{blue}{\textit{Produits d'intermodulation}}}
+
+Cuando dos o m\'as se\~nales de diferentes frecuencias pasan por un sistema no lineal, interact\'uan generando nuevas frecuencias (productos de intermodulaci\'on).
+
+\textbf{Ejemplo con dos tonos $f_1$ y $f_2$:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Segundo orden}: $f_1 \pm f_2$ (generalmente filtrados f\'acilmente, lejos de banda)
+    \item \textbf{Tercer orden (IM3)}: $2f_1 \pm f_2$ y $2f_2 \pm f_1$ (\textbf{PROBLEM\'ATICOS})
+\end{itemize}
+
+\textbf{\textquestiondown Por qu\'e IM3 es cr\'itico?} Si $f_1$ y $f_2$ est\'an cerca, los productos $2f_1-f_2$ y $2f_2-f_1$ caen \textbf{dentro de la banda de inter\'es}, donde no pueden filtrarse. Aparecen como interferencia o ruido que degrada el SNR.
+
+\textbf{Punto de intercepci\'on de tercer orden (IP3) | \textit{Third-order intercept point} | \textcolor{blue}{\textit{Point d'interception du troisi\`eme ordre}}}
+
+M\'etrica te\'orica que caracteriza la linealidad. Representa el punto (extrapolado) donde la potencia de los productos IM3 igualar\'ia la potencia de las se\~nales fundamentales.
+
+\textbf{Relaci\'on de potencias:}
+$$P_{IM3,out} = 3P_{in} - 2P_{IP3,out}$$
+
+\textbf{Comportamiento clave:}
+\begin{itemize}[leftmargin=*]
+    \item Fundamental aumenta 1 dB por cada 1 dB de entrada
+    \item IM3 aumenta \textbf{3 dB} por cada 1 dB de entrada (pendiente 3:1)
+    \item Mayor IP3 $\rightarrow$ productos IM3 m\'as d\'ebiles $\rightarrow$ mejor linealidad
+    \item T\'ipicamente: $IP3_{out} \approx P_{1dB} + 10\text{ a }15$ dB
+\end{itemize}
+
+\textbf{Aplicaci\'on pr\'actica:} Calcular cu\'anta interferencia IM3 generar\'an dos bloqueadores fuertes, para verificar que el receptor pueda detectar se\~nales d\'ebiles.
+
+\subsection{Distorsiones de Enveloppe}
+
+\textbf{PAPR (Peak-to-Average Power Ratio) | \textit{PAPR / Crest Factor} | \textcolor{blue}{\textit{Rapport puissance cr\^ete/moyenne (PAPR)}}}
+
+Raz\'on entre la potencia de pico instant\'anea y la potencia promedio de una se\~nal. M\'etrica fundamental que determina el back-off necesario en el PA.
+
+$$PAPR = \frac{P_{pico}}{P_{promedio}} \quad \text{o en dB: } PAPR_{dB} = 10\log_{10}\left(\frac{P_{pico}}{P_{promedio}}\right)$$
+
+\textbf{Impacto en el dise\~no:} Un PAPR alto significa que los picos de potencia son mucho mayores que el promedio. El PA debe dimensionarse para los picos (no para el promedio), lo que:
+\begin{itemize}[leftmargin=*]
+    \item Requiere mayor back-off para evitar compresi\'on de picos
+    \item Reduce eficiencia (PA opera lejos de saturaci\'on la mayor parte del tiempo)
+    \item Aumenta costo y tama\~no (PA m\'as potente)
+\end{itemize}
+
+\textbf{Valores t\'ipicos:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{FSK, GMSK}: 0-2 dB (envolvente casi constante, ideal para eficiencia)
+    \item \textbf{QPSK}: 3-4 dB (envolvente variable moderada)
+    \item \textbf{16QAM, 64QAM}: 6-8 dB (constelaciones con amplitudes variables)
+    \item \textbf{OFDM (LTE, WiFi)}: 10-13 dB (suma coherente de muchas subportadoras)
+\end{itemize}
+
+\textbf{T\'ecnicas de reducci\'on de PAPR:} Clipping, tone reservation, selected mapping (SLM), para permitir menor back-off y mejor eficiencia.
+
+\textbf{Conversión AM/AM | \textit{AM-to-AM conversion} | \textcolor{blue}{\textit{Conversion AM/AM}}}
+\begin{itemize}[leftmargin=*]
+    \item Variación de ganancia con amplitud de entrada
+    \item Genera distorsi\'on de amplitud en se\~nal
+\end{itemize}
+
+\textbf{Conversión AM/PM | \textit{AM-to-PM conversion} | \textcolor{blue}{\textit{Conversion AM/PM}}}
+\begin{itemize}[leftmargin=*]
+    \item Variaci\'on de fase con amplitud de entrada
+    \item Cr\'itico para modulaciones de fase (PSK, QAM)
+\end{itemize}
+
+\textbf{ACPR (Adjacent Channel Power Ratio) | \textit{ACPR} | \textcolor{blue}{\textit{Rapport de puissance de canal adjacent (ACPR)}}}
+\begin{itemize}[leftmargin=*]
+    \item Medida de interferencia en canales adyacentes
+    \item Causado por no linealidades del PA
+    \item Especificaciones t\'ipicas: -45 a -60 dBc
+\end{itemize}
+
+\textbf{EVM (Error Vector Magnitude) | \textit{EVM} | \textcolor{blue}{\textit{Amplitude du vecteur d'erreur (EVM)}}}
+\begin{itemize}[leftmargin=*]
+    \item Medida de calidad de modulaci\'on
+    \item Combina errores de amplitud y fase
+    \item EVM\% t\'ipico: 1-8\% seg\'un modulaci\'on
+\end{itemize}
+
+\section{Ruido y Distorsiones en Recepción}
+
+\subsection{Relación Portadora/(Ruido+Interferencia)}
+
+\textbf{C/(N+I) | \textit{Carrier-to-Noise-plus-Interference} | \textcolor{blue}{\textit{Rapport porteuse/(bruit+interf.)}}}
+
+$$\frac{1}{C/(N+I)} = \frac{1}{C/N} + \frac{1}{C/I}$$
+
+Cálculo con IP3:
+$$C/I_{IM3} = 2(P_{IP3} - P_{in}) - P_{blocker}$$
+
+\textbf{Desensibilizaci\'on del receptor | \textit{Receiver desensitization} | \textcolor{blue}{\textit{D\'esensibilisation du r\'ecepteur}}}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Se\~nal bloqueadora} | \textit{Blocking signal} | \textcolor{blue}{\textit{Signal bloqueur}}
+    \item Comprime el receptor reduciendo ganancia efectiva
+    \item Aumenta piso de ruido aparente
+\end{itemize}
+
+\subsection{IP2 en Mezcladores}
+
+\textbf{Productos de segundo orden | \textit{Second-order products} | \textcolor{blue}{\textit{Produits du deuxième ordre}}}
+
+\textbf{Half-IF Spurious:}
+\begin{itemize}[leftmargin=*]
+    \item Se\~nales a $f_{RF} \pm f_{IF}/2$ generan interferencia en IF
+    \item Cr\'itico en receptores superheterodinos
+\end{itemize}
+
+\textbf{Cross-modulation | \textit{Cross-modulation} | \textcolor{blue}{\textit{Modulation crois\'ee}}}
+\begin{itemize}[leftmargin=*]
+    \item Transferencia de modulaci\'on de se\~nal interferente a se\~nal \'util
+    \item Causado por no linealidades de segundo orden
+\end{itemize}
+
+\section{Técnicas de Linealización}
+
+\subsection{Feedforward | \textit{Feedforward} | \textcolor{blue}{\textit{Pr\'e-correction (Feedforward)}}}
+
+\begin{itemize}[leftmargin=*]
+    \item Genera se\~nal de error y la resta de la salida
+    \item Alto ancho de banda
+    \item Complejidad y consumo elevados
+    \item Linealización de 15-20 dB
+\end{itemize}
+
+\subsection{Predistorsi\'on}
+
+\textbf{Predistorsión analógica RF | \textit{RF analog predistortion} | \textcolor{blue}{\textit{Pr\'edistorsion analogique RF}}}
+\begin{itemize}[leftmargin=*]
+    \item Circuito no lineal antes del PA
+    \item Caracter\'istica inversa al PA
+    \item Ancho de banda limitado
+\end{itemize}
+
+\textbf{Predistorsi\'on digital (DPD) | \textit{Digital predistortion (DPD)} | \textcolor{blue}{\textit{Pr\'edistorsion num\'erique (DPD)}}}
+
+T\'ecnica de linealizaci\'on l\'ider en sistemas modernos. Predistorsiona digitalmente la se\~nal en banda base con la caracter\'istica inversa del PA, de modo que la cascada resulta lineal.
+
+\textbf{Principio:} Si el PA comprime amplitudes altas, el DPD las preamplifica para compensar. Si el PA introduce desfasaje (AM/PM), el DPD aplica correcci\'on de fase opuesta.
+
+\textbf{Implementaci\'on adaptativa:}
+\begin{enumerate}
+    \item Se\~nal en banda base pasa por bloque DPD (DSP/FPGA)
+    \item DAC convierte a anal\'ogico y upconverter sube a RF
+    \item PA amplifica (con distorsi\'on)
+    \item Acoplador direccional toma muestra de salida
+    \item Downconverter + ADC retroalimenta se\~nal al DSP
+    \item Algoritmo adaptativo (LMS, RLS) compara entrada deseada vs salida real
+    \item Actualiza coeficientes del DPD para minimizar error
+\end{enumerate}
+
+\textbf{Ventajas:}
+\begin{itemize}[leftmargin=*]
+    \item Mejora t\'ipica: 10-20 dB en ACPR, permitiendo reducir back-off 3-6 dB
+    \item Adaptativo: compensa variaciones por temperatura, envejecimiento, frecuencia
+    \item Flexible: reprogramable por software
+    \item Amplio ancho de banda (100+ MHz con hardware adecuado)
+\end{itemize}
+
+\textbf{Desaf\'ios:}
+\begin{itemize}[leftmargin=*]
+    \item Requiere DAC/ADC de alta velocidad y resoluci\'on (12-16 bits, GS/s)
+    \item Latencia y sincronizaci\'on cr\'itica en bucle de realimentaci\'on
+    \item Complejidad computacional (millones de operaciones/s)
+    \item Efectos de memoria del PA (dependen de historia, no solo instant\'anea)
+\end{itemize}
+
+\subsection{T\'ecnicas de Mejora de Eficiencia}
+
+\textbf{Envelope Tracking (ET) | \textit{Envelope Tracking} | \textcolor{blue}{\textit{Suivi d'enveloppe (ET)}}}
+\begin{itemize}[leftmargin=*]
+    \item Alimentaci\'on del PA modulada seg\'un enveloppe de se\~nal
+    \item Mantiene PA cerca de saturación (eficiente)
+    \item Mejora eficiencia en 30-50\%
+\end{itemize}
+
+\textbf{EER (Envelope Elimination and Restoration) | \textit{EER / Kahn technique} | \textcolor{blue}{\textit{\'Elimination et restauration d'enveloppe (EER)}}}
+\begin{itemize}[leftmargin=*]
+    \item Separa fase y amplitud
+    \item Amplifica fase con PA saturado (eficiente)
+    \item Recombina con informaci\'on de amplitud
+\end{itemize}
+
+\textbf{LINC (Linear Amplification with Nonlinear Components) | \textit{LINC} | \textcolor{blue}{\textit{LINC}}}
+\begin{itemize}[leftmargin=*]
+    \item Descompone se\~nal en dos componentes de amplitud constante
+    \item Usa dos PAs saturados (eficientes)
+    \item Recombina se\~nales para recuperar original
+\end{itemize}
+
+\textbf{Doherty | \textit{Doherty amplifier} | \textcolor{blue}{\textit{Amplificateur Doherty}}}
+
+Arquitectura que mejora dram\'aticamente la eficiencia a potencias medias (back-off), donde operan la mayor parte del tiempo los sistemas de comunicaciones reales.
+
+\textbf{Concepto clave:} Divide la amplificaci\'on entre dos PAs:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{PA Principal (Main/Carrier)}: Opera continuamente, optimizado para eficiencia a potencias bajas-medias (clase AB)
+    \item \textbf{PA Auxiliar (Peak/Peaking)}: Se activa solo cuando la se\~nal supera un umbral (t\'ipicamente 6 dB back-off), a\~nade potencia para picos (clase C, alta eficiencia)
+\end{itemize}
+
+\textbf{Funcionamiento:}
+\begin{enumerate}
+    \item \textbf{Potencias bajas}: Solo el PA principal activo, opera cerca de saturaci\'on $\rightarrow$ eficiente
+    \item \textbf{Potencias medias}: PA principal se acerca a l\'imite, PA auxiliar empieza a contribuir
+    \item \textbf{Picos de potencia}: Ambos PAs activos, comparten carga v\'ia combinador especial (red de adaptaci\'on de impedancia)
+\end{enumerate}
+
+\textbf{Ventaja principal:} Mantiene alta eficiencia en un rango amplio de potencias (\textasciitilde{}6-10 dB), no solo en pico. Ideal para LTE/5G donde potencia promedio << potencia pico.
+
+\textbf{Mejora t\'ipica:} 10-15\% de eficiencia absoluta vs PA clase AB convencional a 6-8 dB back-off.
+
+\textbf{Aplicaciones:} Estaciones base 3G/4G/5G, equipos de infraestructura donde el consumo energ\'etico es cr\'itico (OPEX).
+
+\section{Sistemas de Comunicaci\'on}
+
+\subsection{Faisceaux Hertziens (FH)}
+
+\textbf{Enlace microondas terrestre | \textit{Microwave link / Radio relay} | \textcolor{blue}{\textit{Faisceau hertzien (FH)}}}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Visibilidad directa} | \textit{Line-of-sight (LOS)} | \textcolor{blue}{\textit{Visibilit\'e directe}}
+    \item Frecuencias: 1.7 - 38 GHz
+    \item \textbf{Diversidad de frecuencia} | \textit{Frequency diversity} | \textcolor{blue}{\textit{Diversit\'e de fr\'equence}}
+    \item \textbf{Diversidad de espacio} | \textit{Space diversity} | \textcolor{blue}{\textit{Diversit\'e d'espace}}
+    \item \textbf{Polarizaci\'on cruzada} | \textit{Cross-polarization} | \textcolor{blue}{\textit{Polarisation crois\'ee}}
+\end{itemize}
+
+\subsection{Enlaces Satelitales}
+
+\textbf{Tipos de \'orbita | \textit{Orbit types} | \textcolor{blue}{\textit{Types d'orbite}}}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{GEO (Geostationary)} | \textit{GEO} | \textcolor{blue}{\textit{GEO (G\'eostationnaire)}}: 35,786 km
+    \begin{itemize}
+        \item Retardo: 250-280 ms
+        \item Cobertura fija
+        \item Broadcast, comunicaciones
+    \end{itemize}
+    \item \textbf{MEO (Medium Earth Orbit)} | \textit{MEO} | \textcolor{blue}{\textit{MEO (Orbite moyenne)}}: 2,000-35,786 km
+    \begin{itemize}
+        \item GPS: 20,200 km
+        \item Constelaciones de navegaci\'on
+    \end{itemize}
+    \item \textbf{LEO (Low Earth Orbit)} | \textit{LEO} | \textcolor{blue}{\textit{LEO (Orbite basse)}}: 500-2,000 km
+    \begin{itemize}
+        \item Retardo: 3-10 ms
+        \item Mega-constelaciones (Starlink, OneWeb)
+        \item Requiere handover entre sat\'elites
+    \end{itemize}
+\end{itemize}
+
+\textbf{Transpondedor | \textit{Transponder} | \textcolor{blue}{\textit{R\'ep\'eteur/Transpondeur}}}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Transparente} | \textit{Transparent / Bent-pipe} | \textcolor{blue}{\textit{Transparent}}
+    \begin{itemize}
+        \item Solo conversión de frecuencia y amplificación
+        \item Sin regeneraci\'on de se\~nal
+    \end{itemize}
+    \item \textbf{Regenerativo (OBP)} | \textit{Regenerative / On-Board Processing} | \textcolor{blue}{\textit{R\'eg\'en\'eratif (OBP)}}
+    \begin{itemize}
+        \item Demodulaci\'on, procesamiento, remodulaci\'on
+        \item Mayor complejidad pero mejor calidad
+    \end{itemize}
+\end{itemize}
+
+\textbf{Bandas satelitales | \textit{Satellite bands} | \textcolor{blue}{\textit{Bandes satellite}}}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Banda C:} 6 GHz (uplink) / 4 GHz (downlink)
+    \item \textbf{Banda Ku:} 14 GHz (uplink) / 11-12 GHz (downlink)
+    \item \textbf{Banda Ka:} 30 GHz (uplink) / 20 GHz (downlink)
+\end{itemize}
+
+\section{Conceptos Fundamentales}
+
+\subsection{Figura de Ruido y Temperatura}
+
+\textbf{Figura de ruido (NF) | \textit{Noise Figure} | \textcolor{blue}{\textit{Facteur de bruit (NF)}}}
+
+$$NF = \frac{SNR_{in}}{SNR_{out}} = \frac{(S/N)_{entrada}}{(S/N)_{salida}}$$
+
+$$T_{eq} = T_0(F-1) \quad \text{con } T_0 = 290 \text{ K}$$
+
+\textbf{F\'ormula de Friis | \textit{Friis formula} | \textcolor{blue}{\textit{Formule de Friis}}}
+
+Ecuaci\'on fundamental que calcula la figura de ruido total de un sistema en cascada (receptor multi-etapa). Muestra c\'omo cada componente contribuye al ruido total.
+
+$$F_{total} = F_1 + \frac{F_2-1}{G_1} + \frac{F_3-1}{G_1G_2} + \frac{F_4-1}{G_1G_2G_3} + \cdots$$
+
+Donde:
+\begin{itemize}[leftmargin=*]
+    \item $F_i$: Figura de ruido (relaci\'on, no dB) de la etapa i
+    \item $G_i$: Ganancia de potencia (relaci\'on, no dB) de la etapa i
+\end{itemize}
+
+\textbf{Interpretaci\'on f\'isica:}
+\begin{enumerate}
+    \item El ruido de la \textbf{primera etapa} ($F_1$) aparece directamente (sin divisi\'on)
+    \item El ruido de la segunda etapa se divide por $G_1$ (amplificaci\'on previa "enmascara" este ruido)
+    \item El ruido de la tercera etapa se divide por $G_1G_2$ (doblemente enmascarado)
+    \item Y as\'i sucesivamente...
+\end{enumerate}
+
+\textbf{Consecuencia pr\'actica (\textbf{crucial}):}
+\begin{itemize}[leftmargin=*]
+    \item La \textbf{primera etapa domina} el ruido total del receptor
+    \item Si $G_1$ es grande (15-25 dB), las etapas posteriores contribuyen muy poco
+    \item Por eso se usa un \textbf{LNA} al inicio: bajo NF (0.5-2 dB) + alta ganancia (20 dB)
+\end{itemize}
+
+\textbf{Ejemplo num\'erico:}
+Si $F_1=2$ (3 dB), $G_1=100$ (20 dB), $F_2=5$ (7 dB):
+$$F_{total} = 2 + \frac{5-1}{100} = 2 + 0.04 = 2.04 \approx 3.1 \text{ dB}$$
+
+A pesar de que la 2\textordfeminine{} etapa tiene 7 dB de NF, solo a\~nade 0.1 dB al total gracias a la ganancia del LNA.
+
+\subsection{Eficiencia Espectral}
+
+\textbf{Eficiencia espectral | \textit{Spectral efficiency} | \textcolor{blue}{\textit{Efficacit\'e spectrale}}}
+
+$$\eta = \log_2(M) \quad [\text{bit/s/Hz}]$$
+
+donde $M$ es el orden de modulaci\'on (4 para QPSK, 16 para 16QAM, etc.)
+
+\textbf{Capacidad de Shannon | \textit{Shannon capacity} | \textcolor{blue}{\textit{Capacit\'e de Shannon}}}
+
+Teorema fundamental de la teor\'ia de la informaci\'on que establece el l\'imite te\'orico m\'aximo de velocidad de transmisi\'on libre de errores en un canal con ruido gaussiano.
+
+$$C = B\log_2(1 + SNR) \quad [\text{bit/s}]$$
+
+Donde:
+\begin{itemize}[leftmargin=*]
+    \item $C$: Capacidad del canal (m\'axima tasa de bits sin error)
+    \item $B$: Ancho de banda disponible [Hz]
+    \item $SNR$: Relaci\'on se\~nal-ruido (potencia, no dB): $SNR = \frac{P_{se\~nal}}{P_{ruido}}$
+\end{itemize}
+
+\textbf{Significado profundo:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Alcanzable}: Con codificaci\'on suficientemente sofisticada, se puede transmitir a tasas $< C$ con probabilidad de error arbitrariamente peque\~na
+    \item \textbf{Inalcanzable}: Ning\'un esquema puede transmitir de forma fiable a tasas $> C$, sin importar la complejidad del c\'odigo
+\end{itemize}
+
+\textbf{Implicaciones pr\'acticas:}
+\begin{enumerate}
+    \item \textbf{Trade-off ancho de banda vs SNR}: Puedo aumentar capacidad incrementando $B$ o mejorando $SNR$
+    \item \textbf{Rendimientos decrecientes}: Doblar SNR (duplicar potencia) solo aumenta $C$ en $\log_2(2) \approx 1$ bit/s/Hz adicional
+    \item \textbf{Codificaci\'on es clave}: Turbo c\'odigos, LDPC, Polar codes modernos operan a \textasciitilde{}0.5-1 dB del l\'imite de Shannon
+\end{enumerate}
+
+\textbf{Ejemplo:} Canal con $B=10$ MHz y $SNR=31.6$ (15 dB):
+$$C = 10 \times 10^6 \times \log_2(1+31.6) = 10 \times 10^6 \times 5.02 \approx 50.2 \text{ Mbit/s}$$
+
+\subsection{Relaciones Energéticas}
+
+\textbf{$E_b/N_0$ | \textit{Energy per bit to noise} | \textcolor{blue}{\textit{\'Energie par bit sur densit\'e de bruit}}}
+
+$$\frac{E_b}{N_0} = \frac{C/N}{R_b/B} = (C/N) \cdot \frac{B}{R_b}$$
+
+\begin{itemize}[leftmargin=*]
+    \item M\'etrica fundamental para BER
+    \item Independiente del ancho de banda
+    \item Permite comparar diferentes sistemas
+\end{itemize}
+
+\section{Glosario Multilingüe Esencial}
+
+\begin{multicols}{2}
+\small
+\textbf{Amplificador}\\
+\textit{Amplifier}\\
+\textcolor{blue}{\textit{Amplificateur}}
+
+\textbf{Antena}\\
+\textit{Antenna}\\
+\textcolor{blue}{\textit{Antenne}}
+
+\textbf{Atenuaci\'on}\\
+\textit{Attenuation}\\
+\textcolor{blue}{\textit{Affaiblissement}}
+
+\textbf{Banda de base}\\
+\textit{Baseband}\\
+\textcolor{blue}{\textit{Bande de base}}
+
+\textbf{Canal}\\
+\textit{Channel}\\
+\textcolor{blue}{\textit{Canal}}
+
+\textbf{Codificaci\'on}\\
+\textit{Coding}\\
+\textcolor{blue}{\textit{Codage}}
+
+\textbf{Demodulaci\'on}\\
+\textit{Demodulation}\\
+\textcolor{blue}{\textit{D\'emodulation}}
+
+\textbf{Duplexaci\'on}\\
+\textit{Duplexing}\\
+\textcolor{blue}{\textit{Duplexage}}
+
+\textbf{Emisor}\\
+\textit{Transmitter}\\
+\textcolor{blue}{\textit{\'Emetteur}}
+
+\textbf{Filtro}\\
+\textit{Filter}\\
+\textcolor{blue}{\textit{Filtre}}
+
+\textbf{Ganancia}\\
+\textit{Gain}\\
+\textcolor{blue}{\textit{Gain}}
+
+\textbf{Interferencia}\\
+\textit{Interference}\\
+\textcolor{blue}{\textit{Interf\'erence}}
+
+\textbf{Linealidad}\\
+\textit{Linearity}\\
+\textcolor{blue}{\textit{Lin\'earit\'e}}
+
+\textbf{Modulaci\'on}\\
+\textit{Modulation}\\
+\textcolor{blue}{\textit{Modulation}}
+
+\textbf{Multiplexaci\'on}\\
+\textit{Multiplexing}\\
+\textcolor{blue}{\textit{Multiplexage}}
+
+\textbf{Potencia}\\
+\textit{Power}\\
+\textcolor{blue}{\textit{Puissance}}
+
+\textbf{Receptor}\\
+\textit{Receiver}\\
+\textcolor{blue}{\textit{R\'ecepteur}}
+
+\textbf{Rendimiento}\\
+\textit{Efficiency}\\
+\textcolor{blue}{\textit{Rendement}}
+
+\textbf{Ruido}\\
+\textit{Noise}\\
+\textcolor{blue}{\textit{Bruit}}
+
+\textbf{Sensibilidad}\\
+\textit{Sensitivity}\\
+\textcolor{blue}{\textit{Sensibilit\'e}}
+
+\textbf{Se\~nal}\\
+\textit{Signal}\\
+\textcolor{blue}{\textit{Signal}}
+
+\textbf{Tasa de error}\\
+\textit{Error rate}\\
+\textcolor{blue}{\textit{Taux d'erreur}}
+\end{multicols}
+
+\end{document}

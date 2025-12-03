@@ -1,0 +1,179 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\title{\textbf{Examination UE -- AIST\\Architectures and system engineering}}
+\author{March 2024}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Terms of the examination}
+
+\begin{itemize}
+    \item Course materials of the UE and calculator allowed
+    \item Use of personal computer or tablet possible for consulting documents. Use of the Internet, e-mail or any other medium is strictly forbidden.
+    \item Non-French speakers can write in English
+    \item Parts (A, B) are independent and must be written on separate copies.
+\end{itemize}
+
+\section{RF terrestrial and satellite communication links (45 mn)}
+
+The 71-76 GHz and 81-86 GHz bands (E-band) can now be used for very-high-speed communications. Commercial systems operate these frequency bands for point-to-point terrestrial wireless links with data rates of up to 10 Gb/s, using QAM modulation schemes. The E-band is also being considered for links with Low Earth Orbit (LEO) satellites.
+
+We propose to study a terrestrial and satellite radio link, under clear-sky conditions, at 83.5 GHz.
+
+The transmit and receive architecture for the terrestrial link is depicted in Fig. 1 and the specifications of the components are given in Table I.
+
+\begin{figure}[h]
+    \centering
+    \textit{Fig. 1: transmit (Tx) and receive (Rx) architecture for the terrestrial link}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{Specifications of the components in the terrestrial transmission system}
+\textit{[Detailed specifications provided in the exam paper]}
+\end{table}
+
+At 83.5 GHz, the lineic attenuation due to the atmosphere is about 0.5 dB/km. The available channel frequency bandwidth for data transmission is $B = 5$ GHz.
+
+\subsection{Free space losses}
+
+\begin{enumerate}[label=\alph*.]
+    \item Specify the required conditions for a free-space propagation and give the general expression of the free space loss $A_{FS}$ as a function of distance $d$ and frequency $f$.
+    
+    \item Calculate $A_{FS}$ at $d = 40$ km (terrestrial link) and $d = 2000$ km (LEO link).
+    
+    \item Calculate the total free space attenuation $A_T$ (in dB) taking into account the atmosphere.
+    
+    \item A $10^{-3}$ bit error rate with a QPSK modulation requires a minimum received power at the receiver input of $P_{R,min} = -84$ dBm for the considered bandwidth. Calculate the required EIRP (in dBm) for both the terrestrial and satellite links assuming identical antennas of gain $G = 47$ dBi at the transmitter and receiver.
+\end{enumerate}
+
+In the following questions (e, f, g), the Tx and Rx antenna efficiency is $\eta = 0.55$
+
+\begin{enumerate}[label=\alph*., start=5]
+    \item In the terrestrial link, the Tx et RX antennas are supposed to be identical circular parabolic antennas. Calculate the required antenna diameter to achieve the gain of $G = 47$ dBi. Is this realistic for a terrestrial point-to-point link?
+    
+    \item In the satellite link, the ground station is equipped with a parabolic antenna (diameter $d = 1.2$ m). Calculate its gain and deduce the required gain for the satellite antenna.
+    
+    \item Calculate the 3dB angle (in degrees) of the antennas in the terrestrial link. Comment the need for accurate antenna pointing.
+\end{enumerate}
+
+\subsection{Terrestrial link budget}
+
+\begin{enumerate}[label=\alph*., start=8]
+    \item What are the Tx and Rx architecture types (see Fig. 1)? Calculate the LO frequency for the Tx and Rx stages.
+    
+    \item Calculate the noise figure of the receiver (in dB) considering the components between the antenna output and the IF signal output.
+    
+    \item Calculate the received signal power (in dBm) for the terrestrial link.
+    
+    \item Calculate the total noise power at the receiver input (in dBm).
+    
+    \item Calculate the C/N ratio (in dB) and the margin with respect to the required C/N for QPSK modulation.
+    
+    \item Given the curves in Fig. 2 below, what are the limits of the studied link as dimensioned?
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \textit{Fig. 2: lineic attenuation (dB/km) due to the rain depending on the frequency}
+\end{figure}
+
+\newpage
+
+\section{Maximal link budget of a DWDM link without in-line amplifiers (45 mn)}
+
+One wants to estimate the maximal link budget of a point-to-point DWDM system for Data Center Interconnection purposes in a metropolitan context.
+
+A booster amplifier and a preamplifier are used at the transmitting and receiving terminals respectively but in-line amplifiers are not allowed. Systems must be in conformance with the transponders' characteristics (see annex) and present a 2 dB OSNR margin at the receiver side.
+
+System configuration noted A (resp. B and C) is using only transponder model A (resp. B and C).
+
+\subsection*{Questions}
+
+\begin{enumerate}
+    \item Draw a system architecture diagram showing all the optical elements. Each optical element is represented by a rectangle. Patch cords needed to interconnect optical elements are represented by a line connecting rectangles. S and R points have to be represented.
+    
+    The S point is defined as the entry point of the patch cord to the line at the transmitting side whereas the R point is defined as the output point of the patch cord of the fiber line at the receiving side.
+    
+    \vspace{4cm}
+    
+    \item What is the maximum number $N_A$ (resp. $N_B$ and $N_C$) of optical channels that can be transmitted in system configuration A (resp. B and C)?
+    
+    \vspace{3cm}
+    
+    \item What is the optical power per channel (in dBm) launched at point S in system configuration A (resp. B and C) when $N_A$ (resp. $N_B$ and $N_C$) channels are transmitted?
+    
+    \vspace{3cm}
+    
+    \item What is the OSNR value (in dB) at point S in system configuration A (resp. B and C)? Do you really need to take the booster amplifier's noise into account? Explain why.
+    
+    \vspace{3cm}
+    
+    \item What is the minimum power per channel (in dBm) to be received at point R in system configuration A (resp. B and C) if optical channels are received by transponders under power and OSNR threshold conditions with 2dB OSNR margin?
+    
+    \vspace{3cm}
+    
+    \item What is the link budget in dB (calculated between S and R points) for system configuration A (resp. B and C)?
+    
+    \vspace{3cm}
+    
+    \item What is then the maximum transmission distance for system configuration A (resp. B and C) over a fiber line with 0.18 dB/km attenuation?
+    
+    \vspace{3cm}
+\end{enumerate}
+
+\newpage
+
+\section*{Annex: Card Data Sheet}
+
+Transponder cards comprise a transmitting optical interface and a receiving optical interface to terminate a single optical channel.
+
+\subsection*{100 Gbit/s transponder card, model TRX-A:}
+
+\textit{[Detailed specifications provided in the exam paper]}
+
+\subsection*{200 Gbit/s transponder card, model TRX-B:}
+
+\textit{[Detailed specifications provided in the exam paper]}
+
+\subsection*{400 Gbit/s transponder card, model TRX-C:}
+
+\textit{[Detailed specifications provided in the exam paper]}
+
+\textbf{Note 1:} OSNR is by definition measured in an optical bandwidth $B_{opt}$ of 12.5 GHz.
+
+\subsection*{Optical Amplifier Card:}
+
+\textit{[Detailed specifications provided in the exam paper]}
+
+\textbf{Note 1 :} The gain figure is given under small input signal conditions when the amplifier is not saturated.
+
+The amplified spontaneous emission (ASE) power at the output of an optical amplifier with gain $G$ and noise factor $n_{sp}$ (both in linear scale) is given by:
+
+$$P_{ASE} = 2n_{sp}h\nu(G-1)B_{opt}$$
+
+For a C-band central wavelength of 1545 nm with $B_{opt}=12.5$ GHz, this formula becomes:
+
+$$P_{ASE,dBm} = -58 + F_{dB} + G_{dB}$$
+
+\subsection*{Fixed grid C-band 40 channels MUX/DEMUX card}
+
+This card comprises 40 ports for optical channels and one port for WDM multiplex. This card is suited for IUT-T 100 GHz fixed grid WDM.
+
+\subsection*{Fixed grid C-band 80 channels MUX/DEMUX card}
+
+This card comprises 80 ports for optical channels and one port for WDM multiplex. This card is suited for IUT-T 50 GHz fixed grid WDM.
+
+\end{document}

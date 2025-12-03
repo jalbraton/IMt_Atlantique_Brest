@@ -1,0 +1,177 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{siunitx}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Examen 2022 OPTIQUE - Soluciones}
+\lhead{AIST}
+\rfoot{\thepage}
+
+\title{\textbf{Examen 2022 OPTIQUE - Soluciones\\Submarine Cable Systems}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Preguntas Teóricas}
+
+\subsection*{1) Fórmula Shannon-Hartley}
+$$C = B \log_2\left(1 + \text{SNR}\right) = B \log_2\left(1 + \frac{P_s}{P_n}\right) \text{ [bit/s]}$$
+
+Donde:
+\begin{itemize}
+    \item $C$ = capacidad del canal (bit/s)
+    \item $B$ = ancho de banda (Hz)
+    \item SNR = relación señal a ruido (lineal)
+\end{itemize}
+
+En términos de OSNR óptico:
+$$C = B_{opt} \log_2(1 + \text{OSNR})$$
+
+\subsection*{2) Fórmula OSNR}
+$$\text{OSNR} = P_{ch} - 10\log_{10}(N_{amp} \cdot P_{ASE,1})$$
+
+O equivalentemente:
+$$\text{OSNR}_{dB} = P_{ch,dBm} - 10\log_{10}(2 n_{sp} h \nu B_{opt}) - 10\log_{10}(N_{amp})$$
+
+Con:
+$$P_{ASE} = 2 n_{sp} h \nu (G-1) B_{opt} \approx 2 n_{sp} h \nu G B_{opt}$$
+$$\text{OSNR} = \frac{P_{ch}}{N_{amp} \cdot 2 n_{sp} h \nu (G-1) B_{opt}}$$
+
+\subsection*{3) Line rate con multiplexación de polarización}
+$$R_{\text{line}} = 2 \times R_s \times \log_2(M)$$
+
+Donde:
+\begin{itemize}
+    \item $R_s$ = symbol rate (Baud)
+    \item $M$ = tamaño de la constelación (4 para QPSK, 16 para 16QAM, etc.)
+    \item Factor 2 = multiplexación de polarización (DP)
+\end{itemize}
+
+\textbf{Ejemplo DP-64QAM a 43.7 Gbaud:}
+$$R = 2 \times 43.7 \times \log_2(64) = 2 \times 43.7 \times 6 = 524.4 \text{ Gbit/s}$$
+
+\subsection*{4) Parámetro para seleccionar transpondedor}
+
+Se calcula la \textbf{eficiencia espectral} requerida:
+$$\eta_{\text{req}} = \frac{C}{B \log_2(1 + \text{OSNR}_{EOL})}$$
+
+Y se compara con la eficiencia del transpondedor:
+$$\eta_{tr} = \frac{R_{\text{payload}}}{B_{ch}}$$
+
+También se verifica:
+$$\text{OSNR}_{EOL} \geq \text{OSNR}_{\text{min,tr}} + M$$
+
+\section*{Problema - Tres rutas submarinas}
+
+\subsection*{Ruta Norte (Northern)}
+\textbf{Datos:}
+\begin{itemize}
+    \item Longitud: 3500 km
+    \item $\alpha = 0.17$ dB/km
+    \item Espaciado amplificadores: 65 km
+    \item BW EDFA: 4000 GHz
+    \item NF: 5.5 dB
+    \item $P_{max} = 15$ dBm
+\end{itemize}
+
+\textbf{Cálculos:}
+
+Número de amplificadores:
+$$N_{amp} = \frac{3500}{65} \approx 54$$
+
+Ganancia por amplificador:
+$$G = \alpha \times d = 0.17 \times 65 = 11.05 \text{ dB}$$
+
+Número de slots espectrales:
+$$N_{slots} = \frac{4000}{12.5} = 320$$
+
+\textbf{Selección transpondedor:}
+
+Calculamos OSNR disponible con cada modelo:
+
+\textit{Modelo 1 (DP-QPSK, 100G, 3 slots):}
+$$N_{ch} = \lfloor 320/3 \rfloor = 106$$
+$$P_{ch} = 15 - 10\log_{10}(106) = 15 - 20.25 = -5.25 \text{ dBm}$$
+$$\text{OSNR} = -5.25 - 10\log_{10}(2 \times 10^{5.5/10} \times 1.986 \times 10^{-19} \times 194 \times 10^{12} \times 12.5 \times 10^9) - 10\log_{10}(54)$$
+$$\text{OSNR} = -5.25 - (-57.48) - 17.32 = 34.91 \text{ dB}$$
+
+Margen: $34.91 - 12 - 1 = 21.91$ dB ✓
+
+\textit{Capacidad Shannon:}
+$$C_{th} = 12.5 \times 10^9 \times \log_2(1 + 10^{34.91/10}) \times 106 = 205.2 \text{ Tbit/s}$$
+
+\textit{Capacidad real:}
+$$C_{real} = 100 \times 106 = 10.6 \text{ Tbit/s}$$
+
+\textbf{Tabla de resultados Northern:}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+Spectral slot count & 320 \\
+Transponder model & 1 (DP-QPSK) \\
+Channel count & 106 \\
+Power per channel & -5.25 dBm \\
+End of line OSNR & 34.91 dB \\
+Theoretical capacity & 205.2 Tbit/s \\
+Actual capacity & 10.6 Tbit/s \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Ruta Central}
+\textbf{Datos:}
+\begin{itemize}
+    \item Longitud: 3000 km, $\alpha = 0.18$ dB/km
+    \item Espaciado: 50 km, BW: 3800 GHz
+    \item NF: 6 dB, $P_{max} = 15$ dBm
+\end{itemize}
+
+$$N_{amp} = 3000/50 = 60, \quad G = 0.18 \times 50 = 9 \text{ dB}$$
+$$N_{slots} = 3800/12.5 = 304$$
+
+\textbf{Modelo 1:} $N_{ch} = 101$, $P_{ch} = -5.04$ dBm, OSNR $= 33.89$ dB ✓
+
+\textbf{Capacidad:} $C = 10.1$ Tbit/s
+
+\subsection*{Ruta Sur (Southern)}
+\textbf{Datos:}
+\begin{itemize}
+    \item Longitud: 4000 km, $\alpha = 0.16$ dB/km
+    \item Espaciado: 75 km, BW: 4200 GHz
+    \item NF: 5 dB, $P_{max} = 16$ dBm
+\end{itemize}
+
+$$N_{amp} = 4000/75 \approx 53, \quad G = 0.16 \times 75 = 12 \text{ dB}$$
+$$N_{slots} = 4200/12.5 = 336$$
+
+\textbf{Modelo 1:} $N_{ch} = 112$, $P_{ch} = -4.49$ dBm, OSNR $= 36.73$ dB ✓
+
+\textbf{Capacidad:} $C = 11.2$ Tbit/s
+
+\section*{Pregunta 6: Mejoras de capacidad}
+
+\begin{enumerate}
+    \item \textbf{Usar modulaciones de mayor orden:} DP-16QAM, DP-8QAM según OSNR disponible
+    \item \textbf{Multiplexación espacial:} Múltiples pares de fibras (SDM)
+    \item \textbf{Amplificadores de mayor potencia:} Aumentar $P_{max}$
+    \item \textbf{Reducir espaciado de amplificadores:} Mejora OSNR
+    \item \textbf{Técnicas de codificación:} FEC avanzado, shaping probabilístico
+    \item \textbf{Usar banda L adicional:} Duplicar el espectro disponible
+\end{enumerate}
+
+\vspace{1cm}
+\noindent\rule{\textwidth}{0.4pt}
+\begin{center}
+\textit{Fin - Examen 2022 OPTIQUE}
+\end{center}
+
+\end{document}
