@@ -1,0 +1,2690 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+\geometry{top=2cm,left=2cm,right=2cm,bottom=2cm}
+\setlist{leftmargin=*}
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\definecolor{azuloscuro}{RGB}{0,51,102}
+\definecolor{azulclaro}{RGB}{51,153,255}
+\definecolor{rojoclaro}{RGB}{255,102,102}
+\definecolor{verdeclaro}{RGB}{102,204,102}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azuloscuro,
+    urlcolor=azuloscuro,
+    citecolor=azuloscuro
+}
+
+\title{\textbf{\LARGE GUÍA COMPLETA DE COMUNICACIONES DIGITALES}\\
+\Large Teoría Explicada con Detalle\\
+\large TAF STAR UEC B - IMT Atlantique 2024-2025}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Fundamentos}
+
+\subsection{¿Qué son las comunicaciones digitales?}
+
+Las comunicaciones digitales permiten transmitir información discreta (bits: 0 y 1) a través de un medio físico continuo (ondas electromagnéticas, señales eléctricas, luz en fibra óptica).
+
+\textbf{Problema fundamental:} Necesitamos enviar datos digitales usando señales analógicas, minimizando errores y maximizando la velocidad de transmisión.
+
+\subsection{Cadena de comunicación completa}
+
+\textbf{Emisor:}
+\begin{enumerate}
+\item \textbf{Codificación de fuente:} Compresión (eliminar redundancia)
+\item \textbf{Codificación de canal:} Añadir redundancia controlada para detectar/corregir errores
+\item \textbf{Modulación:} Convertir bits en señales analógicas que se pueden transmitir
+\item \textbf{Filtrado:} Adaptar la señal al canal (limitar ancho de banda)
+\end{enumerate}
+
+\textbf{Canal físico:}
+\begin{itemize}
+\item Añade \textbf{ruido aleatorio} (AWGN - Additive White Gaussian Noise)
+\item Introduce \textbf{interferencias} de otras señales
+\item Causa \textbf{distorsión} (multipaso, eco, reflexiones)
+\item Produce \textbf{atenuación} (pérdida de potencia)
+\end{itemize}
+
+\textbf{Receptor:}
+\begin{enumerate}
+\item \textbf{Filtro adaptado:} Maximiza la relación señal/ruido (SNR)
+\item \textbf{Muestreo:} Convierte señal continua en muestras discretas
+\item \textbf{Decisión:} Determina qué símbolo se transmitió (estima bits)
+\item \textbf{Decodificación:} Detecta y corrige errores usando redundancia
+\end{enumerate}
+
+\textbf{Objetivo global:} Transmitir la mayor cantidad de bits por segundo (débito) con la menor tasa de error posible, usando el mínimo ancho de banda y potencia.
+
+\subsection{Transformada de Fourier - Herramienta fundamental}
+
+La Transformada de Fourier (FT) es esencial porque permite analizar señales en dos dominios complementarios:
+
+\textbf{Dominio temporal $h(t)$:} Cómo varía la señal en el tiempo
+
+\textbf{Dominio frecuencial $H(\nu)$:} Qué frecuencias contiene la señal y con qué amplitud
+
+$$H(\nu) = \int_{\mathbb{R}} h(t)e^{-i2\pi\nu t}dt, \quad h(t) = \int_{\mathbb{R}} H(\nu)e^{i2\pi\nu t}d\nu$$
+
+\textbf{¿Por qué es importante?}
+\begin{itemize}
+\item El ancho de banda del canal limita qué frecuencias pueden pasar
+\item El filtrado es multiplicación en frecuencia (más simple que convolución)
+\item Nos permite diseñar señales que usen eficientemente el espectro disponible
+\end{itemize}
+
+\textbf{Propiedades clave:}
+\begin{align*}
+\text{FT}[h * g] &= H(\nu)G(\nu) \quad \text{(convolución → producto)}\\
+\text{FT}[h \cdot g] &= H(\nu) * G(\nu) \quad \text{(producto → convolución)}\\
+\text{FT}[h(t-a)] &= H(\nu)e^{-i2\pi\nu a} \quad \text{(desplazamiento temporal)}\\
+\text{FT}[h(t)e^{i2\pi\nu_0 t}] &= H(\nu-\nu_0) \quad \text{(modulación → desplazamiento frecuencial)}
+\end{align*}
+
+\textbf{Teorema de Parseval (conservación de energía):}
+$$E_s = \int_{\mathbb{R}} |s(t)|^2dt = \int_{\mathbb{R}} |S(\nu)|^2d\nu$$
+
+La energía total es la misma en tiempo y frecuencia.
+
+\subsection{Identidades útiles}
+
+\begin{align*}
+\cos^2(a) &= \frac{1 + \cos(2a)}{2}, \quad \sin^2(a) = \frac{1 - \cos(2a)}{2}\\
+\cos(a)\cos(b) &= \frac{1}{2}[\cos(a-b) + \cos(a+b)]\\
+\sin(a)\sin(b) &= \frac{1}{2}[\cos(a-b) - \cos(a+b)]\\
+\text{sinc}(x) &= \frac{\sin(\pi x)}{\pi x}
+\end{align*}
+
+\section{Modulaciones Lineales - Convertir bits en señales}
+
+\subsection{¿Por qué modular?}
+
+\textbf{Problema:} Los bits son símbolos discretos (0 y 1), pero los canales físicos transmiten señales continuas.
+
+\textbf{Solución:} La modulación asigna a cada grupo de bits una forma de onda específica que se puede transmitir.
+
+\textbf{Dos enfoques principales:}
+\begin{enumerate}
+\item \textbf{Banda base:} Transmitir directamente (cables, Ethernet)
+\item \textbf{Paso de banda:} Modular sobre una portadora de alta frecuencia (radio, WiFi, 4G/5G)
+\end{enumerate}
+
+\subsection{Señal transmitida}
+
+\textbf{Banda base (sin portadora):}
+$$s(t) = \sum_{k} a_k h(t-kT_s)$$
+
+donde:
+\begin{itemize}
+\item $a_k$: símbolo de información en el instante $k$ (puede tomar $M$ valores diferentes)
+\item $h(t)$: pulso de forma (define cómo se "dibuja" cada símbolo en el tiempo)
+\item $T_s$: período de símbolo (tiempo entre símbolos consecutivos)
+\end{itemize}
+
+\textbf{Interpretación:} Cada símbolo $a_k$ "moldea" un pulso $h(t)$ que se envía en su intervalo de tiempo.
+
+\textbf{Con portadora (forma real) - Portadora única:}
+$$s(t) = \sum_{k} a_k h(t-kT_s)\cos(2\pi\nu_0 t) - b_k h(t-kT_s)\sin(2\pi\nu_0 t)$$
+
+\textbf{¿Por qué dos componentes?} Usamos dos dimensiones ortogonales:
+\begin{itemize}
+\item Componente \textbf{en fase (I)}: multiplicada por $\cos(2\pi\nu_0 t)$
+\item Componente \textbf{en cuadratura (Q)}: multiplicada por $-\sin(2\pi\nu_0 t)$
+\end{itemize}
+
+Esto permite transmitir el doble de información sin aumentar el ancho de banda.
+
+\textbf{Notación compleja (más compacta):}
+$$s_c(t) = \sum_{k} d_k h(t-kT_s), \quad \text{con } d_k = a_k + ib_k$$
+
+La señal real se obtiene como: $s(t) = \Re[s_c(t)e^{i(2\pi\nu_0 t + \theta_0)}]$
+
+\textbf{Ventajas de la portadora:}
+\begin{itemize}
+\item Adaptación a las características del canal (frecuencias que se propagan mejor)
+\item Multiplexación (varios usuarios en diferentes frecuencias)
+\item Antenas eficientes (tamaño relacionado con longitud de onda)
+\end{itemize}
+
+\subsection{Parámetros fundamentales - Métricas de eficiencia}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=Definiciones clave]
+\textbf{Rapidez de modulación (Symbol rate):} $D_s = \frac{1}{T_s}$ [bauds o símbolos/s]
+
+Es la velocidad a la que enviamos símbolos. Determina el ancho de banda necesario.
+
+\textbf{Débito binario (Bit rate):} $D_b = D_s \cdot \log_2(M) = \frac{k}{T_s}$ [bits/s]
+
+Es la velocidad real de transmisión de información, donde $M = 2^k$ es el número de símbolos diferentes.
+
+\textbf{Relación fundamental:} $D_b = D_s \cdot \log_2(M)$
+
+\textbf{Ejemplo:} Si $D_s = 1000$ baudios y usamos $M=16$ símbolos (16-QAM):
+$$D_b = 1000 \cdot \log_2(16) = 1000 \cdot 4 = 4000 \text{ bits/s}$$
+
+\textbf{Ancho de banda ocupado:}
+\begin{itemize}
+\item Portadora única (QAM/PSK): $B_{occ} = \frac{1+\beta}{T_s} = (1+\beta)D_s$
+\item PAM/ASK: $B_{occ} = \frac{2(1+\beta)}{T_s}$ (ocupa el doble)
+\end{itemize}
+
+donde $\beta$ es el factor de roll-off del filtro (exceso de banda).
+
+\textbf{Eficiencia espectral:} $\eta = \frac{D_b}{B_{occ}}$ [bits/s/Hz]
+
+Mide cuántos bits transmitimos por cada Hz de ancho de banda usado.
+
+\begin{itemize}
+\item Portadora única: $\eta = \frac{\log_2(M)}{1+\beta}$
+\item PAM: $\eta = \frac{2\log_2(M)}{1+\beta}$
+\end{itemize}
+
+\textbf{Dilema fundamental:}
+\begin{itemize}
+\item Mayor $M$ → Mayor $\eta$ (más bits por segundo con mismo ancho de banda)
+\item Pero Mayor $M$ → Símbolos más cercanos → Mayor probabilidad de error
+\item Solución: Necesitamos mayor SNR (más potencia de transmisión)
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Alfabetos de modulación - Constelaciones}
+
+Una constelación es el conjunto de todos los símbolos posibles representados como puntos en el plano complejo (o en la recta real para PAM).
+
+\textbf{Criterios de diseño:}
+\begin{enumerate}
+\item \textbf{Maximizar distancia entre símbolos} (menor tasa de error)
+\item \textbf{Minimizar energía promedio} (menor consumo de potencia)
+\item \textbf{Facilidad de implementación} (hardware/software)
+\end{enumerate}
+
+\textbf{M-PAM (Pulse Amplitude Modulation) - Unidimensional:}
+$$\mathcal{A} = \{-(M-1)\sqrt{\varepsilon}, -(M-3)\sqrt{\varepsilon}, \ldots, -\sqrt{\varepsilon}, \sqrt{\varepsilon}, \ldots, (M-1)\sqrt{\varepsilon}\}$$
+
+\begin{itemize}
+\item Símbolos equiespaciados en el eje real (solo amplitud varía)
+\item $E_{avg} = \frac{M^2-1}{3}\varepsilon$, \quad $d_{min} = 2\sqrt{\varepsilon}$
+\item $\rho = \frac{d_{min}^2}{E_{avg}} = \frac{6}{M^2-1}$ (eficiencia de potencia)
+\item \textbf{Uso:} Transmisión banda base (Ethernet, DSL)
+\item \textbf{M-ASK:} Versión con portadora de M-PAM
+\end{itemize}
+
+\textbf{Ejemplo 4-PAM:} Símbolos en $\{-3, -1, +1, +3\}$ (normalizados)
+
+\textbf{M-PSK (Phase Shift Keying) - Amplitud constante:}
+$$\mathcal{A} = \{e^{i2\pi k/M}\sqrt{E_s} : k = 0,1,\ldots,M-1\}$$
+
+\begin{itemize}
+\item Símbolos distribuidos uniformemente en círculo de radio $\sqrt{E_s}$
+\item Solo la fase varía, amplitud constante
+\item $E_{avg} = E_s$, \quad $d_{min} = 2\sqrt{E_s}\sin(\pi/M)$
+\item $\rho = 4\sin^2(\pi/M)$, \quad PAPR = 1 (potencia constante)
+\item \textbf{Ventaja clave:} PAPR=1 → ideal para amplificadores no lineales (satélite)
+\item \textbf{Desventaja:} Para $M$ grande, $d_{min}$ decrece rápidamente
+\item \textbf{Uso:} Satélite (QPSK, 8-PSK), comunicaciones móviles
+\end{itemize}
+
+\textbf{Casos especiales:}
+\begin{itemize}
+\item BPSK ($M=2$): símbolos en $\{+\sqrt{E_s}, -\sqrt{E_s}\}$ → muy robusto
+\item QPSK ($M=4$): símbolos en $\{\pm 1 \pm i\}\frac{\sqrt{E_s}}{\sqrt{2}}$ → muy usado
+\end{itemize}
+
+\textbf{M-QAM (Quadrature Amplitude Modulation) - Bidimensional:}
+$$d_k = (a_k + ib_k), \quad a_k, b_k \in \{\pm 1, \pm 3, \ldots, \pm(\sqrt{M}-1)\}\sqrt{\varepsilon}$$
+
+\begin{itemize}
+\item Constelación rectangular: varía amplitud Y fase
+\item $E_{avg} = \frac{2(M-1)}{3}\varepsilon$, \quad $d_{min} = 2\sqrt{\varepsilon}$
+\item $\rho = \frac{6}{M-1}$, \quad $\text{PAPR} = \frac{3(\sqrt{M}-1)}{\sqrt{M}+1}$ (variable)
+\item \textbf{Ventaja:} Mayor eficiencia energética que PSK para $M$ grande
+\item \textbf{Razón:} Símbolos mejor distribuidos → mayor $d_{min}$ con misma $E_{avg}$
+\item \textbf{Desventaja:} PAPR > 1 (necesita amplificadores lineales)
+\item \textbf{Uso:} WiFi (64-QAM, 256-QAM), 4G/5G (hasta 256-QAM), cable módem
+\end{itemize}
+
+\textbf{Comparación PSK vs QAM:}
+\begin{itemize}
+\item Para $M$ pequeño ($M \leq 4$): PSK ≈ QAM en rendimiento
+\item Para $M$ grande ($M \geq 16$): QAM superior (ganancia $\approx 3-4$ dB)
+\item PSK mantiene PAPR=1 → mejor para amplificadores baratos/no lineales
+\item QAM requiere amplificador lineal pero es más eficiente espectralmente
+\end{itemize}
+
+\subsection{Gray Mapping - Minimizar errores de bit}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=Principio]
+El \textbf{código Gray} asigna códigos binarios a símbolos de forma que símbolos adyacentes (vecinos más cercanos en la constelación) difieren en \textbf{exactamente 1 bit}.
+
+\textbf{¿Por qué es importante?}
+
+Cuando hay ruido, es más probable confundir un símbolo con sus vecinos cercanos. Con Gray mapping:
+\begin{itemize}
+\item Error de símbolo al vecino más cercano → Solo 1 bit erróneo
+\item Sin Gray mapping → Pueden ser múltiples bits erróneos
+\end{itemize}
+
+\textbf{Consecuencia:} Con Gray mapping y alto SNR:
+$$P_{be} \approx \frac{P_{se}}{\log_2(M)}$$
+
+La probabilidad de error de bit es aproximadamente $\log_2(M)$ veces menor que la de símbolo.
+
+\textbf{Ejemplo 8-PSK:}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Fase & Símbolo & Gray \\
+\hline
+$0°$ & $e^{i\cdot 0}$ & 000 \\
+$45°$ & $e^{i\pi/4}$ & 001 \\
+$90°$ & $e^{i\pi/2}$ & 011 \\
+$135°$ & $e^{i3\pi/4}$ & 010 \\
+$180°$ & $e^{i\pi}$ & 110 \\
+$225°$ & $e^{i5\pi/4}$ & 111 \\
+$270°$ & $e^{i3\pi/2}$ & 101 \\
+$315°$ & $e^{i7\pi/4}$ & 100 \\
+\hline
+\end{tabular}
+\end{center}
+
+Nota: Cada par de símbolos adyacentes (consecutivos en fase) tiene exactamente 1 bit diferente.
+\end{tcolorbox}
+
+\subsection{Densidad espectral de potencia}
+
+$$S_x(\nu) = \frac{A^2\sigma_a^2}{4T_s}\left[|H(\nu-\nu_0)|^2 + |H(\nu+\nu_0)|^2\right]$$
+
+El espectro está centrado en $\pm\nu_0$ y su forma depende de $|H(\nu)|^2$.
+
+\section{Criterio de Nyquist y TSWOC - Evitar la interferencia}
+
+\subsection{El problema: Interferencia entre símbolos (ISI)}
+
+Cuando transmitimos símbolos consecutivos rápidamente, cada pulso $h(t)$ tiene una duración que se extiende más allá de su período $T_s$. Esto causa que las "colas" de un símbolo interfieran con los siguientes.
+
+\textbf{Consecuencia:} Incluso sin ruido, la ISI degrada la detección y causa errores.
+
+\textbf{Ejemplo visual:} Si $h(t)$ dura mucho tiempo, cuando muestreamos en $t = kT_s$ para detectar el símbolo $a_k$, también recibimos contribuciones de $a_{k-1}$, $a_{k+1}$, etc.
+
+\textbf{Solución:} Diseñar $h(t)$ para que satisfaga el criterio TSWOC o Nyquist.
+
+\subsection{Criterio TSWOC (Time-Shifted Waveform Orthogonality)}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=Condición matemática]
+Un filtro $h(t)$ satisface TSWOC si sus versiones desplazadas temporalmente son ortogonales:
+
+$$\langle h(t), h(t-lT_s)\rangle = \int_{\mathbb{R}} h(t)h^*(t-lT_s)dt = \delta_{l,0} = \begin{cases}
+1 & \text{si } l=0\\
+0 & \text{si } l\neq 0
+\end{cases}$$
+
+\textbf{Interpretación física:}
+\begin{itemize}
+\item Cuando $l=0$: el pulso tiene producto interno 1 consigo mismo (normalización)
+\item Cuando $l\neq 0$: no hay correlación entre el pulso y sus versiones desplazadas
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Consecuencias del TSWOC:}
+\begin{enumerate}
+\item \textbf{Ausencia de ISI:} En los instantes de muestreo $t_0 + kT_s$, solo el símbolo $a_k$ contribuye a la muestra. Las contribuciones de todos los demás símbolos son cero.
+
+\item \textbf{Detección símbolo por símbolo:} Cada símbolo puede decidirse independientemente sin necesidad de considerar los símbolos vecinos.
+
+\item \textbf{Máximo SNR:} Cuando se usa con filtro adaptado en recepción, se maximiza la relación señal/ruido en el muestreador.
+\end{enumerate}
+
+\subsection{Criterio de Nyquist (equivalente en frecuencia)}
+
+El criterio TSWOC en tiempo es equivalente al criterio de Nyquist en frecuencia:
+$$\frac{1}{T_s}\sum_{p=-\infty}^{\infty} |H(\nu - \frac{p}{T_s})|^2 = 1, \quad \forall \nu \in \mathbb{R}$$
+
+O en tiempo: $h(lT_s) = \delta_{l,0}$ (el pulso vale 1 en $t=0$ y 0 en todos los múltiplos de $T_s$)
+
+\textbf{Interpretación:} Si sumamos todas las réplicas espectrales de $|H(\nu)|^2$ desplazadas por múltiplos de $1/T_s$, obtenemos una constante.
+
+\textbf{Ancho de banda mínimo (Teorema):}
+$$B_{min} = \frac{1}{2T_s} = \frac{D_s}{2}$$
+
+Este es el ancho de banda teórico mínimo para transmitir a $D_s$ símbolos por segundo sin ISI. Corresponde al filtro rectangular ideal (no realizable en práctica porque no es causal y tiene duración infinita).
+
+\subsection{Filtro Root Raised Cosine (RRC) - Solución práctica}
+
+El filtro rectangular ideal no es realizable (infinita duración, no causal). El filtro más usado en la práctica es el \textbf{Root Raised Cosine (RRC)}, parametrizado por el factor de roll-off $\beta \in [0,1]$.
+
+\textbf{Dominio temporal:}
+$$h_{\beta}(t) = \frac{\sin[\pi(1-\beta)t/T_s] + \frac{4\beta t}{T_s}\cos[\pi(1+\beta)t/T_s]}{\pi t/T_s (1-16\beta^2t^2/T_s^2)}$$
+
+\textbf{Dominio frecuencial:}
+$$H_{\beta}(\nu) = \begin{cases}
+\sqrt{T_s} & |\nu| \leq \frac{1-\beta}{2T_s}\\
+\sqrt{\frac{T_s}{2}\left[1 + \cos\left(\frac{\pi T_s}{\beta}(|\nu| - \frac{1-\beta}{2T_s})\right)\right]} & \frac{1-\beta}{2T_s} < |\nu| \leq \frac{1+\beta}{2T_s}\\
+0 & |\nu| > \frac{1+\beta}{2T_s}
+\end{cases}$$
+
+\textbf{Propiedades fundamentales:}
+\begin{itemize}
+\item \textbf{Propiedad clave:} $h_{\beta}(t) * h_{\beta}(-t)$ satisface el criterio de Nyquist
+
+Esto significa: RRC en emisión $\times$ RRC en recepción = Raised Cosine (satisface Nyquist)
+
+\item TSWOC: $\langle h_{\beta}(t), h_{\beta}(t-lT_s)\rangle = \delta_{l,0}$
+
+\item Ancho de banda: $B = \frac{1+\beta}{2T_s}$
+
+\item Exceso de banda: $\beta \times 100\%$ sobre el mínimo teórico $B_{min} = \frac{1}{2T_s}$
+
+\item \textbf{Reparto emisor/receptor:} 
+  \begin{itemize}
+  \item Emisor: filtra con RRC
+  \item Receptor: filtra con RRC (filtro adaptado)
+  \item Cascada: $H_{RRC} \times H_{RRC} = H_{RC}$ (satisface Nyquist → sin ISI)
+  \end{itemize}
+\end{itemize}
+
+\textbf{Parámetro $\beta$ (roll-off factor):}
+\begin{itemize}
+\item $\beta = 0$: Filtro rectangular (mínimo ancho de banda, NO realizable, oscilaciones infinitas)
+\item $\beta = 1$: Filtro coseno completo (ancho de banda doble, fácil implementación, decaimiento rápido)
+\item \textbf{Compromiso típico: $\beta = 0.25$ a $0.5$}
+  \begin{itemize}
+  \item Ancho de banda razonable
+  \item Decaimiento temporal aceptable (menos oscilaciones)
+  \item Sensibilidad moderada a errores de sincronización
+  \end{itemize}
+\end{itemize}
+
+\textbf{¿Por qué "Root" (raíz)?}
+
+Porque queremos que el producto de dos RRC dé un Raised Cosine:
+$$H_{RRC}(\nu) \cdot H_{RRC}(\nu) = H_{RC}(\nu)$$
+$$H_{RRC}(\nu) = \sqrt{H_{RC}(\nu)}$$
+
+\textbf{Ventajas del esquema RRC-RRC:}
+\begin{enumerate}
+\item \textbf{Filtro adaptado óptimo:} RRC en recepción maximiza SNR
+\item \textbf{Sin ISI:} La cascada satisface Nyquist
+\item \textbf{Reparto simétrico:} Emisor y receptor comparten la tarea de filtrado
+\end{enumerate}
+
+\section{Canal AWGN y Receptor Óptimo}
+
+\subsection{Modelo de canal AWGN - El peor enemigo}
+
+El canal \textbf{AWGN (Additive White Gaussian Noise)} es el modelo más fundamental en comunicaciones:
+
+$$r(t) = s(t) + n(t)$$
+
+donde:
+\begin{itemize}
+\item $s(t)$: señal transmitida (conocida en emisión)
+\item $n(t)$: ruido aditivo blanco gaussiano (aleatorio, impredecible)
+\item $r(t)$: señal recibida (lo único que observamos)
+\end{itemize}
+
+\textbf{Características del ruido AWGN:}
+\begin{itemize}
+\item \textbf{Media:} $E[n(t)] = 0$ (no introduce sesgo sistemático)
+\item \textbf{PSD (densidad espectral):} $S_n(\nu) = N_0$ (constante en todas las frecuencias → "blanco")
+\item \textbf{Distribución:} $n(t) \sim \mathcal{N}(0, N_0)$ (gaussiana → campana de Gauss)
+\item \textbf{Autocorrelación:} $R_n(\tau) = N_0\delta(\tau)$ (muestras independientes en instantes diferentes)
+\end{itemize}
+
+\textbf{¿Por qué es importante el modelo AWGN?}
+\begin{enumerate}
+\item Modelo fundamental del ruido térmico en electrónica
+\item Ruido de fondo en comunicaciones inalámbricas
+\item Aproximación válida en muchos canales reales
+\item Permite análisis matemático riguroso
+\item Si funciona bien con AWGN, funcionará razonablemente en otros canales
+\end{enumerate}
+
+\textbf{Parámetro $N_0$:} Potencia del ruido por Hz de ancho de banda. Mayor $N_0$ → peor canal.
+
+\subsection{Criterio Maximum Likelihood (ML) - Decisión óptima}
+
+El receptor debe decidir qué símbolo fue transmitido basándose únicamente en la señal recibida ruidosa $r(t)$.
+
+\textbf{Criterio ML (máxima verosimilitud):}
+$$\hat{k} = \arg\max_{k \in \{1,\ldots,M\}} P(r(t)|s^{(k)}(t) \text{ transmitido})$$
+
+\textbf{Interpretación:} Elegir el símbolo que hace más probable la observación $r(t)$.
+
+\textbf{Pregunta:} Dado que recibí $r(t)$, ¿cuál símbolo $s^{(k)}(t)$ es más probable que se haya transmitido?
+
+\textbf{Para símbolos equiprobables} (cada símbolo tiene misma probabilidad $1/M$), el criterio ML se simplifica a:
+$$\hat{k} = \arg\min_{k} ||r(t) - s^{(k)}(t)||^2 = \arg\min_{k} \int_{\mathbb{R}} |r(t) - s^{(k)}(t)|^2 dt$$
+
+\textbf{Regla simple:} Elegir el símbolo más cercano (en distancia euclídea) a la señal recibida.
+
+\textbf{Interpretación geométrica:}
+\begin{itemize}
+\item Las señales $s^{(k)}(t)$ son vectores en un espacio infinito-dimensional
+\item La señal recibida $r(t) = s^{(k_0)}(t) + n(t)$ es el símbolo transmitido más ruido
+\item El ruido "desplaza" $r(t)$ aleatoriamente del símbolo transmitido
+\item Elegimos el símbolo más cercano a $r(t)$
+\end{itemize}
+
+\textbf{¿Por qué es óptimo?} El criterio ML minimiza la probabilidad de error cuando los símbolos son equiprobables.
+
+\subsection{Estructura del receptor óptimo - Implementación práctica}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=Receptor ML: Tres bloques fundamentales]
+\textbf{1. Filtro adaptado (Matched Filter):} $g(t) = h^*(t_0 - t)$
+
+\textbf{¿Qué hace?}
+\begin{itemize}
+\item Es la versión conjugada e invertida temporalmente del pulso de forma $h(t)$
+\item \textbf{Maximiza la relación señal/ruido (SNR)} en el instante de muestreo
+\item Con TSWOC: además elimina completamente la ISI
+\end{itemize}
+
+\textbf{¿Por qué es óptimo?} El teorema del filtro adaptado demuestra que $g(t) = h^*(-t)$ es el filtro lineal que maximiza SNR.
+
+\textbf{Intuición:} El filtro "busca" en la señal recibida la forma del pulso transmitido. Cuando encuentra máxima correlación, produce un pico.
+
+\textbf{2. Muestreador:} Muestrea en $t_n = t_0 + nT_s$
+
+\textbf{¿Qué hace?}
+\begin{itemize}
+\item Convierte la señal continua en muestras discretas
+\item $t_0$: instante óptimo de muestreo (máxima apertura del "ojo" en diagrama de ojo)
+\item Una muestra por símbolo
+\end{itemize}
+
+\textbf{Salida si TSWOC se satisface:}
+$$z_k = a_k + \gamma_k$$
+donde:
+\begin{itemize}
+\item $a_k$: símbolo transmitido (señal útil)
+\item $\gamma_k \sim \mathcal{N}(0, N_0)$: ruido gaussiano (único término de degradación)
+\end{itemize}
+
+\textbf{¡Logro importante!} La ISI se elimina completamente. Solo queda el ruido.
+
+\textbf{3. Decisor (Detector):} Compara con regiones de decisión
+
+\textbf{¿Qué hace?}
+\begin{itemize}
+\item Recibe la muestra compleja $z_k$
+\item Determina a qué región de decisión pertenece
+\item Decide qué símbolo $\hat{a}_k$ se transmitió
+\end{itemize}
+
+\textbf{Regla de decisión ML:}
+$$\hat{d}_k = \arg\min_{d \in \mathcal{A}} |z_k - d|^2$$
+
+Elegir el símbolo de la constelación $\mathcal{A}$ más cercano a $z_k$.
+
+\textbf{Fronteras de decisión:} Son las bisectrices perpendiculares de los segmentos que unen símbolos vecinos (diagrama de Voronoi).
+
+\textbf{Para modulación con portadora:}
+\begin{itemize}
+\item \textbf{Demodulación coherente} (requiere conocer fase $\theta_0$ de la portadora)
+\item Dos ramas paralelas:
+  \begin{itemize}
+  \item Rama I (en fase): multiplica por $\cos(2\pi\nu_0 t + \theta_0)$
+  \item Rama Q (cuadratura): multiplica por $-\sin(2\pi\nu_0 t + \theta_0)$
+  \end{itemize}
+\item Filtro adaptado en cada rama
+\item Muestreo en cada rama → obtenemos $a_k$ y $b_k$
+\item Decisión en plano complejo: $d_k = a_k + ib_k$
+\end{itemize}
+
+\textbf{Desafío práctico:} Recuperar la fase $\theta_0$ de la portadora (sincronización de portadora) y el instante óptimo $t_0$ (sincronización de símbolo).
+\end{tcolorbox}
+
+\subsection{Diagrama de ojo - Herramienta de diagnóstico visual}
+
+El diagrama de ojo se obtiene superponiendo muchos períodos de símbolo de la señal recibida (antes del muestreador).
+
+\textbf{¿Cómo se interpreta?}
+\begin{itemize}
+\item \textbf{Apertura vertical (altura del "ojo"):} Margen ante ruido
+  \begin{itemize}
+  \item Ojo bien abierto → mucho margen → baja tasa de error
+  \item Ojo cerrado → poco margen → alta tasa de error
+  \end{itemize}
+
+\item \textbf{Apertura horizontal (ancho del "ojo"):} Sensibilidad al jitter temporal
+  \begin{itemize}
+  \item Ojo ancho → tolerante a errores de sincronización
+  \item Ojo estrecho → muy sensible al instante de muestreo
+  \end{itemize}
+
+\item \textbf{Centro del ojo:} Instante óptimo de muestreo $t_0$
+  \begin{itemize}
+  \item Punto de máxima apertura
+  \item Mínima ISI y máximo SNR
+  \end{itemize}
+
+\item \textbf{Líneas horizontales:} Niveles de decisión (umbrales)
+  \begin{itemize}
+  \item Separan las regiones de decisión
+  \item Idealmente en la mitad de la apertura vertical
+  \end{itemize}
+
+\item \textbf{Grosor de las trazas:} Cantidad de ruido e ISI
+  \begin{itemize}
+  \item Trazas finas → poco ruido/ISI
+  \item Trazas gruesas → mucho ruido/ISI
+  \end{itemize}
+\end{itemize}
+
+\textbf{Efecto del roll-off $\beta$:}
+\begin{itemize}
+\item $\beta$ pequeño (→ 0): Mayor eficiencia espectral, pero mayores oscilaciones temporales → ojo menos abierto, más sensible a timing
+\item $\beta$ grande (→ 1): Menor eficiencia espectral, pero pulsos más "suaves" → ojo más abierto, menos sensible a timing
+\end{itemize}
+
+\section{Análisis de Prestaciones - ¿Qué tan bien funciona?}
+
+\subsection{SNR - Medida de calidad fundamental}
+
+La relación señal/ruido (Signal-to-Noise Ratio) mide la calidad del canal.
+
+\textbf{SNR por símbolo:} 
+$$\text{SNR}_s = \frac{E_s}{N_0}$$
+
+donde $E_s$ es la energía promedio por símbolo y $N_0$ es la densidad espectral del ruido.
+
+\textbf{SNR por bit:} 
+$$\frac{E_b}{N_0} = \frac{E_s}{\log_2(M) \cdot N_0} = \frac{\text{SNR}_s}{\log_2(M)}$$
+
+\textbf{¿Por qué $E_b/N_0$ es fundamental?}
+\begin{itemize}
+\item Es independiente del ancho de banda usado
+\item Permite comparar diferentes esquemas de modulación
+\item Mide eficiencia energética pura
+\item Umbral para comunicación confiable (Límite de Shannon)
+\end{itemize}
+
+\textbf{Conversión a dB:} $(E_b/N_0)_{dB} = 10\log_{10}(E_b/N_0)$
+
+\textbf{Ejemplo:} $E_b/N_0 = 10 \Rightarrow (E_b/N_0)_{dB} = 10$ dB
+
+\textbf{Valores típicos necesarios:}
+\begin{itemize}
+\item BPSK (BER=$10^{-5}$): $E_b/N_0 \approx 9.6$ dB
+\item QPSK (BER=$10^{-5}$): $E_b/N_0 \approx 9.6$ dB (igual que BPSK)
+\item 16-QAM (BER=$10^{-5}$): $E_b/N_0 \approx 14$ dB
+\item 64-QAM (BER=$10^{-5}$): $E_b/N_0 \approx 18$ dB
+\end{itemize}
+
+\textbf{Interpretación:} Mayor $M$ requiere mayor SNR para misma tasa de error.
+
+\subsection{Probabilidad de error - Cuantificar errores}
+
+\textbf{Función erfc (complementary error function):}
+$$\text{erfc}(x) = \frac{2}{\sqrt{\pi}}\int_{x}^{\infty}e^{-t^2}dt$$
+
+Está relacionada con la distribución gaussiana. Decrece muy rápidamente con $x$.
+
+\textbf{Función Q (cola de la gaussiana):}
+$$Q(x) = \frac{1}{2}\text{erfc}\left(\frac{x}{\sqrt{2}}\right) = P(X > x) \text{ para } X \sim \mathcal{N}(0,1)$$
+
+$Q(x)$ es la probabilidad de que una variable aleatoria gaussiana estándar exceda el valor $x$.
+
+\textbf{Union Bound (cota superior de la probabilidad de error):}
+$$P_{se} \leq \frac{1}{M}\sum_{k=1}^{M}\sum_{l\neq k} \frac{1}{2}\text{erfc}\left(\frac{||s^{(k)} - s^{(l)}||}{2\sqrt{2N_0}}\right)$$
+
+\textbf{¿Qué dice?} La probabilidad de error de símbolo es menor o igual que la suma de las probabilidades de confundir cada par de símbolos.
+
+\textbf{Aproximación para alto SNR (la más útil):}
+$$P_{se} \approx \frac{N_{min}}{2}\text{erfc}\left(\sqrt{\frac{d_{min}^2}{8N_0}}\right)$$
+
+donde:
+\begin{itemize}
+\item $d_{min}$: distancia mínima entre símbolos de la constelación
+\item $N_{min}$: número máximo de vecinos a distancia $d_{min}$
+\end{itemize}
+
+\textbf{Interpretación clave:}
+\begin{itemize}
+\item La tasa de error depende exponencialmente de $d_{min}^2/(N_0)$
+\item Doblar $d_{min}$ reduce $P_{se}$ en varios órdenes de magnitud
+\item Por eso el diseño de constelaciones busca maximizar $d_{min}$
+\end{itemize}
+
+\subsection{Modulaciones específicas (TSWOC)}
+
+\textbf{M-PAM:}
+$$P_{se} \approx \frac{M-1}{M}\text{erfc}\left(\sqrt{\frac{3E_{avg}}{(M^2-1)N_0}}\right)$$
+
+\textbf{M-PSK:}
+$$P_{se} \approx \text{erfc}\left(\sqrt{\frac{E_s}{N_0}}\sin^2\left(\frac{\pi}{M}\right)\right)$$
+
+\textbf{M-QAM:}
+$$P_{se} \approx 2\left(1-\frac{1}{\sqrt{M}}\right)\text{erfc}\left(\sqrt{\frac{3E_{avg}}{2(M-1)N_0}}\right)$$
+
+\textbf{Con Gray:} $P_{be} \approx \frac{P_{se}}{\log_2(M)}$
+
+\subsection{Eficiencia de potencia}
+
+$$\rho = \frac{d_{min}^2}{E_{avg}}$$
+
+Mide eficiencia en uso de energía. Mayor $\rho$ → mejor.
+
+Para $M$ grande: QAM > PSK > PAM
+
+\subsection{Diseño óptimo de constelaciones}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=Principios]
+Para minimizar $P_e$ con $E_{avg}$ fija:
+\begin{enumerate}
+\item \textbf{Maximizar $d_{min}$} (impacto dominante, $P_e \propto e^{-d_{min}^2}$)
+\item \textbf{Minimizar número de vecinos} (impacto secundario)
+\end{enumerate}
+
+\textbf{Comparación:}
+\begin{itemize}
+\item QAM: mejor para $M$ grande (mayor $d_{min}$ con misma $E_{avg}$)
+\item PSK: PAPR=1, mejor para amplificadores no lineales
+\end{itemize}
+\end{tcolorbox}
+
+\section{Codificación de Canal - Añadir redundancia inteligente}
+
+\subsection{Motivación profunda - ¿Por qué necesitamos códigos?}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro,title=🧠 RECORDATORIO FUNDAMENTAL]
+\textbf{¿Por qué falla la comunicación sin códigos?}
+
+Cuando transmitimos bits por un canal real:
+\begin{itemize}
+\item El \textbf{ruido AWGN} hace que la señal recibida $r = s + n$ sea aleatoria
+\item Incluso con SNR alto, siempre hay una probabilidad $P_e > 0$ de decidir mal
+\item Sin protección, un solo bit erróneo puede corromper una imagen, archivo, mensaje
+\end{itemize}
+
+\textbf{Esto era así porque:} La decisión símbolo por símbolo trata cada bit de forma \emph{independiente}. No aprovechamos que conocemos la \emph{estructura estadística} del mensaje completo.
+\end{tcolorbox}
+
+\textbf{Problema fundamental:} El canal introduce errores aleatorios. Para un canal BSC (Binary Symmetric Channel) con probabilidad de error $p$:
+\begin{itemize}
+\item Bit transmitido 0 → recibido 0 con probabilidad $(1-p)$, recibido 1 con probabilidad $p$
+\item Bit transmitido 1 → recibido 1 con probabilidad $(1-p)$, recibido 0 con probabilidad $p$
+\end{itemize}
+
+Sin códigos, si $p = 10^{-3}$, en 1000 bits tendremos aproximadamente 1 error. ¡Inaceptable para muchas aplicaciones!
+
+\textbf{Idea brillante de la codificación:} Añadir redundancia \emph{controlada} (bits extra calculados matemáticamente) para:
+\begin{enumerate}
+\item \textbf{Detectar} errores: saber que algo salió mal
+\item \textbf{Localizar} errores: saber \emph{dónde} ocurrieron
+\item \textbf{Corregir} errores: recuperar el mensaje original sin retransmisión
+\end{enumerate}
+
+\textbf{Compromiso fundamental (trade-off inevitable):}
+\begin{itemize}
+\item \textbf{Ventaja:} Reduce drásticamente la tasa de error final
+  \begin{itemize}
+  \item Puede bajar de $P_e = 10^{-3}$ a $P_e = 10^{-9}$ o menos
+  \item Permite aumentar alcance (menor potencia necesaria)
+  \item Mejora robustez en canales difíciles (móvil, espacio profundo)
+  \end{itemize}
+\item \textbf{Desventaja:} Reduce el débito útil efectivo
+  \begin{itemize}
+  \item Transmitimos $n$ bits pero solo $k < n$ son información
+  \item Tasa del código: $R_c = k/n < 1$
+  \item Overhead: $(1 - R_c) \times 100\%$ (por ejemplo, 50\% para $R_c=1/2$)
+  \end{itemize}
+\end{itemize}
+
+\textbf{Ejemplo pedagógico - Código de repetición (3,1):}
+\begin{itemize}
+\item Entrada: 1 bit de información (0 o 1)
+\item Codificación: Repetir 3 veces
+  \begin{itemize}
+  \item Bit 0 → transmitir \textbf{000}
+  \item Bit 1 → transmitir \textbf{111}
+  \end{itemize}
+\item Decodificación: Regla de mayoría
+  \begin{itemize}
+  \item Recibimos 010 → mayoría es 0 → decidimos 0
+  \item Recibimos 101 → mayoría es 1 → decidimos 1
+  \item Recibimos 011 → mayoría es 1 → decidimos 1
+  \end{itemize}
+\item Capacidad: Corrige hasta 1 error de los 3 bits
+\item Tasa: $R_c = 1/3 \approx 0.33$ (solo 33\% de eficiencia, muy ineficiente pero muy robusto)
+\end{itemize}
+
+\begin{tcolorbox}[colback=verdeclaro!10,colframe=verdeclaro,title=⚡ TEOREMA DE SHANNON - Resultado más importante]
+\textbf{Segundo Teorema de Shannon (Teorema de Codificación de Canal):}
+
+Existe un límite fundamental llamado \textbf{capacidad del canal} $C$ tal que:
+\begin{itemize}
+\item Si $R < C$ (tasa de información menor que capacidad): \textbf{Existen códigos} que permiten comunicar con probabilidad de error \textbf{arbitrariamente pequeña} ($P_e \to 0$)
+\item Si $R > C$: \textbf{Imposible} comunicar de forma confiable, sin importar qué código usemos
+\end{itemize}
+
+\textbf{Para canal AWGN con ancho de banda $B$ y SNR = $S/N$:}
+$$\boxed{C = B\log_2\left(1 + \frac{S}{N}\right) \quad \text{[bits/s]}}$$
+
+\textbf{Forma alternativa (normalizada por ancho de banda):}
+$$\frac{C}{B} = \log_2\left(1 + \frac{E_b R}{N_0 B}\right) = \log_2\left(1 + \frac{E_b}{N_0} \cdot \frac{R}{B}\right)$$
+
+\textbf{Límite de Shannon ($R/B \to 0$, ancho de banda infinito):}
+$$\frac{E_b}{N_0}\bigg|_{\text{Shannon}} = \ln(2) \approx 0.693 \approx -1.59 \text{ dB}$$
+
+Este es el \emph{límite teórico absoluto}. Ningún sistema real puede operar por debajo de $E_b/N_0 = -1.59$ dB.
+
+\textbf{Interpretación práctica:}
+\begin{itemize}
+\item Sistemas sin código: necesitan típicamente $E_b/N_0 \approx 10$ dB para BER = $10^{-5}$
+\item Códigos modernos (Turbo, LDPC): operan a $\approx 1$-2 dB del límite de Shannon
+\item \textbf{Ganancia de codificación:} $\approx 8$-9 dB (¡factor 6-8 en potencia!)
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{¿Qué nos dice el teorema de Shannon?}
+\begin{enumerate}
+\item La comunicación confiable es \textbf{posible} incluso con ruido (no necesitamos SNR infinito)
+\item Hay un límite fundamental que no podemos superar (la física lo impide)
+\item Existe un trade-off entre tasa de información y robustez
+\item El \textbf{ancho de banda} y la \textbf{potencia} son intercambiables (hasta cierto punto)
+\end{enumerate}
+
+\textbf{Tipos de estrategias de codificación:}
+\begin{itemize}
+\item \textbf{ARQ (Automatic Repeat reQuest):} Solo detectar errores y pedir retransmisión
+  \begin{itemize}
+  \item Ventaja: Simple, usa menos redundancia
+  \item Desventaja: Requiere canal de retorno, aumenta latencia
+  \item Uso: TCP/IP, protocolos de red
+  \end{itemize}
+\item \textbf{FEC (Forward Error Correction):} Corregir errores automáticamente
+  \begin{itemize}
+  \item Ventaja: No necesita retransmisión, latencia fija
+  \item Desventaja: Más redundancia necesaria
+  \item Uso: Broadcasting (TV, radio), tiempo real (voz), comunicaciones espaciales
+  \end{itemize}
+\item \textbf{Híbrido (HARQ):} Combinar ambas estrategias
+  \begin{itemize}
+  \item FEC para errores comunes, ARQ para errores raros
+  \item Uso: LTE, 5G, WiFi moderno
+  \end{itemize}
+\end{itemize}
+
+\subsection{Códigos de bloque lineales C(n,k) - Estructura algebraica}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=🧠 FUNDAMENTO: ¿Por qué "lineales"?]
+\textbf{Esto era así porque:} Trabajamos en el cuerpo finito $\mathbb{F}_2 = \{0,1\}$ (aritmética módulo 2).
+
+\textbf{Operaciones en $\mathbb{F}_2$:}
+\begin{itemize}
+\item Suma: $0 + 0 = 0$, $0 + 1 = 1$, $1 + 0 = 1$, $1 + 1 = 0$ (XOR)
+\item Multiplicación: $0 \cdot 0 = 0$, $0 \cdot 1 = 0$, $1 \cdot 0 = 0$, $1 \cdot 1 = 1$ (AND)
+\end{itemize}
+
+\textbf{Propiedad "lineal":} Si $\mathbf{c}_1$ y $\mathbf{c}_2$ son palabras código válidas, entonces $\mathbf{c}_1 + \mathbf{c}_2$ (suma módulo 2, bit a bit) también es palabra código válida.
+
+\textbf{Consecuencias poderosas:}
+\begin{enumerate}
+\item La palabra todo-ceros $\mathbf{0}$ siempre pertenece al código
+\item El código forma un \textbf{subespacio vectorial} de $\mathbb{F}_2^n$
+\item Podemos usar \textbf{álgebra lineal} para codificar y decodificar
+\item La estructura algebraica simplifica el análisis y la implementación
+\end{enumerate}
+\end{tcolorbox}
+
+Un código de bloque lineal $\mathcal{C}(n,k)$ transforma bloques de $k$ bits de información en bloques de $n$ bits codificados, añadiendo $n-k$ bits de paridad.
+
+\textbf{Parámetros fundamentales:}
+\begin{itemize}
+\item $n$: longitud de la palabra código (bits transmitidos en total)
+\item $k$: longitud del mensaje de información (bits útiles de datos)
+\item $M = 2^k$: número de palabras código válidas (de $2^n$ posibles en total)
+  \begin{itemize}
+  \item Solo $2^k$ de las $2^n$ secuencias posibles son palabras código válidas
+  \item Esto es clave: la \textbf{redundancia} viene de usar solo un subconjunto
+  \end{itemize}
+\item \textbf{Tasa del código (code rate):} $R_c = k/n$ (fracción de bits útiles)
+  \begin{itemize}
+  \item $R_c = 1$: Sin código (todos los bits son información)
+  \item $R_c \to 0$: Mucha redundancia (muy protegido pero ineficiente)
+  \item Típicamente: $R_c \in [1/3, 9/10]$
+  \end{itemize}
+\item Bits de paridad: $n - k$ (redundancia añadida)
+\item \textbf{Overhead:} $(1 - R_c) = (n-k)/n$ (fracción de bits "desperdiciados")
+\end{itemize}
+
+\textbf{Ejemplo detallado - Código Hamming (7,4):}
+\begin{itemize}
+\item 4 bits de información: $\mathbf{m} = [m_0, m_1, m_2, m_3]$
+\item 3 bits de paridad: calculados a partir de $\mathbf{m}$
+\item 7 bits totales transmitidos: $\mathbf{c} = [m_0, m_1, m_2, m_3, p_0, p_1, p_2]$
+\item $R_c = 4/7 \approx 0.571$ (57.1\% eficiencia)
+\item Overhead = 3/7 ≈ 43\% (casi la mitad son bits de paridad)
+\item Puede corregir \textbf{1 error} en cualquier posición
+\item Si transmitimos 1 Mbps codificado → débito útil = 571 kbps
+\end{itemize}
+
+\textbf{Matriz generadora $\mathbf{G}$ (forma sistemática):}
+$$\mathbf{G} = [\mathbf{I}_k | \mathbf{P}]_{k \times n}$$
+
+donde:
+\begin{itemize}
+\item $\mathbf{I}_k$: matriz identidad $k \times k$ (preserva bits de información)
+\item $\mathbf{P}$: matriz de paridad $k \times (n-k)$ (genera redundancia)
+\item Dimensión total: $k$ filas, $n$ columnas
+\end{itemize}
+
+\textbf{Codificación (multiplicación matricial módulo 2):}
+$$\boxed{\mathbf{c} = \mathbf{m}\mathbf{G} \quad (\text{mod } 2)}$$
+
+donde:
+\begin{itemize}
+\item $\mathbf{m} = [m_0, m_1, \ldots, m_{k-1}]$: mensaje de información (vector fila $1 \times k$)
+\item $\mathbf{c} = [c_0, c_1, \ldots, c_{n-1}]$: palabra código (vector fila $1 \times n$)
+\item Operación: producto matriz-vector con aritmética módulo 2
+\end{itemize}
+
+\textbf{Forma sistemática (ventaja práctica):}
+$$\mathbf{c} = [\underbrace{m_0, m_1, \ldots, m_{k-1}}_{\text{Información (visible)}}, \underbrace{p_0, p_1, \ldots, p_{n-k-1}}_{\text{Paridad (calculada)}}]$$
+
+Los primeros $k$ bits de $\mathbf{c}$ son \textbf{exactamente} $\mathbf{m}$ (información transparente). Esto simplifica la implementación:
+\begin{itemize}
+\item El codificador solo necesita calcular los bits de paridad
+\item El decodificador puede leer directamente la información (si no hay errores)
+\item Facilita interoperabilidad con sistemas sin código
+\end{itemize}
+
+\textbf{Ejemplo concreto - Hamming (7,4):}
+$$\mathbf{G} = \begin{pmatrix}
+1 & 0 & 0 & 0 & 1 & 1 & 0\\
+0 & 1 & 0 & 0 & 1 & 0 & 1\\
+0 & 0 & 1 & 0 & 0 & 1 & 1\\
+0 & 0 & 0 & 1 & 1 & 1 & 1
+\end{pmatrix}$$
+
+Si $\mathbf{m} = [1, 0, 1, 1]$:
+$$\mathbf{c} = [1, 0, 1, 1] \cdot \mathbf{G} = [1, 0, 1, 1, 0, 0, 0]$$
+
+\textbf{Matriz de paridad $\mathbf{H}$ (verificación):}
+$$\mathbf{H} = [\mathbf{P}^T | \mathbf{I}_{n-k}]_{(n-k) \times n}$$
+
+Dimensión: $(n-k)$ filas, $n$ columnas
+
+\textbf{Propiedad fundamental (ortogonalidad):}
+$$\boxed{\mathbf{c}\mathbf{H}^T = \mathbf{0} \quad \text{si y solo si } \mathbf{c} \text{ es palabra código válida}}$$
+
+\textbf{¿Por qué funciona esto?} 
+\begin{itemize}
+\item $\mathbf{G}$ genera el subespacio código (filas son base)
+\item $\mathbf{H}$ define el complemento ortogonal (verifica pertenencia)
+\item Se cumple siempre: $\mathbf{G}\mathbf{H}^T = \mathbf{0}$ (ortogonalidad algebraica)
+\item Por tanto: $\mathbf{c}\mathbf{H}^T = (\mathbf{m}\mathbf{G})\mathbf{H}^T = \mathbf{m}(\mathbf{G}\mathbf{H}^T) = \mathbf{0}$
+\end{itemize}
+
+\textbf{¿Para qué sirve $\mathbf{H}$? (usos prácticos):}
+\begin{enumerate}
+\item \textbf{Verificar validez:} Calcular $\mathbf{r}\mathbf{H}^T$ donde $\mathbf{r}$ es palabra recibida
+  \begin{itemize}
+  \item Si $\mathbf{r}\mathbf{H}^T = \mathbf{0}$ → sin errores detectados (o error no detectable)
+  \item Si $\mathbf{r}\mathbf{H}^T \neq \mathbf{0}$ → error detectado con certeza
+  \end{itemize}
+\item \textbf{Localizar errores:} El síndrome $\mathbf{s} = \mathbf{r}\mathbf{H}^T$ indica \emph{dónde} está el error
+\item \textbf{Corregir errores:} Usar tabla de síndromes o algoritmos para encontrar el patrón de error
+\end{enumerate}
+
+\textbf{Complejidad computacional:}
+\begin{itemize}
+\item Codificación: $O(kn)$ operaciones XOR (rápido, $\approx$ microsegundos)
+\item Decodificación: Depende del algoritmo
+  \begin{itemize}
+  \item Tabla completa: $O(1)$ tiempo, $O(2^{n-k})$ memoria (imposible para $n$ grande)
+  \item Algoritmos iterativos (LDPC, Turbo): $O(n \cdot I_{max})$ donde $I_{max}$ es número de iteraciones
+  \end{itemize}
+\end{itemize}
+
+\subsection{Distancia de Hamming - Métrica fundamental del espacio binario}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro,title=🧠 FUNDAMENTO GEOMÉTRICO]
+\textbf{Esto era así porque:} Las palabras binarias de longitud $n$ forman un espacio discreto de $2^n$ puntos (el hipercubo binario $\mathbb{F}_2^n$).
+
+\textbf{Geometría del espacio binario:}
+\begin{itemize}
+\item Cada palabra es un vértice del hipercubo $n$-dimensional
+\item La distancia de Hamming mide el número de aristas entre dos vértices
+\item Equivalentemente: número de coordenadas que difieren
+\end{itemize}
+
+\textbf{Ejemplo visual ($n=3$, cubo 3D):}
+\begin{verbatim}
+        011 ----------- 111
+       /|              /|
+      / |             / |
+    001----------101  |
+     |  |          |  |
+     | 010---------|--110
+     | /           | /
+     |/            |/
+    000-----------100
+\end{verbatim}
+
+\textbf{Distancias desde 000:}
+\begin{itemize}
+\item $d_H(000, 001) = 1$ (un bit diferente, vecinos adyacentes)
+\item $d_H(000, 011) = 2$ (dos bits diferentes, distancia 2)
+\item $d_H(000, 111) = 3$ (tres bits diferentes, vértices opuestos)
+\end{itemize}
+
+\textbf{Propiedad clave:} En cada vértice hay exactamente $n$ vecinos a distancia 1 (uno por cada bit que podemos invertir).
+\end{tcolorbox}
+
+La distancia de Hamming es la \textbf{métrica natural} para medir diferencias entre secuencias binarias.
+
+\textbf{Peso de Hamming (Hamming weight):}
+$$w_H(\mathbf{x}) = \text{número de bits iguales a 1 en } \mathbf{x}$$
+
+\textbf{Ejemplos:}
+\begin{itemize}
+\item $w_H(0000000) = 0$ (palabra todo-ceros)
+\item $w_H(1010110) = 4$ (cuatro unos)
+\item $w_H(1111111) = 7$ (palabra todo-unos)
+\item $w_H(1000000) = 1$ (peso mínimo no nulo)
+\end{itemize}
+
+\textbf{Distancia de Hamming entre dos palabras:}
+$$\boxed{d_H(\mathbf{x},\mathbf{y}) = w_H(\mathbf{x} + \mathbf{y}) = w_H(\mathbf{x} \oplus \mathbf{y})}$$
+
+donde $+$ es suma módulo 2 (XOR bit a bit).
+
+\textbf{¿Por qué funciona esta definición?}
+\begin{itemize}
+\item $\mathbf{x} \oplus \mathbf{y}$ tiene un 1 exactamente en las posiciones donde $\mathbf{x}$ y $\mathbf{y}$ difieren
+\item El peso de esta diferencia es el número de posiciones diferentes
+\item Por tanto: $d_H(\mathbf{x},\mathbf{y})$ = número de bits diferentes
+\end{itemize}
+
+\textbf{Ejemplo detallado paso a paso:}
+\begin{align*}
+\mathbf{x} &= 1011010 \\
+\mathbf{y} &= 1001110 \\
+\hline
+\mathbf{x} \oplus \mathbf{y} &= 0010100 \quad \text{(XOR bit a bit)}\\
+d_H(\mathbf{x},\mathbf{y}) &= w_H(0010100) = 2
+\end{align*}
+
+\textbf{Verificación directa:} Comparando posición por posición:
+\begin{itemize}
+\item Posiciones 0,1,3,5,6: iguales ($x_i = y_i$)
+\item Posiciones 2,4: diferentes ($x_2 \neq y_2$, $x_4 \neq y_4$)
+\item Total: 2 diferencias → $d_H = 2$ ✓
+\end{itemize}
+
+\textbf{Propiedades matemáticas (es una métrica):}
+\begin{enumerate}
+\item \textbf{No negatividad:} $d_H(\mathbf{x},\mathbf{y}) \geq 0$
+\item \textbf{Identidad:} $d_H(\mathbf{x},\mathbf{y}) = 0 \Leftrightarrow \mathbf{x} = \mathbf{y}$
+\item \textbf{Simetría:} $d_H(\mathbf{x},\mathbf{y}) = d_H(\mathbf{y},\mathbf{x})$
+\item \textbf{Desigualdad triangular:} $d_H(\mathbf{x},\mathbf{z}) \leq d_H(\mathbf{x},\mathbf{y}) + d_H(\mathbf{y},\mathbf{z})$
+\end{enumerate}
+
+\textbf{Para códigos lineales (propiedad especial):}
+La distancia entre dos palabras código es igual al peso de su diferencia:
+$$d_H(\mathbf{c}_i, \mathbf{c}_j) = w_H(\mathbf{c}_i + \mathbf{c}_j) = w_H(\mathbf{c}_k)$$
+
+donde $\mathbf{c}_k = \mathbf{c}_i + \mathbf{c}_j$ es también palabra código (por linealidad).
+
+\textbf{Consecuencia práctica importante:} Para calcular $d_{min}$ de un código lineal, basta encontrar la palabra código no nula de menor peso.
+
+\textbf{Distancia mínima del código $d_{min}$ (parámetro crítico):}
+$$\boxed{d_{min} = \min_{\mathbf{c}_i \neq \mathbf{c}_j} d_H(\mathbf{c}_i, \mathbf{c}_j)}$$
+
+Es la \textbf{menor distancia} entre cualquier par de palabras código válidas diferentes.
+
+\textbf{¿Por qué es fundamental $d_{min}$?}
+
+Determina \textbf{completamente} la capacidad de detección y corrección del código:
+\begin{itemize}
+\item Mayor $d_{min}$ → palabras código más "separadas" → más robusto
+\item Menor $d_{min}$ → palabras código más "cercanas" → más vulnerable
+\end{itemize}
+
+\textbf{Cálculo de $d_{min}$ (método directo):}
+\begin{enumerate}
+\item Generar todas las $2^k$ palabras código
+\item Calcular distancias entre todos los pares: $\binom{2^k}{2}$ distancias
+\item Tomar el mínimo
+\end{enumerate}
+
+\textbf{Problema:} Complejidad explosiva para $k$ grande ($O(2^{2k})$).
+
+\textbf{Método eficiente (códigos lineales):}
+\begin{enumerate}
+\item Generar todas las $2^k$ palabras código
+\item Calcular el peso de cada una: $w_H(\mathbf{c}_i)$
+\item Tomar el peso mínimo no nulo: $d_{min} = \min_{\mathbf{c} \neq \mathbf{0}} w_H(\mathbf{c})$
+\end{enumerate}
+
+Complejidad: $O(2^k \cdot n)$ (mucho mejor).
+
+\textbf{Método usando matriz $\mathbf{H}$ (más avanzado):}
+$$d_{min} = \text{número mínimo de columnas linealmente dependientes de } \mathbf{H}$$
+
+\textbf{Ejemplos con códigos conocidos:}
+\begin{itemize}
+\item Código de repetición $(n,1)$: $d_{min} = n$ (máxima separación posible)
+  \begin{itemize}
+  \item Palabras: 000...0 y 111...1
+  \item Distancia: $n$ (todos los bits difieren)
+  \end{itemize}
+\item Código de paridad $(n, n-1)$: $d_{min} = 2$ (separación mínima)
+  \begin{itemize}
+  \item Cualquier cambio de 1 bit cambia paridad
+  \item Pero cambio de 2 bits puede ser indetectable
+  \end{itemize}
+\item Hamming $(7,4)$: $d_{min} = 3$
+  \begin{itemize}
+  \item Palabras código separadas por al menos 3 bits
+  \item Ejemplo: 0000000, 1101000, 0110100 tienen distancias ≥ 3
+  \end{itemize}
+\item Golay $(23,12)$: $d_{min} = 7$ (código muy potente)
+\item Reed-Solomon: $d_{min} = n - k + 1$ (alcanza cota de Singleton)
+\end{itemize}
+
+\subsection{Capacidad de detección y corrección - Teorema fundamental}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=⚡ TEOREMA FUNDAMENTAL DE LA CODIFICACIÓN]
+Un código con distancia mínima $d_{min}$ tiene las siguientes capacidades garantizadas:
+
+\textbf{Detectar:} hasta $\boxed{d_{min} - 1}$ errores
+
+\textbf{Corregir:} hasta $\boxed{t = \left\lfloor \frac{d_{min}-1}{2} \right\rfloor}$ errores
+
+\textbf{Detectar Y corregir simultáneamente:}
+\begin{itemize}
+\item Corregir $t$ errores Y detectar $e$ errores adicionales si $d_{min} \geq t + e + 1$
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Demostración intuitiva (detección):}
+
+\begin{tcolorbox}[colback=verdeclaro!10,colframe=verdeclaro,title=🔍 Demostración - Detección]
+\textbf{Esto era así porque:} Las palabras código válidas están separadas por al menos $d_{min}$ bits.
+
+\textbf{Razonamiento:}
+\begin{enumerate}
+\item Transmitimos una palabra código válida $\mathbf{c}_i$
+\item Ocurren hasta $d_{min}-1$ errores → recibimos $\mathbf{r}$ con $d_H(\mathbf{c}_i, \mathbf{r}) \leq d_{min}-1$
+\item \textbf{Pregunta clave:} ¿Puede $\mathbf{r}$ ser otra palabra código válida $\mathbf{c}_j$?
+\item \textbf{Respuesta:} NO, porque $d_H(\mathbf{c}_i, \mathbf{c}_j) \geq d_{min}$ para todo $j \neq i$
+\item Si solo cambiamos $d_{min}-1$ bits de $\mathbf{c}_i$, NO podemos llegar a ningún otro $\mathbf{c}_j$
+\item Por tanto: $\mathbf{r}$ NO es palabra código válida → \textbf{detectamos error}
+\end{enumerate}
+
+\textbf{Ejemplo visual ($d_{min}=4$):}
+\begin{verbatim}
+ Círc. 000: palabra código
+ . : palabra inválida
+
+   Radio 1    Radio 2    Radio 3
+   (1 error) (2 err)   (3 err)
+      .         .         .
+     . .       . .       . .
+    . 000 .   . . .     . . .
+     . .       . .       . .
+      .         .         .
+
+ Otra palabra código debe estar
+ a distancia ≥ 4, fuera de estos círculos
+\end{verbatim}
+
+\textbf{Conclusión:} Con $d_{min}=4$, detectamos hasta 3 errores garantizado.
+\end{tcolorbox}
+
+\textbf{Demostración intuitiva (corrección):}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=🔧 Demostración - Corrección]
+\textbf{Idea geométrica:} Imaginemos "esferas de corrección" de radio $t$ alrededor de cada palabra código.
+
+\textbf{Condición para corrección sin ambigüedad:}
+Las esferas NO deben solaparse → necesitamos $d_{min} \geq 2t + 1$
+
+\textbf{¿Por qué $2t+1$?}
+\begin{itemize}
+\item Esfera alrededor de $\mathbf{c}_i$ tiene radio $t$
+\item Esfera alrededor de $\mathbf{c}_j$ tiene radio $t$
+\item Para que no se toquen: distancia entre centros $\geq t + t + 1 = 2t + 1$
+\item El +1 garantiza que no hay punto intermedio equidistante
+\end{itemize}
+
+\textbf{Visualización ($d_{min}=5$, $t=2$):}
+\begin{verbatim}
+   Esfera radio 2       Esfera radio 2
+   alrededor C1         alrededor C2
+       . .                 . .
+      . . .               . . .
+     .  C1  .           .  C2  .
+      . . .               . . .
+       . .                 . .
+   ├─────┤           ├─────┤
+      2 bits   1 bit      2 bits
+               (gap)
+   ├──────────────────────┤
+        d_min = 5 bits
+\end{verbatim}
+
+\textbf{Razonamiento paso a paso:}
+\begin{enumerate}
+\item Transmitimos $\mathbf{c}_i$, ocurren $\leq t$ errores
+\item Recibimos $\mathbf{r}$ con $d_H(\mathbf{c}_i, \mathbf{r}) \leq t$
+\item $\mathbf{r}$ está dentro de la esfera de radio $t$ alrededor de $\mathbf{c}_i$
+\item \textbf{Pregunta:} ¿Puede $\mathbf{r}$ estar dentro de otra esfera (de $\mathbf{c}_j$)?
+\item Si $d_{min} \geq 2t+1$, las esferas no se solapan → \textbf{NO}
+\item Por tanto: $\mathbf{c}_i$ es la única palabra código a distancia $\leq t$ de $\mathbf{r}$
+\item \textbf{Decodificación:} Elegir $\mathbf{c}_i$ (palabra más cercana) → corrección exitosa
+\end{enumerate}
+\end{tcolorbox}
+
+\textbf{Fórmula para capacidad de corrección:}
+$$t = \left\lfloor \frac{d_{min}-1}{2} \right\rfloor$$
+
+\textbf{¿Por qué el piso (floor)?}
+\begin{itemize}
+\item Si $d_{min}$ es impar: $d_{min} = 2t+1$ → $t = (d_{min}-1)/2$ (exacto)
+\item Si $d_{min}$ es par: $d_{min} = 2t$ o $2t+1$ (no se usa completamente la capacidad)
+\end{itemize}
+
+\textbf{Ejemplos numéricos detallados:}
+
+\textbf{1) Código con $d_{min} = 3$:}
+\begin{itemize}
+\item Detecta: hasta $3-1 = 2$ errores
+\item Corrige: $t = \lfloor (3-1)/2 \rfloor = \lfloor 1 \rfloor = 1$ error
+\item \textbf{Significado práctico:}
+  \begin{itemize}
+  \item Si 1 bit se corrompe → corregimos automáticamente
+  \item Si 2 bits se corrompen → detectamos pero NO podemos corregir (ambiguo)
+  \item Si 3 bits se corrompen → puede ser indetectable (llegamos a otra palabra código)
+  \end{itemize}
+\item \textbf{Ejemplo:} Código Hamming $(7,4)$
+\end{itemize}
+
+\textbf{2) Código con $d_{min} = 5$:}
+\begin{itemize}
+\item Detecta: hasta $5-1 = 4$ errores
+\item Corrige: $t = \lfloor 4/2 \rfloor = 2$ errores
+\item \textbf{Capacidades:}
+  \begin{itemize}
+  \item Hasta 2 errores → corrección automática
+  \item 3-4 errores → detección sin corrección
+  \item 5+ errores → puede fallar completamente
+  \end{itemize}
+\item \textbf{Ejemplo:} Código BCH $(31,16)$
+\end{itemize}
+
+\textbf{3) Código con $d_{min} = 7$:}
+\begin{itemize}
+\item Detecta: hasta 6 errores
+\item Corrige: $t = \lfloor 6/2 \rfloor = 3$ errores
+\item \textbf{Ejemplo:} Código Golay $(23,12)$
+\end{itemize}
+
+\textbf{4) Código de repetición $(n,1)$ con $d_{min} = n$:}
+\begin{itemize}
+\item Detecta: hasta $n-1$ errores
+\item Corrige: $t = \lfloor (n-1)/2 \rfloor$ errores
+\item \textbf{Ejemplo $(5,1)$:} Corrige hasta 2 errores de 5 bits
+  \begin{itemize}
+  \item Transmitimos 00000 o 11111
+  \item Recibimos 01010 (2 errores) → mayoría 0 → decodificamos 0 ✓
+  \item Recibimos 01110 (3 errores) → mayoría 1 → decodificamos 1 (error fatal ✗)
+  \end{itemize}
+\end{itemize}
+
+\textbf{Estrategias de uso en la práctica:}
+
+\textbf{Modo 1 - Solo detección (ARQ):}
+\begin{itemize}
+\item Usar toda la capacidad de detección: hasta $d_{min}-1$ errores
+\item Cuando detectamos error → pedir retransmisión
+\item \textbf{Ventaja:} Mayor débito útil (menos redundancia)
+\item \textbf{Desventaja:} Retransmisiones aumentan latencia
+\item \textbf{Uso:} Protocolos de red (TCP), almacenamiento (checksums)
+\end{itemize}
+
+\textbf{Modo 2 - Solo corrección (FEC):}
+\begin{itemize}
+\item Usar capacidad de corrección: hasta $\lfloor(d_{min}-1)/2\rfloor$ errores
+\item Corregir automáticamente sin retransmisión
+\item \textbf{Ventaja:} Sin retransmisiones, latencia fija
+\item \textbf{Desventaja:} Más redundancia necesaria (menor $R_c$)
+\item \textbf{Uso:} Broadcasting (TV, radio), tiempo real (VoIP), espacio
+\end{itemize}
+
+\textbf{Modo 3 - Híbrido (detección + corrección parcial):}
+\begin{itemize}
+\item Corregir $t$ errores, detectar $e > t$ errores adicionales
+\item Requiere: $d_{min} \geq t + e + 1$
+\item \textbf{Ejemplo con $d_{min}=7$:}
+  \begin{itemize}
+  \item Corregir 2 errores, detectar hasta 4 errores adicionales
+  \item $t=2$, $e=4$ → $d_{min} \geq 2+4+1=7$ ✓
+  \end{itemize}
+\item \textbf{Ventaja:} Corrección automática para errores frecuentes, detección para casos raros
+\item \textbf{Uso:} Sistemas modernos (LTE, 5G) con HARQ
+\end{itemize}
+
+\textbf{Trade-off fundamental (no se puede evitar):}
+$$\text{Robusto (alto }d_{min}\text{)} \Leftrightarrow \text{Ineficiente (bajo }R_c\text{)}$$
+
+\textbf{Cotas teóricas (límites matemáticos):}
+
+\textbf{Cota de Singleton:} $d_{min} \leq n - k + 1$
+\begin{itemize}
+\item Límite superior en $d_{min}$ para tasa $R_c = k/n$ dada
+\item Los códigos que alcanzan esta cota se llaman \textbf{MDS (Maximum Distance Separable)}
+\item \textbf{Ejemplo:} Reed-Solomon codes (usados en CDs, DVDs, QR codes)
+\end{itemize}
+
+\textbf{Cota esfera-empaquetamiento (Hamming bound):}
+$$2^k \sum_{i=0}^{t} \binom{n}{i} \leq 2^n$$
+
+Límite en cuántas palabras código podemos "empaquetar" con esferas de radio $t$ sin solapamiento.
+
+\textbf{Códigos perfectos:} Aquellos que alcanzan esta cota con igualdad.
+\begin{itemize}
+\item Códigos Hamming
+\item Código Golay $(23,12)$
+\item Código de repetición $(n,1)$ con $n$ impar
+\end{itemize}
+
+\textbf{Estos son muy raros - se conocen solo unos pocos!}
+
+\subsection{Decodificación}
+
+\textbf{Síndrome:}
+$$\mathbf{s} = \mathbf{r}\mathbf{H}^T = (\mathbf{c} + \mathbf{e})\mathbf{H}^T = \mathbf{e}\mathbf{H}^T$$
+
+\begin{itemize}
+\item $\mathbf{s} = \mathbf{0}$: no errores detectados
+\item $\mathbf{s} \neq \mathbf{0}$: error detectado
+\end{itemize}
+
+\textbf{Regla ML:} Elegir palabra código más cercana (mínima $d_H$).
+
+\subsection{Códigos específicos}
+
+\textbf{Repetición (n,1):}
+\begin{itemize}
+\item $d_{min} = n$, $t_c = \lfloor (n-1)/2 \rfloor$
+\item Muy robusto, muy ineficiente ($R_c = 1/n$)
+\end{itemize}
+
+\textbf{Paridad (n,n-1):}
+\begin{itemize}
+\item $d_{min} = 2$, detecta 1 error, no corrige
+\item Alta tasa ($R_c = (n-1)/n$)
+\end{itemize}
+
+\textbf{Hamming (2$^m$-1, 2$^m$-m-1):}
+\begin{itemize}
+\item $d_{min} = 3$, $t_c = 1$
+\item Columnas de H: representación binaria de 1 a $2^m-1$
+\item Ejemplo (7,4): $R_c = 4/7 \approx 0.57$
+\end{itemize}
+
+\subsection{Límites}
+
+\textbf{Cota de Singleton:} $d_{min} \leq n - k + 1$
+
+\textbf{Cota de Plotkin:} $d_{min} \leq \frac{n2^{k-1}}{2^k-1}$
+
+\section{Canal Multitrayecto - La realidad física de la propagación}
+
+\subsection{Motivación - ¿Por qué es complejo el canal real?}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro,title=🧠 FUNDAMENTO FÍSICO]
+\textbf{Esto era así porque:} En el mundo real, las ondas electromagnéticas NO viajan en línea recta desde el transmisor al receptor.
+
+\textbf{Fenómenos físicos reales:}
+\begin{enumerate}
+\item \textbf{Reflexión:} La señal rebota en edificios, montañas, vehículos
+\item \textbf{Difracción:} La señal rodea obstáculos (esquinas, colinas)
+\item \textbf{Dispersión (scattering):} La señal se dispersa en objetos pequeños (árboles, farolas)
+\item \textbf{Refracción:} La señal se dobla al atravesar capas atmosféricas diferentes
+\end{enumerate}
+
+\textbf{Consecuencia fundamental:} La señal llega al receptor por \textbf{múltiples caminos (multitrayecto)} con diferentes:
+\begin{itemize}
+\item \textbf{Retardos} $\tau_l$: cada camino tiene longitud diferente
+\item \textbf{Atenuaciones} $\alpha_l$: cada camino pierde potencia distinto
+\item \textbf{Fases} $\phi_l$: cada camino acumula desfase diferente
+\end{itemize}
+
+\textbf{Problema crítico:} Los caminos pueden interferirse \textbf{destructivamente}:
+\begin{itemize}
+\item Si dos caminos llegan en fase opuesta → se cancelan (desvanecimiento)
+\item Si llegan desfasados en el tiempo → ISI (Interferencia Entre Símbolos)
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Ejemplos prácticos donde multitrayecto es crítico:}
+\begin{itemize}
+\item \textbf{Comunicaciones móviles (4G/5G):} Señal rebota en edificios urbanos
+  \begin{itemize}
+  \item Delay spread: 0.1-20 $\mu$s (típico 1-5 $\mu$s)
+  \item Puede haber 10-50 caminos significativos
+  \end{itemize}
+\item \textbf{WiFi indoor:} Reflexiones en paredes, muebles, personas
+  \begin{itemize}
+  \item Delay spread: 50-200 ns
+  \item Canal muy variable (personas moviendose)
+  \end{itemize}
+\item \textbf{Comunicaciones submarinas acústicas:} Reflexiones en superficie y fondo marino
+  \begin{itemize}
+  \item Delay spread: decenas de ms (velocidad sonido = 1500 m/s)
+  \item Canal \textbf{extremadamente} dispersivo
+  \end{itemize}
+\item \textbf{Broadcasting (TV, radio):} Reflexiones en terreno, ionosfera
+  \begin{itemize}
+  \item Delay spread: microsegundos a milisegundos
+  \item Efecto "fantasma" en TV analógica
+  \end{itemize}
+\end{itemize}
+
+\subsection{Modelo matemático del canal multitrayecto}
+
+\textbf{Respuesta impulsional continua (física):}
+$$\boxed{h_c(t;\tau) = \sum_{l=0}^{L-1} \alpha_l(t) e^{-i\phi_l(t)} \delta(\tau - \tau_l(t))}$$
+
+Esta es la respuesta del canal en tiempo continuo, donde:
+\begin{itemize}
+\item $h_c(t;\tau)$: respuesta impulsional en tiempo $t$ con retardo $\tau$
+\item $L$: número de caminos (trayectos) significativos
+\item $\alpha_l(t)$: atenuación (ganancia) del camino $l$ en tiempo $t$
+  \begin{itemize}
+  \item Depende de $t$ porque objetos se mueven (Doppler)
+  \item Típicamente: $\alpha_0 > \alpha_1 > \alpha_2 > \cdots$ (caminos más largos más atenuados)
+  \end{itemize}
+\item $\phi_l(t)$: fase del camino $l$ en tiempo $t$
+  \begin{itemize}
+  \item Incluye fase debido a longitud del camino: $\phi_l = 2\pi f_c \tau_l$
+  \item Varía con $t$ por movimiento (efecto Doppler)
+  \end{itemize}
+\item $\tau_l(t)$: retardo de propagación del camino $l$
+  \begin{itemize}
+  \item $\tau_l = d_l / c$ donde $d_l$ es longitud del camino, $c$ velocidad de propagación
+  \item Ordenados: $0 \leq \tau_0 < \tau_1 < \cdots < \tau_{L-1}$
+  \end{itemize}
+\item $\delta(\tau - \tau_l)$: Delta de Dirac (impulso en retardo $\tau_l$)
+\end{itemize}
+
+\textbf{Señal recibida (convolución con el canal):}
+$$\boxed{r(t) = \int_{-\infty}^{+\infty} h_c(t;\tau) s(t-\tau) d\tau + n(t)}$$
+
+Substituyendo la expresión de $h_c$:
+$$\boxed{r(t) = \sum_{l=0}^{L-1} \alpha_l(t) e^{-i\phi_l(t)} s(t - \tau_l(t)) + n(t)}$$
+
+\textbf{Interpretación física:}
+\begin{itemize}
+\item Recibimos una \textbf{suma ponderada} de copias retardadas de la señal transmitida
+\item Cada copia tiene amplitud $\alpha_l$, fase $\phi_l$ y retardo $\tau_l$ diferentes
+\item Las copias pueden sumarse \textbf{constructiva} o \textbf{destructivamente}
+\item El ruido AWGN $n(t)$ se suma encima de toda esta mezcla
+\end{itemize}
+
+\textbf{Ejemplo numérico simple (2 caminos):}
+\begin{itemize}
+\item Camino directo: $\alpha_0 = 1.0$, $\tau_0 = 0$ (referencia)
+\item Camino reflejado: $\alpha_1 = 0.5$, $\tau_1 = 1\,\mu$s
+\item Señal recibida: $r(t) = 1.0 \cdot s(t) + 0.5 \cdot s(t - 1\,\mu\text{s}) + n(t)$
+\item Si el símbolo dura $T_s = 0.5\,\mu$s → el eco llega 2 símbolos después → ISI severa
+\end{itemize}
+
+\subsection{Parámetros fundamentales del canal - Caracterización completa}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=📏 Parámetros en Dominio TEMPORAL]
+\textbf{1. Delay Spread (Dispersión temporal) $\tau_{max}$:}
+$$\boxed{\tau_{max} = \tau_{L-1} - \tau_0}$$
+
+Diferencia entre el camino más largo y el más corto.
+
+\textbf{Esto era así porque:} Mide cuánto se "estira" la señal en el tiempo.
+
+\textbf{Valores típicos:}
+\begin{itemize}
+\item Canal indoor (WiFi): 50-200 ns
+\item Canal urbano (4G): 1-5 $\mu$s
+\item Canal rural (cobertura extensa): 10-20 $\mu$s
+\item Canal submarino: 10-100 ms (!)
+\end{itemize}
+
+\textbf{Impacto en ISI:}
+\begin{itemize}
+\item Si $\tau_{max} \ll T_s$ → ISI despreciable (canal "plano")
+\item Si $\tau_{max} \approx T_s$ → ISI moderada (ecualizar simple)
+\item Si $\tau_{max} \gg T_s$ → ISI severa (OFDM necesario)
+\end{itemize}
+
+\textbf{2. RMS Delay Spread (métrica estadística):}
+$$\tau_{rms} = \sqrt{\frac{\sum_l \alpha_l^2 (\tau_l - \bar{\tau})^2}{\sum_l \alpha_l^2}}$$
+
+donde $\bar{\tau} = \frac{\sum_l \alpha_l^2 \tau_l}{\sum_l \alpha_l^2}$ es retardo medio ponderado.
+
+Mide la "dispersión promedio" considerando energía de cada camino.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=verdeclaro!10,colframe=verdeclaro,title=📊 Parámetros en Dominio FRECUENCIAL]
+\textbf{3. Ancho de banda de coherencia $B_c$:}
+$$\boxed{B_c \approx \frac{1}{\tau_{max}}}$$
+
+\textbf{Esto era así porque:} Es la transformada de Fourier del delay spread.
+
+\textbf{Interpretación:} Ancho de banda en el cual el canal es aproximadamente \textbf{constante} ("plano").
+
+\textbf{Relación con selectividad frecuencial:}
+\begin{itemize}
+\item Si $B_{se\tilde{n}al} \ll B_c$ → canal \textbf{plano en frecuencia} (flat fading)
+  \begin{itemize}
+  \item Todas las frecuencias afectadas igual
+  \item No hay ISI significativa
+  \item Ejemplo: GSM (200 kHz) en canal urbano ($B_c \approx$ 200 kHz)
+  \end{itemize}
+\item Si $B_{se\tilde{n}al} \gg B_c$ → canal \textbf{selectivo en frecuencia} (frequency-selective)
+  \begin{itemize}
+  \item Diferentes frecuencias atenuadas diferente
+  \item ISI severa en tiempo
+  \item Ejemplo: LTE (20 MHz) en canal urbano ($B_c \approx$ 200 kHz) → 100 veces mayor
+  \end{itemize}
+\end{itemize}
+
+\textbf{Ejemplo numérico:}
+\begin{itemize}
+\item Delay spread: $\tau_{max} = 5\,\mu$s
+\item Ancho coherencia: $B_c \approx 1/(5\mu\text{s}) = 200$ kHz
+\item Si transmitimos con $B = 20$ MHz → $B/B_c = 100$ subcanales independientes
+\item Por eso OFDM usa 100+ subportadoras (cada una dentro de $B_c$)
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro,title=🚀 Parámetros por MOVILIDAD (Doppler)]
+\textbf{4. Doppler Spread (Dispersión Doppler) $\nu_D$:}
+$$\boxed{\nu_D = \frac{v_{max} \cdot f_c}{c}}$$
+
+donde:
+\begin{itemize}
+\item $v_{max}$: velocidad relativa máxima transmisor-receptor [m/s]
+\item $f_c$: frecuencia portadora [Hz]
+\item $c$: velocidad de propagación [m/s]
+  \begin{itemize}
+  \item Ondas radio: $c = 3 \times 10^8$ m/s
+  \item Sonido submarino: $c \approx 1500$ m/s
+  \end{itemize}
+\end{itemize}
+
+\textbf{Esto era así porque:} Efecto Doppler causa desplazamiento de frecuencia proporcional a velocidad.
+
+\textbf{Ejemplos prácticos:}
+\begin{itemize}
+\item \textbf{Peatón (3 km/h = 0.83 m/s), $f_c = 2$ GHz:}
+  $$\nu_D = \frac{0.83 \times 2 \times 10^9}{3 \times 10^8} \approx 5.5 \text{ Hz}$$
+\item \textbf{Coche ciudad (50 km/h = 13.9 m/s), $f_c = 2$ GHz:}
+  $$\nu_D \approx 93 \text{ Hz}$$
+\item \textbf{Tren alta velocidad (300 km/h = 83.3 m/s), $f_c = 2$ GHz:}
+  $$\nu_D \approx 555 \text{ Hz}$$
+\item \textbf{Submarino (20 nudos $\approx$ 10 m/s), $f_c = 10$ kHz, $c = 1500$ m/s:}
+  $$\nu_D = \frac{10 \times 10^4}{1500} \approx 67 \text{ Hz}$$ (!)
+\end{itemize}
+
+\textbf{5. Tiempo de coherencia $T_c$ (cuánto dura la "estacionariedad"):}
+$$\boxed{T_c \approx \frac{1}{\nu_D}}$$
+
+\textbf{Interpretación:} Tiempo durante el cual el canal permanece aproximadamente \textbf{constante}.
+
+\textbf{Relación con variabilidad temporal:}
+\begin{itemize}
+\item Si $T_{símbolo} \ll T_c$ → canal \textbf{cuasi-estático} (slow fading)
+  \begin{itemize}
+  \item Canal constante durante muchos símbolos
+  \item Puedo estimar canal y usar estimación durante tiempo
+  \item Ejemplo: WiFi con usuario fijo
+  \end{itemize}
+\item Si $T_{símbolo} \gg T_c$ → canal \textbf{rápidamente variable} (fast fading)
+  \begin{itemize}
+  \item Canal cambia dentro de un símbolo
+  \item Necesito re-estimar constantemente
+  \item Ejemplo: 4G en tren alta velocidad
+  \end{itemize}
+\end{itemize}
+
+\textbf{Ejemplos numéricos:}
+\begin{itemize}
+\item Peatón ($\nu_D = 5.5$ Hz): $T_c \approx 182$ ms (muy largo)
+\item Coche ($\nu_D = 93$ Hz): $T_c \approx 11$ ms
+\item Tren ($\nu_D = 555$ Hz): $T_c \approx 1.8$ ms (corto!)
+\end{itemize}
+
+\textbf{Relación con OFDM:}
+\begin{itemize}
+\item Símbolo OFDM típico: $T_{OFDM} \approx 50$-$100\,\mu$s
+\item Peatón: $T_c/T_{OFDM} \approx 1820$ símbolos (super estable)
+\item Tren: $T_c/T_{OFDM} \approx 18$ símbolos (necesita pilotos frecuentes)
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Canal discreto equivalente - De continuo a discreto}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=🧠 FUNDAMENTO: ¿Por qué "discreto"?]
+\textbf{Esto era así porque:} Después de filtrado y muestreo, trabajamos con \textbf{secuencias discretas} (no señales continuas).
+
+\textbf{Cadena completa:}
+\begin{enumerate}
+\item Transmisor emite señal continua: $s(t) = \sum_k a_k h_e(t - kT_s)$
+\item Canal multitrayecto: $r(t) = \sum_l \alpha_l s(t - \tau_l) + n(t)$
+\item Receptor aplica filtro adaptado: $y(t) = r(t) * g_r(t)$
+\item Muestreo en instantes óptimos: $y_k = y(t_0 + kT_s)$
+\end{enumerate}
+
+\textbf{Resultado:} Obtenemos un \textbf{modelo discreto} que relaciona símbolos transmitidos $\{a_k\}$ con muestras recibidas $\{y_k\}$.
+\end{tcolorbox}
+
+\textbf{Modelo del canal discreto equivalente:}
+$$\boxed{y_k = \sum_{l=0}^{L-1} h_l a_{k-l} + b_k}$$
+
+donde:
+\begin{itemize}
+\item $y_k$: muestra recibida en instante $k$ (después de filtrado y muestreo)
+\item $h_l$: coeficiente $l$ del canal discreto (complejo en general)
+  \begin{itemize}
+  \item Captura efecto combinado de: pulso transmisor + canal físico + filtro receptor
+  \item $h_0$ es coeficiente del camino "principal" (típicamente el más fuerte)
+  \item $|h_l|$ decrece generalmente con $l$ (caminos largos más atenuados)
+  \end{itemize}
+\item $a_{k-l}$: símbolo transmitido en instante $k-l$ (de la constelación)
+\item $L$: longitud de memoria del canal (número de "taps" o coeficientes)
+  \begin{itemize}
+  \item Relacionado con delay spread: $L = \lceil \tau_{max}/T_s \rceil + 1$
+  \item Si $\tau_{max} = 5\,\mu$s y $T_s = 1\,\mu$s → $L = 6$ taps
+  \end{itemize}
+\item $b_k$: ruido gaussiano blanco discreto, $b_k \sim \mathcal{CN}(0, N_0)$
+  \begin{itemize}
+  \item Proviene del ruido AWGN después de filtrado
+  \item Sigue siendo gaussiano (filtro lineal preserva gaussianidad)
+  \item Puede estar coloreado si no usamos matched filter
+  \end{itemize}
+\end{itemize}
+
+\textbf{Cómo se calculan los coeficientes $h_l$:}
+
+Definimos la respuesta global del sistema:
+$$r(t) = (h_e * c * g_r)(t)$$
+
+donde $c(t)$ es la respuesta del canal físico, $h_e(t)$ es el pulso transmisor, $g_r(t)$ es el filtro receptor.
+
+\textbf{Los coeficientes discretos son:}
+$$\boxed{h_l = r(t_0 + lT_s)}$$
+
+es decir, muestras de la respuesta global en los instantes de símbolo.
+
+\textbf{Ejemplo práctico (matched filter con 2 caminos):}
+
+Supongamos:
+\begin{itemize}
+\item Pulso rectangular: $h_e(t) = \text{rect}(t/T)$
+\item Canal: $c(t) = \delta(t) + 0.5\delta(t - 1.5T)$
+\item Matched filter: $g_r(t) = h_e(-t)$
+\item Respuesta global: $r(t) = \Lambda(t/T) + 0.5\Lambda((t-1.5T)/T)$ (triangular)
+\end{itemize}
+
+Muestreando en $t = kT$:
+\begin{align*}
+h_0 &= r(0) = 1.0\\
+h_1 &= r(T) = 0.25 \quad \text{(contribución del eco)}\\
+h_2 &= r(2T) = 0.25\\
+h_l &= 0 \quad \text{para } l \geq 3
+\end{align*}
+
+Por tanto: $L = 3$ (canal con 3 taps).
+
+\textbf{Representación en transformada Z:}
+$$H(z) = \sum_{l=0}^{L-1} h_l z^{-l}$$
+
+Esto es un \textbf{filtro FIR} (Finite Impulse Response) que modela el canal.
+
+\textbf{Propiedades importantes:}
+\begin{itemize}
+\item Si $L = 1$ (solo $h_0 \neq 0$): canal sin memoria, no hay ISI
+\item Si $L > 1$: canal con memoria, hay ISI (necesitamos ecualizar)
+\item Los coeficientes $h_l$ varían lentamente con tiempo (por movilidad)
+  \begin{itemize}
+  \item Necesitamos re-estimar cada $T_c$ (tiempo de coherencia)
+  \end{itemize}
+\end{itemize}
+
+\textbf{Estimación de los coeficientes del canal:}
+
+\textbf{Método 1: Correlación cruzada (secuencia de entrenamiento):}
+$$R_{ya}(u) = \sum_k y_k a^*(k-u)$$
+
+donde $\{a_k\}$ es una secuencia de entrenamiento \textbf{conocida} por el receptor.
+
+\textbf{Relación fundamental:}
+$$\boxed{R_{ya}(u) = \sum_{l=0}^{L-1} h_l R_{aa}(u-l) = (h * R_{aa})(u)}$$
+
+donde $R_{aa}(u) = \sum_k a_k a^*_{k-u}$ es la autocorrelación de la secuencia.
+
+\textbf{Caso ideal:} Si usamos una secuencia con $R_{aa}(u) = \delta(u)$ (impulso discreto):
+$$\boxed{\hat{h}_u = R_{ya}(u) \quad \text{(estimación directa!)}}$$
+
+\textbf{Secuencias que cumplen esto aproximadamente:}
+\begin{itemize}
+\item Secuencias PN (Pseudo-Noise): ruido pseudoaleatorio
+\item Secuencias de Zadoff-Chu (usadas en LTE)
+\item Secuencias de Gold (usadas en GPS)
+\end{itemize}
+
+\textbf{Método 2: Solución de mínimos cuadrados (LS):}
+
+Formulamos sistema lineal:
+$$\mathbf{y} = \mathbf{A}\mathbf{h} + \mathbf{n}$$
+
+donde $\mathbf{A}$ es matriz de Toeplitz con la secuencia de entrenamiento.
+
+\textbf{Solución óptima LS:}
+$$\boxed{\hat{\mathbf{h}} = (\mathbf{A}^H \mathbf{A})^{-1} \mathbf{A}^H \mathbf{y}}$$
+
+Esta solución minimiza el error cuadrático medio.
+
+\section{Ecualización - Combatir la ISI}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro,title=🧠 MOTIVACIÓN PROFUNDA]
+\textbf{Problema fundamental:} El canal multitrayecto causa ISI (Interferencia Entre Símbolos).
+
+\textbf{Esto era así porque:} Cada símbolo recibido contiene contribuciones de símbolos pasados (y futuros):
+$$y_k = \underbrace{h_0 a_k}_{\text{Señal deseada}} + \underbrace{\sum_{l\neq 0} h_l a_{k-l}}_{\text{ISI (indeseado)}} + b_k$$
+
+\textbf{Objetivo de la ecualización:} Diseñar un filtro $g(t)$ en el receptor para:
+\begin{enumerate}
+\item \textbf{Cancelar la ISI:} Hacer que la respuesta global cumpla Nyquist
+\item \textbf{No amplificar mucho el ruido:} Mantener SNR razonable
+\end{enumerate}
+
+\textbf{Trade-off inevitable:}
+$$\text{Cancelar ISI} \Leftrightarrow \text{Amplificar ruido}$$
+
+Diferentes estrategias de ecualización priorizan una u otra.
+\end{tcolorbox}
+
+\subsection{Zero-Forcing (ZF) - Eliminación perfecta de ISI}
+
+\textbf{Idea central:} Diseñar un ecualizador que sea la \textbf{inversa exacta} del canal.
+
+\textbf{Criterio matemático:}
+$$G(z) = \frac{1}{H(z)} \quad \Leftrightarrow \quad g * h = \delta$$
+
+donde $H(z)$ es la transformada Z del canal, $G(z)$ es la del ecualizador.
+
+\textbf{Respuesta global del sistema ecualizado:}
+$$(h * g)(k) = \delta(k) = \begin{cases} 1 & k=0\\ 0 & k \neq 0 \end{cases}$$
+
+Perfecto! No hay ISI en absoluto (Nyquist criterion satisfied).
+
+\textbf{Implementación práctica:}
+
+Si $H(z) = h_0 + h_1 z^{-1} + \cdots + h_{L-1}z^{-(L-1)}$, entonces:
+$$G(z) = \frac{1}{h_0(1 + (h_1/h_0)z^{-1} + \cdots)}$$
+
+Usando desarrollo en serie (si converge):
+$$G(z) = \frac{1}{h_0}(1 - (h_1/h_0)z^{-1} + ((h_1/h_0)^2 - h_2/h_0)z^{-2} + \cdots)$$
+
+Puede requerir un filtro IIR (Infinite Impulse Response) de longitud infinita.
+
+\textbf{\textcolor{red}{Problema crítico - Amplificación de ruido:}}
+
+Supongamos que el canal tiene un \textbf{cero (nulo) en frecuencia} $\omega_0$:
+$$H(e^{i\omega_0}) \approx 0$$
+
+Entonces el ecualizador ZF tendrá:
+$$G(e^{i\omega_0}) = \frac{1}{H(e^{i\omega_0})} \to \infty$$
+
+¡El ecualizador \textbf{amplifica infinitamente} el ruido en esa frecuencia!
+
+\textbf{Ejemplo numérico:}
+\begin{itemize}
+\item Canal: $H(z) = 1 + 0.9z^{-1}$ (tiene cero cerca de $z=-1$)
+\item Ecualizador ZF: $G(z) = \frac{1}{1+0.9z^{-1}} = 1 - 0.9z^{-1} + 0.81z^{-2} - \cdots$
+\item En frecuencia $\omega = \pi$: $|G(e^{i\pi})| = \frac{1}{|1-0.9|} = 10$ (amplifica $\times$10!)
+\item El ruido en esa banda se multiplica por 10 → SNR cae drásticamente
+\end{itemize}
+
+\textbf{Ventajas de ZF:}
+\begin{itemize}
+\item ISI = 0 (eliminación perfecta)
+\item Simple conceptualmente
+\item No necesita conocer estadísticas del ruido
+\end{itemize}
+
+\textbf{Desventajas de ZF:}
+\begin{itemize}
+\item \textbf{Amplificación severa de ruido} (especialmente si canal tiene nulos profundos)
+\item Puede ser inestable si $H(z)$ tiene ceros fuera del círculo unitario
+\item SNR de salida puede ser muy bajo
+\item Rendimiento pobre en canales malos
+\end{itemize}
+
+\textbf{Cuándo usar ZF:}
+\begin{itemize}
+\item Canal "bueno" sin nulos profundos
+\item SNR de entrada muy alto (ruido ya despreciable)
+\item Cuando ISI es el problema dominante
+\end{itemize}
+
+\subsection{MMSE (Minimum Mean Square Error) - Compromiso óptimo}
+
+\textbf{Idea central:} Minimizar el \textbf{error cuadrático medio} entre símbolo transmitido y estimado.
+
+\textbf{Criterio de optimización:}
+$$\min_{\mathbf{g}} \text{MSE} = \min_{\mathbf{g}} E\left[|a_k - \hat{a}_{k-\Delta}|^2\right]$$
+
+donde $\hat{a}_{k-\Delta} = \mathbf{g}^H \mathbf{y}_k$ es la estimación del símbolo con retardo $\Delta$.
+
+\textbf{Solución óptima (ecuaciones de Wiener-Hopf):}
+$$\boxed{\mathbf{g}_{MMSE} = (\sigma_a^2 \mathbf{H}^H\mathbf{H} + \sigma_n^2\mathbf{I})^{-1}\mathbf{H}^H\mathbf{e}_{\Delta}}$$
+
+donde:
+\begin{itemize}
+\item $\mathbf{H}$: matriz de canal (convolución como multiplicación matricial)
+\item $\sigma_a^2$: potencia promedio de los símbolos transmitidos
+\item $\sigma_n^2$: potencia del ruido
+\item $\mathbf{e}_{\Delta}$: vector canónico (0,\ldots,0,1,0,\ldots,0) en posición $\Delta$
+\end{itemize}
+
+\textbf{Interpretación intuitiva:}
+$$\mathbf{g}_{MMSE} = \underbrace{(\mathbf{H}^H\mathbf{H} + \frac{\sigma_n^2}{\sigma_a^2}\mathbf{I})^{-1}\mathbf{H}^H}_{\text{Regularización}} \mathbf{e}_{\Delta}$$
+
+La matriz $(\mathbf{H}^H\mathbf{H} + \lambda\mathbf{I})^{-1}$ con $\lambda = \sigma_n^2/\sigma_a^2$ es una \textbf{regularización}:
+\begin{itemize}
+\item Cuando SNR alto ($\sigma_n^2 \to 0$): $\mathbf{g}_{MMSE} \to \mathbf{g}_{ZF}$ (comportamiento ZF)
+\item Cuando SNR bajo ($\sigma_n^2$ grande): $\mathbf{g}_{MMSE}$ evita amplificar ruido excesivamente
+\end{itemize}
+
+\textbf{En dominio frecuencial (forma simple):}
+$$G_{MMSE}(\omega) = \frac{H^*(\omega)}{|H(\omega)|^2 + \sigma_n^2/\sigma_a^2}$$
+
+Compara con ZF: $G_{ZF}(\omega) = 1/H(\omega)$
+
+\textbf{Diferencia clave:}
+\begin{itemize}
+\item ZF invierte directamente $H$ (puede explotar si $H \approx 0$)
+\item MMSE invierte $H$ pero añade $\sigma_n^2/\sigma_a^2$ en denominador (estabiliza)
+\end{itemize}
+
+\textbf{Ventajas de MMSE:}
+\begin{itemize}
+\item \textbf{Compromiso óptimo} entre ISI y amplificación de ruido (minimiza MSE)
+\item Siempre estable (no invierte directamente el canal)
+\item Mejor rendimiento que ZF en SNR bajo/medio
+\item Se adapta automáticamente al SNR
+\end{itemize}
+
+\textbf{Desventajas de MMSE:}
+\begin{itemize}
+\item ISI residual (no elimina completamente ISI)
+\item Necesita conocer $\sigma_n^2$ y $\sigma_a^2$ (estadísticas)
+\item Complejidad computacional mayor (inversión matricial)
+\end{itemize}
+
+\textbf{Cuándo usar MMSE:}
+\begin{itemize}
+\item Escenarios generales (es el estándar en sistemas modernos)
+\item SNR bajo/medio (mejor que ZF)
+\item Canal con nulos profundos (MMSE no explota)
+\end{itemize}
+
+\subsection{Decision Feedback Equalizer (DFE) - Uso inteligente de decisiones}
+
+\textbf{Idea brillante:} Usar decisiones \textbf{pasadas} (ya tomadas) para cancelar ISI de forma no lineal.
+
+\textbf{Estructura en dos partes:}
+\begin{enumerate}
+\item \textbf{Filtro Feedforward $g_f$:} Procesa señal recibida $\mathbf{y}$
+\item \textbf{Filtro Feedback $g_b$:} Usa decisiones pasadas $\hat{\mathbf{a}}$
+\end{enumerate}
+
+\textbf{Ecuación del DFE:}
+$$\boxed{z_k = \underbrace{\sum_i g_{f,i} y_{k-i}}_{\text{Feedforward}} - \underbrace{\sum_{j=1}^{L_b} g_{b,j} \hat{a}_{k-j}}_{\text{Feedback}}}$$
+
+Luego: $\hat{a}_k = \text{decision}(z_k)$ (umbral o más cercano en constelación)
+
+\textbf{¿Por qué funciona esto?}
+
+\begin{tcolorbox}[colback=verdeclaro!10,colframe=verdeclaro,title=💡 Intuición del DFE]
+\textbf{Recordatorio:} La ISI viene de símbolos pasados y futuros:
+$$y_k = h_0 a_k + \underbrace{\sum_{l<0} h_l a_{k-l}}_{\text{Pre-cursor ISI}} + \underbrace{\sum_{l>0} h_l a_{k-l}}_{\text{Post-cursor ISI}} + b_k$$
+
+\textbf{Estrategia del DFE:}
+\begin{itemize}
+\item \textbf{Feedforward:} Cancela pre-cursor ISI (símbolos futuros) + ajusta fase/amplitud
+\item \textbf{Feedback:} Cancela post-cursor ISI (símbolos pasados) usando $\hat{a}_{k-1}, \hat{a}_{k-2}, \ldots$ (ya decididos)
+\end{itemize}
+
+\textbf{Ventaja clave del feedback:}
+\begin{itemize}
+\item Las decisiones $\hat{a}_k \in \{$constelación$\}$ son \textbf{deterministas} (no ruido)
+\item Por tanto, el filtro feedback \textbf{NO amplifica ruido} (solo procesa decis ones binarias/discretas)
+\item ZF/MMSE amplifican ruido al invertir canal, DFE no tiene este problema en parte feedback
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Diseño óptimo (criterio MMSE):}
+Minimizar MSE = $E[|a_k - z_k|^2]$ eligiendo $g_f$ y $g_b$ óptimos.
+
+\textbf{Solución:} Ecuaciones de Wiener-Hopf no lineales (más complejas que MMSE lineal).
+
+\textbf{Ventajas del DFE:}
+\begin{itemize}
+\item \textbf{Mejor que ecualización lineal} (ZF/MMSE) en canales severos
+\item No amplifica ruido en parte feedback
+\item Puede lograr casi ZF performance sin penalty de ruido
+\item Rendimiento cercano a óptimo (ML/Viterbi) con menor complejidad
+\end{itemize}
+
+\textbf{\textcolor{red}{Problema crítico - Propagación de errores:}}
+
+Si una decisión $\hat{a}_{k-1}$ es \textbf{errónea}:
+\begin{enumerate}
+\item Feedback cancela ISI basado en $\hat{a}_{k-1}$ incorrecto
+\item Esto corrompe $z_k$ → decisión $\hat{a}_k$ también errónea (alta probabilidad)
+\item Que corrompe $z_{k+1}$ → decisión $\hat{a}_{k+1}$ errónea
+\item ... \textbf{error burst} (ráfaga de errores)
+\end{enumerate}
+
+\textbf{Ejemplo:} Un solo error puede causar 5-10 errores consecutivos.
+
+\textbf{Soluciones a la propagación:}
+\begin{enumerate}
+\item \textbf{Secuencias de entrenamiento periódicas:} "Resetear" el feedback cada cierto tiempo
+\item \textbf{Códigos correctores:} FEC puede corregir los burst errors
+\item \textbf{Interleaving:} Dispersar errores en el tiempo
+\item \textbf{Usar Viterbi en su lugar:} No propaga errores (pero más complejo)
+\end{enumerate}
+
+\textbf{Cuándo usar DFE:}
+\begin{itemize}
+\item Canales con ISI severa (mejor que MMSE lineal)
+\item Cuando complejidad Viterbi es prohibitiva
+\item Con código corrector para manejar error propagation
+\item DSL, cable modems, comunicaciones por cable
+\end{itemize}
+
+\subsection{Maximum Likelihood / Viterbi - Solución óptima}
+
+\textbf{Idea fundamental:} En vez de decidir símbolo por símbolo, buscar la \textbf{secuencia completa más probable}.
+
+\textbf{Criterio ML:}
+$$\hat{\mathbf{a}} = \arg\max_{\mathbf{a}} p(\mathbf{y} | \mathbf{a}, \mathbf{H})$$
+
+Buscar entre \textbf{todas} las posibles secuencias la que maximiza verosimilitud.
+
+\textbf{Problema:} Si transmitimos $N$ símbolos con alfabeto $M$ → hay $M^N$ secuencias posibles.
+\begin{itemize}
+\item Para QPSK ($M=4$), $N=100$ → $4^{100} \approx 10^{60}$ secuencias (!)
+\item Búsqueda exhaustiva: \textbf{imposible}
+\end{itemize}
+
+\textbf{Solución: Algoritmo de Viterbi (programación dinámica)}
+
+Explota la estructura del canal con memoria finita mediante un \textbf{trellis}.
+
+\textbf{Trellis (enrejado):}
+\begin{itemize}
+\item \textbf{Estados:} Memoria del canal $S_k = (a_{k-1}, a_{k-2}, \ldots, a_{k-L+1})$
+\item Número de estados: $M^{L-1}$
+\item \textbf{Transiciones:} Símbolo actual $a_k$ causa transición $S_k \to S_{k+1}$
+\item \textbf{Métrica de rama:} Distancia euclidiana $\|y_k - \hat{y}_k(S_k, a_k)\|^2$
+\end{itemize}
+
+\textbf{Ejemplo (canal con 1 tap de memoria, BPSK):}
+\begin{itemize}
+\item Modelo: $y_k = h_0 a_k + h_1 a_{k-1} + b_k$ con $a_k \in \{-1,+1\}$
+\item Estados: $S_k = a_{k-1} \in \{-1, +1\}$ → 2 estados
+\item Transiciones: De cada estado salen 2 ramas ($a_k = \pm 1$)
+\item Complejidad: $O(2 \cdot 2 \cdot N) = O(4N)$ (lineal en $N$!)
+\end{itemize}
+
+\textbf{Complejidad general de Viterbi:}
+$$\text{Complejidad} = O(M^L \cdot N)$$
+
+donde $M^L$ es el número de estados.
+
+\textbf{Problema:} Crece \textbf{exponencialmente} con la memoria del canal $L$.
+\begin{itemize}
+\item $L=2$, $M=4$ (QPSK): $4^2 = 16$ estados (manejable)
+\item $L=5$, $M=4$: $4^5 = 1024$ estados (pesado)
+\item $L=10$, $M=4$: $4^{10} \approx 10^6$ estados (prohibitivo)
+\end{itemize}
+
+\textbf{Ventajas de Viterbi/ML:}
+\begin{itemize}
+\item \textbf{Óptimo} (minimiza probabilidad de error de secuencia)
+\item No propaga errores (considera secuencia completa)
+\item Mejor rendimiento posible para canal conocido
+\end{itemize}
+
+\textbf{Desventajas:}
+\begin{itemize}
+\item Complejidad exponencial en $L$ (intratable para $L$ grande)
+\item Requiere conocimiento perfecto del canal $\mathbf{H}$
+\item Latencia (necesita observar ventana de símbolos)
+\end{itemize}
+
+\textbf{Cuándo usar Viterbi:}
+\begin{itemize}
+\item Canal con memoria corta ($L \leq 3$-$5$)
+\item Alfabeto pequeño ($M \leq 4$)
+\item Cuando performance es crítico (espacial, militar)
+\item Decodificación de códigos convolucionales (uso principal)
+\end{itemize}
+
+\textbf{Comparación de ecualizadores (resumen):}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Método} & \textbf{ISI} & \textbf{Ruido} & \textbf{Complejidad} & \textbf{Errores} \\
+\hline
+ZF & Nula & Amplifica & Baja & No propaga \\
+MMSE & Residual & Compromiso & Media & No propaga \\
+DFE & Casi nula & No ampli. FB & Media & Propaga \\
+Viterbi & Nula & Óptimo & Exponencial & No propaga \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Elección práctica:}
+\begin{itemize}
+\item SNR alto, $L$ pequeño: ZF (simple)
+\item Caso general: MMSE o DFE (compromiso)
+\item Performance crítico, $L$ pequeño: Viterbi (óptimo)
+\item $L$ grande: OFDM (evita ecualización compleja)
+\end{itemize}
+
+\section{OFDM - Solución elegante al multipaso}
+
+\subsection{Principio y motivación}
+
+\textbf{OFDM (Orthogonal Frequency-Division Multiplexing)} es una técnica de transmisión multiportadora que divide el canal en muchas subportadoras ortogonales estrechas.
+
+\textbf{¿Por qué OFDM?}
+
+\textbf{Problema en canales multitrayecto:}
+\begin{itemize}
+\item La señal llega por múltiples caminos con diferentes retardos
+\item Causa interferencia entre símbolos (ISI) severa
+\item Ecualización en tiempo es muy compleja (filtros largos, adaptación difícil)
+\end{itemize}
+
+\textbf{Idea brillante de OFDM:}
+\begin{itemize}
+\item Dividir el canal ancho en $N$ subcanales estrechos
+\item Cada subcanal es suficientemente estrecho para ser "plano" (sin ISI significativa)
+\item Transmitir en paralelo sobre todas las subportadoras
+\item Usar DFT/IDFT para modular/demodular (implementación eficiente con FFT)
+\end{itemize}
+
+\textbf{Analogía:} En vez de conducir un camión grande por una carretera con baches (difícil), enviamos muchos coches pequeños por carriles separados (fácil).
+
+\textbf{Ventajas principales:}
+\begin{itemize}
+\item \textbf{Ecualización simple:} Un coeficiente complejo por subportadora (escalar, no vectorial)
+\item \textbf{Robustez:} Si una subportadora sufre desvanecimiento profundo, solo afecta a parte de los datos
+\item \textbf{Adaptación:} Podemos usar diferentes modulaciones en cada subportadora (bit loading)
+\item \textbf{Flexibilidad:} Fácil asignar subportadoras a diferentes usuarios (OFDMA)
+\end{itemize}
+
+\textbf{Inconvenientes:}
+\begin{itemize}
+\item \textbf{PAPR elevado:} La suma de muchas portadoras crea picos de amplitud
+\item \textbf{Sensibilidad a offset de frecuencia:} Destruye ortogonalidad (ICI - Inter-Carrier Interference)
+\item \textbf{Overhead del CP:} Prefijo cíclico reduce eficiencia espectral
+\end{itemize}
+
+\textbf{Aplicaciones:} WiFi (802.11a/g/n/ac/ax), 4G/5G (LTE, NR), DVB-T (TV digital), DSL
+
+\subsection{Modulación y demodulación - Magia de la DFT}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro,title=🧠 FUNDAMENTO MATEMÁTICO]
+\textbf{Esto era así porque:} OFDM explota la propiedad de \textbf{ortogonalidad} de exponenciales complejas.
+
+\textbf{Recordatorio - Ortogonalidad continua:}
+En el dominio continuo, las sinusoides $e^{i2\pi f_k t}$ con frecuencias $f_k = k/T$ son ortogonales en el intervalo $[0,T]$:
+$$\int_0^T e^{i2\pi f_k t} e^{-i2\pi f_l t} dt = T\delta_{k,l}$$
+
+\textbf{Versión discreta (base de OFDM):}
+Las exponenciales discretas $e^{i2\pi kn/N}$ son ortogonales sobre $n \in \{0,1,\ldots,N-1\}$:
+$$\boxed{\sum_{n=0}^{N-1} e^{i2\pi kn/N} e^{-i2\pi ln/N} = N\delta_{k,l}}$$
+
+donde $\delta_{k,l} = \begin{cases} 1 & k=l\\ 0 & k\neq l \end{cases}$
+
+\textbf{¿Por qué es crucial esto?} Permite que $N$ señales compartan el mismo espectro sin interferirse, multiplicando la capacidad por $N$.
+\end{tcolorbox}
+
+OFDM usa la DFT (Discrete Fourier Transform) para implementar eficientemente la modulación multiportadora.
+
+\textbf{IDFT - Modulación en el transmisor (síntesis):}
+$$\boxed{x_n = \frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} s_k e^{i2\pi kn/N}}, \quad n = 0,\ldots,N-1$$
+
+\textbf{Interpretación física paso a paso:}
+\begin{enumerate}
+\item \textbf{Entrada:} $N$ símbolos complejos $\{s_0, s_1, \ldots, s_{N-1}\}$
+  \begin{itemize}
+  \item Cada $s_k$ es un símbolo QAM/PSK en la subportadora $k$
+  \item Por ejemplo, con QPSK: $s_k \in \{1+i, 1-i, -1+i, -1-i\}/\sqrt{2}$
+  \end{itemize}
+\item \textbf{Modulación:} Cada símbolo $s_k$ se multiplica por su "base" $e^{i2\pi kn/N}$
+  \begin{itemize}
+  \item Esta exponencial representa una subportadora de frecuencia $f_k = k/(NT_s)$
+  \item En tiempo continuo equivalente: $e^{i2\pi f_k t}$ con $f_k = k\Delta f$
+  \end{itemize}
+\item \textbf{Suma coherente:} Se suman todas las contribuciones de las $N$ subportadoras
+\item \textbf{Salida:} $N$ muestras temporales $\{x_0, x_1, \ldots, x_{N-1}\}$
+  \begin{itemize}
+  \item Estas son las muestras del símbolo OFDM en dominio tiempo
+  \item Se transmiten secuencialmente a tasa $1/T_s$
+  \end{itemize}
+\end{enumerate}
+
+\textbf{Ejemplo numérico simple ($N=4$):}
+
+Supongamos $s = [1, i, -1, -i]$ (4 símbolos QPSK en 4 subportadoras):
+\begin{align*}
+x_0 &= \frac{1}{2}(1 \cdot e^0 + i \cdot e^0 + (-1) \cdot e^0 + (-i) \cdot e^0) = 0\\
+x_1 &= \frac{1}{2}(1 \cdot e^{i0} + i \cdot e^{i\pi/2} + (-1) \cdot e^{i\pi} + (-i) \cdot e^{i3\pi/2}) = 1\\
+x_2 &= \frac{1}{2}(1 + i \cdot e^{i\pi} + (-1) \cdot e^{i2\pi} + (-i) \cdot e^{i3\pi}) = 0\\
+x_3 &= \frac{1}{2}(1 + i \cdot e^{i3\pi/2} + (-1) \cdot e^{i3\pi} + (-i) \cdot e^{i9\pi/2}) = -1
+\end{align*}
+
+Símbolo OFDM temporal: $x = [0, 1, 0, -1]$
+
+\textbf{DFT - Demodulación en el receptor (análisis):}
+$$\boxed{\hat{s}_k = \frac{1}{\sqrt{N}}\sum_{n=0}^{N-1} y_n e^{-i2\pi kn/N}}, \quad k = 0,\ldots,N-1$$
+
+\textbf{Interpretación física:}
+\begin{enumerate}
+\item \textbf{Entrada:} $N$ muestras recibidas $\{y_0, y_1, \ldots, y_{N-1}\}$
+  \begin{itemize}
+  \item Después de filtrado, muestreo y remoción del CP
+  \end{itemize}
+\item \textbf{Proyección:} Cada muestra $y_n$ se multiplica por $e^{-i2\pi kn/N}$ (conjugado de la base)
+  \begin{itemize}
+  \item Esto "correlaciona" la señal recibida con cada subportadora
+  \item Similar a un matched filter para cada frecuencia
+  \end{itemize}
+\item \textbf{Integración discreta:} Se suman las $N$ contribuciones
+  \begin{itemize}
+  \item Por ortogonalidad, solo sobrevive la componente de frecuencia $k$
+  \item Las otras subportadoras se cancelan (suma a cero)
+  \end{itemize}
+\item \textbf{Salida:} $N$ símbolos estimados $\{\hat{s}_0, \hat{s}_1, \ldots, \hat{s}_{N-1}\}$
+  \begin{itemize}
+  \item Cada $\hat{s}_k$ es la estimación del símbolo en subportadora $k$
+  \item Luego se demodula cada uno según constelación (QAM/PSK)
+  \end{itemize}
+\end{enumerate}
+
+\textbf{Verificación de la ortogonalidad (demo matemática):}
+
+Si transmitimos símbolo $s_k$ en subportadora $k$, recibimos:
+\begin{align*}
+y_n &= x_n = \frac{1}{\sqrt{N}} s_k e^{i2\pi kn/N} \quad \text{(sin canal, sin ruido)}\\
+\hat{s}_l &= \frac{1}{\sqrt{N}}\sum_{n=0}^{N-1} y_n e^{-i2\pi ln/N}\\
+&= \frac{1}{N} s_k \sum_{n=0}^{N-1} e^{i2\pi (k-l)n/N}\\
+&= \frac{1}{N} s_k \cdot N\delta_{k,l} = s_k \delta_{k,l}
+\end{align*}
+
+Por tanto: $\hat{s}_l = \begin{cases} s_k & l=k\\ 0 & l \neq k \end{cases}$
+
+¡Perfecto! Solo recuperamos el símbolo de la subportadora deseada, sin interferencia.
+
+\textbf{Implementación práctica - FFT (Fast Fourier Transform):}
+
+\begin{tcolorbox}[colback=verdeclaro!10,colframe=verdeclaro,title=⚡ Eficiencia Computacional]
+\textbf{DFT directa:} $O(N^2)$ operaciones (multiplicaciones complejas)
+\begin{itemize}
+\item Para cada $k$ (hay $N$ valores): sumamos $N$ términos
+\item Total: $N \times N = N^2$ multiplicaciones
+\end{itemize}
+
+\textbf{FFT (algoritmo Cooley-Tukey):} $O(N\log_2 N)$ operaciones
+\begin{itemize}
+\item Explota simetría y periodicidad de $e^{i2\pi/N}$
+\item Divide problema recursivamente (divide-and-conquer)
+\item Funciona mejor cuando $N = 2^m$ (potencia de 2)
+\end{itemize}
+
+\textbf{Ganancia práctica:}
+\begin{itemize}
+\item $N=64$: DFT = 4096 ops, FFT = 384 ops → $\times 10.7$ más rápido
+\item $N=256$: DFT = 65536 ops, FFT = 2048 ops → $\times 32$ más rápido
+\item $N=1024$: DFT = 1048576 ops, FFT = 10240 ops → $\times 102$ más rápido
+\item $N=2048$: DFT = 4194304 ops, FFT = 22528 ops → $\times 186$ más rápido
+\end{itemize}
+
+\textbf{Sin FFT, OFDM sería impracticable en tiempo real!}
+\end{tcolorbox}
+
+\textbf{Valores típicos de $N$ en estándares:}
+\begin{itemize}
+\item \textbf{WiFi 802.11a/g:} $N = 64$ (52 datos + 4 pilotos + 8 nulos)
+\item \textbf{WiFi 802.11n:} $N = 64$ (40 MHz) o $N = 128$ (80 MHz)
+\item \textbf{LTE:} $N \in \{128, 256, 512, 1024, 1536, 2048\}$ (depende ancho banda)
+\item \textbf{5G NR:} $N \in \{128, 256, 512, 1024, 2048, 4096\}$ (más flexible)
+\item \textbf{DVB-T (TV):} $N \in \{2048, 8192\}$ (muy robusto)
+\item \textbf{DSL (ADSL2+):} $N = 512$ o $4096$
+\end{itemize}
+
+\textbf{Relación entre $N$ y robustez:}
+\begin{itemize}
+\item $N$ grande → subportadoras más estrechas → más robusto a delay spread largo
+\item $N$ pequeño → menor latencia, menor overhead de CP
+\item Trade-off: robustez vs. eficiencia/latencia
+\end{itemize}
+
+\subsection{Prefijo cíclico (CP) - Truco clave}
+
+El prefijo cíclico es la técnica que hace funcionar OFDM en canales multitrayecto.
+
+\textbf{¿Qué es el CP?}
+
+Se copian las últimas $L_{CP}$ muestras del símbolo OFDM y se colocan al principio:
+
+\textbf{Símbolo OFDM con CP:}
+$$\{\underbrace{x_{N-L_{CP}}, \ldots, x_{N-1}}_{\text{CP (copia)}}, \underbrace{x_0, x_1, \ldots, x_{N-1}}_{\text{Símbolo OFDM original}}\}$$
+
+\textbf{Longitud necesaria del CP:} $L_{CP} \geq L - 1$
+
+donde $L$ es el número de taps del canal discreto (relacionado con el delay spread).
+
+\textbf{¿Por qué añadir el CP?}
+
+\textbf{Problema sin CP:} La convolución lineal del canal destruye la ortogonalidad de las subportadoras → ISI e ICI.
+
+\textbf{Solución con CP:} El prefijo cíclico convierte la convolución lineal en convolución circular.
+
+\textbf{Efecto mágico:} Con convolución circular, la DFT diagonaliza el canal:
+\begin{itemize}
+\item Cada subportadora experimenta un canal escalar $H_k$ (un solo coeficiente complejo)
+\item No hay interferencia entre subportadoras
+\item Ecualización trivial: $\hat{s}_k = y_k / H_k$
+\end{itemize}
+
+\textbf{Coste del CP:}
+\begin{itemize}
+\item Transmitimos $N + L_{CP}$ muestras pero solo $N$ contienen información nueva
+\item Eficiencia: $\eta_{CP} = \frac{N}{N + L_{CP}}$
+\item Ejemplo: $N=64$, $L_{CP}=16$ → $\eta_{CP} = 64/80 = 0.8$ (20\% de overhead)
+\end{itemize}
+
+\textbf{Compromiso en el diseño:}
+\begin{itemize}
+\item CP corto → mayor eficiencia, pero no protege contra multipaso largo
+\item CP largo → protección completa, pero penaliza débito
+\end{itemize}
+
+\subsection{Parámetros}
+
+\textbf{Espaciado subportadoras:} $\Delta f = \frac{1}{NT_s}$
+
+\textbf{Duración símbolo OFDM:} $T_{OFDM} = NT_s$
+
+\textbf{Duración con CP:} $T_{total} = (N + L_{CP})T_s$
+
+\textbf{Eficiencia CP:} $\eta_{CP} = \frac{N}{N + L_{CP}}$
+
+\textbf{Ancho de banda:} $B = N\Delta f = \frac{1}{T_s}$
+
+\textbf{Débito total:} $D_b^{total} = \sum_{k=0}^{N-1} \frac{\log_2(M_k)}{T_{total}}$
+
+\subsection{Ecualización en frecuencia}
+
+$$\hat{s}_k = \frac{y_k}{H_k} = s_k + \frac{n_k}{H_k}$$
+
+donde $H_k = \text{DFT}[h_0, \ldots, h_{L-1}, 0, \ldots, 0]_k$
+
+Ecualización escalar (1 coeficiente complejo por subportadora).
+
+\section{Procesos Estocásticos}
+
+\subsection{Definiciones}
+
+\textbf{Función expectativa:} $\mu_X(t) = E[X(t,\omega)]$
+
+\textbf{Autocorrelación:} $R_X(t_1,t_2) = E[X(t_1,\omega)X^*(t_2,\omega)]$
+
+\textbf{Correlación cruzada:} $R_{XY}(t_1,t_2) = E[X(t_1,\omega)Y^*(t_2,\omega)]$
+
+\subsection{WSS (Wide-Sense Stationary)}
+
+\begin{itemize}
+\item $E[|X(t,\omega)|^2]$ finito e independiente de $t$
+\item $\mu_X(t) = \mu_X$ (constante)
+\item $R_X(t_1,t_2) = R_X(\tau)$ con $\tau = t_2 - t_1$
+\end{itemize}
+
+\textbf{Cicloestacionariedad:} Estadísticas periódicas con período $T_0$
+
+\subsection{PSD y Wiener-Khinchin}
+
+\textbf{Densidad espectral potencia:}
+$$S_X(\nu) = \text{FT}[R_X(\tau)](\nu)$$
+
+\textbf{Potencia total:}
+$$P_X = R_X(0) = \int_{-\infty}^{\infty} S_X(\nu)d\nu$$
+
+\subsection{Filtrado de procesos}
+
+Si $Y(t) = \int h(\tau)X(t-\tau)d\tau$:
+
+$$S_Y(\nu) = |H(\nu)|^2 S_X(\nu)$$
+
+$$R_Y(\tau) = R_X(\tau) * h(\tau) * h^*(-\tau)$$
+
+\section{Muestreo y Conversiones}
+
+\subsection{Teorema de Nyquist-Shannon}
+
+Para señal con ancho banda $B$:
+$$F_s \geq 2B$$
+
+\textbf{Reconstrucción:}
+$$x(t) = \sum_{n} x_n \text{sinc}(F_s t - n)$$
+
+con filtro pasa-bajo ideal de ancho $B \in [f_{max}, F_s - f_{max}]$
+
+\subsection{DFT}
+
+\textbf{Definición:}
+$$\hat{z}_k = \sum_{n=0}^{N-1} z_n e^{-i2\pi nk/N}, \quad k = 0,\ldots,N-1$$
+
+\textbf{IDFT:}
+$$z_n = \frac{1}{N}\sum_{k=0}^{N-1} \hat{z}_k e^{i2\pi nk/N}, \quad n = 0,\ldots,N-1$$
+
+\textbf{Frecuencia normalizada:} $f_k = k/N \Rightarrow \nu_k = kF_s/N$
+
+\section{Comparación de Modulaciones}
+
+\begin{tcolorbox}[colback=azulclaro!10,colframe=azuloscuro,title=Resumen comparativo]
+\textbf{Para mismo $E_{avg}/N_0$ (alto SNR):}
+
+M-QAM es más eficiente en potencia
+
+Diferencia ASK vs QAM: $\approx 10\log_{10}\left(\frac{M^2-1}{2(M-1)}\right)$ dB
+
+Diferencia ASK vs PSK: $\approx 10\log_{10}\left(\frac{M^2-1}{3\sin^2(\pi/M)}\right)$ dB
+
+\textbf{Eficiencia espectral (mismo $\beta$):} PAM > QAM > PSK
+
+\textbf{Recomendaciones:}
+\begin{itemize}
+\item QAM: mejor compromiso potencia/espectro (WiFi, LTE)
+\item PSK: PAPR constante, amplificadores no lineales (satélite)
+\item PAM: transmisión banda base (Ethernet)
+\end{itemize}
+\end{tcolorbox}
+
+\section{Fórmulas de Referencia Rápida}
+
+\subsection{Relaciones SNR}
+
+\begin{align*}
+E_b/N_0 &= \frac{E_{avg}}{\log_2(M)N_0}\\
+E_s/N_0 &= \frac{E_{avg}}{N_0}\\
+E_s/N_0 &= \log_2(M) \cdot E_b/N_0\\
+\text{SNR}_{dB} &= 10\log_{10}(\text{SNR})
+\end{align*}
+
+\subsection{Logaritmos}
+
+$$\log_2(M) = \frac{\ln(M)}{\ln(2)} = \frac{\log_{10}(M)}{\log_{10}(2)}$$
+
+\subsection{Valores útiles Q(x)}
+
+\begin{tabular}{ll}
+$Q(0) = 0.5$ & $Q(3) \approx 1.35 \times 10^{-3}$\\
+$Q(1) \approx 0.159$ & $Q(4) \approx 3.17 \times 10^{-5}$\\
+$Q(2) \approx 0.023$ & $Q(5) \approx 2.87 \times 10^{-7}$
+\end{tabular}
+
+\end{multicols}
+
+\newpage
+
+\section{GUÍA PRÁCTICA PARA EXÁMENES}
+
+\begin{multicols}{2}
+
+\subsection{Metodología General}
+
+\textbf{1. Lee TODO el problema primero}
+\begin{itemize}
+\item Identifica qué te dan (parámetros conocidos)
+\item Identifica qué te piden (incógnitas)
+\item Dibuja un esquema si es necesario
+\end{itemize}
+
+\textbf{2. Verifica unidades SIEMPRE}
+\begin{itemize}
+\item Frecuencias: Hz, kHz, MHz (¡convierte!)
+\item Tiempos: s, ms, μs (¡cuidado con ms vs μs!)
+\item Potencias: W, mW, dBm
+\item Débitos: bits/s, kbits/s, Mbits/s
+\end{itemize}
+
+\textbf{3. Casos comunes en OFDM}
+
+\textbf{Si te dan $T_{OFDM}$ y $\tau_{max}$:}
+\begin{enumerate}
+\item Calcula $\Delta f = 1/T_{OFDM}$
+\item Calcula $T_{CP} \geq \tau_{max}$ (típicamente $T_{CP} = \tau_{max}$)
+\item Calcula $T_{total} = T_{OFDM} + T_{CP}$
+\item Para débito, ¡USA $T_{total}$!
+\end{enumerate}
+
+\textbf{Si preguntan por pilotos:}
+\begin{enumerate}
+\item \textbf{Frecuencia:} $\Delta f_{pilot} \leq \frac{1}{2\tau_{max}}$
+\item Calcula: $N_{max} = \lfloor \frac{1}{2\tau_{max} \cdot \Delta f} \rfloor$
+\item Elige la opción que cumpla $N \leq N_{max}$
+\item Si hay empate, elige la que da mejor débito
+\end{enumerate}
+
+\begin{enumerate}[resume]
+\item \textbf{Tiempo:} $T_{pilot} \leq \frac{T_{coh}}{2}$
+\item Calcula: $N_{OFDM,max} = \lfloor \frac{T_{coh}}{2T_{OFDM}} \rfloor$
+\item Si $T_{OFDM} \approx T_{coh}$: pilotos en TODOS los símbolos
+\end{enumerate}
+
+\textbf{4. Ecualizadores - Qué responder}
+
+\textbf{Pregunta DFE:}
+\begin{itemize}
+\item Esquema: Feedforward + Feedback + Decisor
+\item Ventaja: No amplifica ruido en feedback
+\item Desventaja: Propagación de errores
+\item Solución: Training sequences + código corrector
+\end{itemize}
+
+\textbf{Pregunta Viterbi/ML:}
+\begin{itemize}
+\item Dibuja trellis con estados = memoria canal
+\item Para $y_n = Aa_n + Aa_{n-1}$: 2 estados $\{\pm 1\}$
+\item Menciona: Métrica de rama, sobrevivientes, traceback
+\end{itemize}
+
+\subsection{Ejercicios Tipo por Tema}
+
+\subsubsection{Tipo 1: Canal Discreto Equivalente}
+
+\textbf{Datos típicos:}
+\begin{itemize}
+\item Filtro emisión: $h_e(t) = \mathds{1}_{[0,T]}$
+\item Canal: $c(t) = \delta(t-\tau_1) + \alpha_2\delta(t-\tau_2) + \ldots$
+\item Matched filter: $g_r(t) = h_e(-t)$
+\end{itemize}
+
+\textbf{Pasos:}
+\begin{enumerate}
+\item Calcula $r(t) = (h_e * g_r)(t)$ → Triangular
+\item Calcula $(r * c)(t)$ → Suma de triángulos desplazados
+\item Muestrea en $t_0 + nT$ → Coeficientes $h_n$
+\item Identifica ISI: pre-cursor y post-cursor
+\item Propón ecualizador según ISI
+\end{enumerate}
+
+\textbf{Fórmula clave para matched filter:}
+$$r(t) = \Lambda\left(\frac{t-T}{T}\right) \cdot T = \begin{cases}
+t & 0 \leq t < T\\
+2T-t & T \leq t < 2T\\
+0 & \text{otro caso}
+\end{cases}$$
+
+\subsubsection{Tipo 2: OFDM Submarino / Móvil}
+
+\textbf{Datos típicos:}
+\begin{itemize}
+\item $N$ subportadoras, PSK-$M$, código $r_c$
+\item $\tau_{max}$, $T_{coh}$, $T_{OFDM}$
+\item Pilotos: elegir configuración
+\end{itemize}
+
+\textbf{Pasos sistemáticos:}
+\begin{enumerate}
+\item $\Delta f = 1/T_{OFDM}$ (ortogonalidad)
+\item $T_{CP} = \tau_{max}$ (combatir ISI)
+\item $T_{total} = T_{OFDM} + T_{CP}$ (tiempo real)
+\item Pilotos frecuencia: $N_{pilot,f} \leq 1/(2\tau_{max}\Delta f)$
+\item Pilotos tiempo: Comparar $T_{OFDM}$ con $T_{coh}/2$
+\item Bits/OFDM: $(N - N_{pilotos}) \times \log_2(M) \times r_c$
+\item Débito: Bits / $T_{total}$ (¡no $T_{OFDM}$!)
+\end{enumerate}
+
+\textbf{Trampa común:} Usar $T_{OFDM}$ en vez de $T_{total}$ para débito.
+
+\textbf{Eficiencia CP:}
+$$\eta_{CP} = \frac{T_{OFDM}}{T_{total}} = \frac{T_{OFDM}}{T_{OFDM}+T_{CP}}$$
+
+Overhead: $1 - \eta_{CP} = T_{CP}/T_{total}$
+
+\subsubsection{Tipo 3: Estimación de Canal}
+
+\textbf{Preguntas típicas:}
+\begin{itemize}
+\item Calcular intercorrelación $R_{ya}(u)$
+\item Proponer método de estimación
+\item Longitud óptima de training
+\end{itemize}
+
+\textbf{Fórmulas esenciales:}
+$$R_{ya}(u) = \sum_k y_k a^*(k-u) = h * R_{aa}$$
+
+Si $R_{aa}(u) = \delta(u)$ (secuencia ideal):
+$$\hat{h}_u = R_{ya}(u)$$
+
+\textbf{Solución matricial (LS):}
+$$\mathbf{y} = \mathbf{A}\mathbf{h} + \mathbf{b}$$
+$$\hat{\mathbf{h}} = (\mathbf{A}^H\mathbf{A})^{-1}\mathbf{A}^H\mathbf{y}$$
+
+\textbf{Training óptimo:}
+\begin{itemize}
+\item Longitud $\geq$ memoria canal
+\item Balancear: overhead vs calidad estimación
+\item Repetir cada $T_{coh}/2$ si canal varía
+\end{itemize}
+
+\subsubsection{Tipo 4: Códigos Convolucionales}
+
+\textbf{Datos típicos:}
+\begin{itemize}
+\item Registros: $K$ (típicamente 3-7)
+\item Rendimiento: $r_c = k/n$ (ejemplo: 1/2, 2/3)
+\item Generadores: $(g_1, g_2, \ldots)$ en octal
+\end{itemize}
+
+\textbf{Pasos codificación:}
+\begin{enumerate}
+\item Inicializa registros a 0
+\item Por cada bit entrada $b_k$:
+   \begin{itemize}
+   \item Desplaza registros
+   \item Calcula salidas según generadores
+   \item Guarda bits codificados
+   \end{itemize}
+\item Flush: añade 0s para vaciar registros
+\end{enumerate}
+
+\textbf{Ejemplo $(7,5)_8$ con $r_c=1/2$:}
+\begin{itemize}
+\item $7_8 = 111_2$: $c_1 = b_k \oplus b_{k-1} \oplus b_{k-2}$
+\item $5_8 = 101_2$: $c_2 = b_k \oplus b_{k-2}$
+\end{itemize}
+
+\textbf{Matriz de paridad:}
+
+Para verificar ortogonalidad: $\mathbf{m} \cdot \mathbf{H}^T = \mathbf{0}$
+
+\subsubsection{Tipo 5: Probabilidad de Error con ISI}
+
+\textbf{Modelo típico:}
+$$y_n = Aa_n + Aa_{n-1} + b_n$$
+
+con $a_n \in \{-1, +1\}$ y decisión en 0.
+
+\textbf{Análisis sistemático:}
+\begin{enumerate}
+\item Lista todos los casos: $(a_n, a_{n-1})$
+\item Calcula $y_n$ para cada caso (sin ruido)
+\item Determina decisión según umbral
+\item Identifica casos de error
+\item Calcula $P_e$ asumiendo equiprobables
+\end{enumerate}
+
+\textbf{Resultado típico:}
+$$P_e = \frac{1}{4} \quad \text{(error cuando } a_n=-1, a_{n-1}=+1)$$
+
+\textbf{Concepto clave:} Incluso sin ruido ($\sigma^2 \to 0$), ISI causa errores irreductibles.
+
+\subsection{Checklist Final Antes del Examen}
+
+\begin{tcolorbox}[colback=verdeclaro!10,colframe=azuloscuro,title=Verifica que sabes]
+
+\textbf{OFDM:}
+\begin{itemize}
+\item[$\square$] Diferencia $T_{OFDM}$ vs $T_{total}$
+\item[$\square$] Criterios Nyquist (frecuencia y tiempo)
+\item[$\square$] Cálculo débito con CP y código
+\item[$\square$] Configuración óptima pilotos
+\end{itemize}
+
+\textbf{Ecualizadores:}
+\begin{itemize}
+\item[$\square$] Dibujar DFE completo
+\item[$\square$] Ventajas/desventajas DFE vs ML
+\item[$\square$] Trellis para Viterbi (2 estados básico)
+\item[$\square$] Soluciones propagación errores
+\end{itemize}
+
+\textbf{Canal:}
+\begin{itemize}
+\item[$\square$] Convolución triangular (matched filter)
+\item[$\square$] Muestreo y coeficientes $h_n$
+\item[$\square$] Delay spread $\tau_{max} - \tau_{min}$
+\item[$\square$] ISI pre-cursor vs post-cursor
+\end{itemize}
+
+\textbf{Estimación:}
+\begin{itemize}
+\item[$\square$] $R_{ya} = h * R_{aa}$
+\item[$\square$] Solución LS matricial
+\item[$\square$] Training óptimo vs overhead
+\end{itemize}
+
+\textbf{Códigos:}
+\begin{itemize}
+\item[$\square$] Codificador convolucional (diagrama)
+\item[$\square$] Octal → binario → XOR
+\item[$\square$] Rendimiento $r_c = k/n$
+\item[$\square$] Matriz paridad $\mathbf{H}$
+\end{itemize}
+
+\end{tcolorbox}
+
+\subsection{Errores Comunes a Evitar}
+
+\begin{tcolorbox}[colback=rojoclaro!10,colframe=rojoclaro!70!black,title=¡CUIDADO!]
+
+\textbf{Error 1: Débito OFDM}
+\begin{itemize}
+\item ✗ Usar $R_b = \text{bits}/T_{OFDM}$
+\item ✓ Usar $R_b = \text{bits}/T_{total}$ con $T_{total} = T_{OFDM} + T_{CP}$
+\end{itemize}
+
+\textbf{Error 2: Pilotos límite}
+\begin{itemize}
+\item ✗ Decir "no cumple" cuando $T_{OFDM} = T_{coh}$
+\item ✓ Opción (a) es "caso límite aceptable"
+\end{itemize}
+
+\textbf{Error 3: Código corrector}
+\begin{itemize}
+\item ✗ Multiplicar por $n/k$ (al revés)
+\item ✓ Multiplicar por $r_c = k/n$ para bits info
+\end{itemize}
+
+\textbf{Error 4: Unidades tiempo}
+\begin{itemize}
+\item ✗ Mezclar ms con μs sin convertir
+\item ✓ Todo a segundos antes de calcular
+\end{itemize}
+
+\textbf{Error 5: Matched filter}
+\begin{itemize}
+\item ✗ Pensar que $r(t)$ es rectangular
+\item ✓ $r(t)$ es TRIANGULAR (convolución de 2 rectangulares)
+\end{itemize}
+
+\textbf{Error 6: ISI y ruido}
+\begin{itemize}
+\item ✗ Pensar que sin ruido $P_e = 0$
+\item ✓ ISI causa errores incluso sin ruido
+\end{itemize}
+
+\end{tcolorbox}
+
+\subsection{Fórmulas para Copiar en Examen}
+
+\textbf{OFDM básico:}
+\begin{align*}
+\Delta f &= \frac{1}{T_{OFDM}} & T_{total} &= T_{OFDM} + T_{CP}\\
+T_{CP} &\geq \tau_{max} & R_b &= \frac{\text{bits info}}{T_{total}}
+\end{align*}
+
+\textbf{Pilotos:}
+\begin{align*}
+\Delta f_{pilot} &\leq \frac{1}{2\tau_{max}} & T_{pilot} &\leq \frac{T_{coh}}{2}
+\end{align*}
+
+\textbf{Bits OFDM:}
+\begin{align*}
+N_{bits} &= N_{data} \times \log_2(M) \times r_c\\
+N_{data} &= N_{total} - N_{pilotos}
+\end{align*}
+
+\textbf{Canal:}
+\begin{align*}
+y_n &= \sum_{l=0}^{L-1} h_l a_{n-l} + b_n\\
+R_{ya}(u) &= h * R_{aa}
+\end{align*}
+
+\textbf{Matched filter rectangular:}
+$$r(t) = \begin{cases}
+t & 0 \leq t < T\\
+2T-t & T \leq t < 2T\\
+0 & \text{otro}
+\end{cases}$$
+
+\end{multicols}
+
+\end{document}

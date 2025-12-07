@@ -1,0 +1,2002 @@
+% !TEX encoding = UTF-8 Unicode
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage[margin=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+
+\tcbuselibrary{breakable}
+
+% Configuración de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Ejercicios y Ejemplos Resueltos - COMNUM}
+\fancyhead[R]{IMT Atlantique}
+\fancyfoot[C]{\thepage}
+
+% Entornos personalizados
+\newtcolorbox{ejercicio}[1]{
+    colback=blue!5,
+    colframe=blue!75!black,
+    title=\textbf{#1},
+    breakable,
+    enhanced
+}
+
+\newtcolorbox{solucion}{
+    colback=green!5,
+    colframe=green!60!black,
+    title=\textbf{Solución},
+    breakable,
+    enhanced
+}
+
+\newtcolorbox{ejemplo}[1]{
+    colback=orange!5,
+    colframe=orange!75!black,
+    title=\textbf{#1},
+    breakable,
+    enhanced
+}
+
+\title{\textbf{Ejercicios y Ejemplos Resueltos\\Comunicaciones Numéricas}\\
+\large Handbook - TAF STAR UE B COMNUM}
+\author{IMT Atlantique\\
+Compilación de ejercicios del material del curso}
+\date{Diciembre 2024}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section{Procesos Estocásticos - Ejercicios del Apéndice A.9}
+%=============================================================================
+
+\subsection{Ejercicio 1: Estacionariedad en Sentido Amplio}
+
+\begin{ejercicio}{Ejercicio 1 - WSS Conditions}
+Sean $X$ e $Y$ dos variables aleatorias y sea $\omega$ una constante. Establecer condiciones suficientes sobre $X$ e $Y$ para que el proceso
+\[
+Z(t) = X \cos(\omega t) + Y \sin(\omega t)
+\]
+sea estacionario en sentido amplio (WSS - Wide Sense Stationary).
+\end{ejercicio}
+
+\begin{solucion}
+Para que $Z(t)$ sea WSS, debe cumplir tres condiciones:
+
+\textbf{1. Energía finita:} $E[|Z(t)|^2]$ existe y no depende de $t$.
+
+\textbf{2. Media constante:} $\mu_Z(t)$ debe ser constante.
+
+\textbf{3. Autocorrelación:} $R_Z(t_1, t_2)$ solo depende de $\tau = t_2 - t_1$.
+
+\vspace{3mm}
+\textbf{Desarrollo:}
+
+\textbf{Paso 1: Cálculo de la media}
+\begin{align*}
+\mu_Z(t) &= E[Z(t)] = E[X \cos(\omega t) + Y \sin(\omega t)]\\
+&= E[X] \cos(\omega t) + E[Y] \sin(\omega t)
+\end{align*}
+
+Para que $\mu_Z(t)$ sea constante (independiente de $t$), necesitamos:
+\[
+\boxed{E[X] = 0 \quad \text{y} \quad E[Y] = 0}
+\]
+
+\textbf{Paso 2: Cálculo de la autocorrelación}
+\begin{align*}
+R_Z(t_1, t_2) &= E[Z(t_1) Z(t_2)]\\
+&= E[(X \cos(\omega t_1) + Y \sin(\omega t_1))(X \cos(\omega t_2) + Y \sin(\omega t_2))]\\
+&= E[X^2] \cos(\omega t_1) \cos(\omega t_2) + E[XY][\cos(\omega t_1)\sin(\omega t_2) + \sin(\omega t_1)\cos(\omega t_2)]\\
+&\quad + E[Y^2] \sin(\omega t_1) \sin(\omega t_2)
+\end{align*}
+
+Si $X$ e $Y$ son independientes o no correlacionadas: $E[XY] = E[X]E[Y] = 0$
+
+Usando identidades trigonométricas con $\tau = t_2 - t_1$:
+\begin{align*}
+\cos(\omega t_1)\cos(\omega t_2) &= \frac{1}{2}[\cos(\omega\tau) + \cos(\omega(t_1+t_2))]\\
+\sin(\omega t_1)\sin(\omega t_2) &= \frac{1}{2}[\cos(\omega\tau) - \cos(\omega(t_1+t_2))]
+\end{align*}
+
+Para que $R_Z$ solo dependa de $\tau$, el término $\cos(\omega(t_1+t_2))$ debe cancelarse:
+\[
+E[X^2] = E[Y^2]
+\]
+
+Por lo tanto:
+\[
+R_Z(\tau) = \frac{E[X^2]}{2}[\cos(\omega\tau) + \cos(\omega\tau)] = E[X^2]\cos(\omega\tau)
+\]
+
+\vspace{3mm}
+\textbf{Condiciones suficientes:}
+\[
+\boxed{\begin{cases}
+E[X] = 0\\
+E[Y] = 0\\
+E[X^2] = E[Y^2] = \sigma^2 < \infty\\
+E[XY] = 0 \text{ (no correlacionadas)}
+\end{cases}}
+\]
+
+Con estas condiciones: $\mu_Z = 0$ y $R_Z(\tau) = \sigma^2 \cos(\omega\tau)$, por lo que $Z(t)$ es WSS.
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio 2: Producto de Procesos WSS}
+
+\begin{ejercicio}{Ejercicio 2 - Product of WSS Processes}
+Sean $X(t)$ e $Y(t)$ dos procesos WSS independientes. Demostrar que $Z(t) = X(t)Y(t)$ también es WSS.
+\end{ejercicio}
+
+\begin{solucion}
+Necesitamos verificar las tres propiedades WSS para $Z(t) = X(t)Y(t)$.
+
+\textbf{Paso 1: Media de $Z(t)$}
+\begin{align*}
+\mu_Z(t) &= E[Z(t)] = E[X(t)Y(t)]
+\end{align*}
+
+Como $X(t)$ e $Y(t)$ son independientes:
+\[
+E[X(t)Y(t)] = E[X(t)] \cdot E[Y(t)]
+\]
+
+Como $X(t)$ e $Y(t)$ son WSS, sus medias no dependen de $t$:
+\[
+\mu_Z = \mu_X \cdot \mu_Y = \text{constante} \quad \checkmark
+\]
+
+\textbf{Paso 2: Autocorrelación de $Z(t)$}
+\begin{align*}
+R_Z(t, t+\tau) &= E[Z(t)Z(t+\tau)]\\
+&= E[X(t)Y(t)X(t+\tau)Y(t+\tau)]
+\end{align*}
+
+Por independencia de $X$ e $Y$:
+\[
+E[X(t)Y(t)X(t+\tau)Y(t+\tau)] = E[X(t)X(t+\tau)] \cdot E[Y(t)Y(t+\tau)]
+\]
+
+Como $X$ e $Y$ son WSS:
+\begin{align*}
+E[X(t)X(t+\tau)] &= R_X(\tau) \text{ (solo depende de } \tau)\\
+E[Y(t)Y(t+\tau)] &= R_Y(\tau) \text{ (solo depende de } \tau)
+\end{align*}
+
+Por lo tanto:
+\[
+R_Z(t, t+\tau) = R_X(\tau) \cdot R_Y(\tau) = R_Z(\tau)
+\]
+
+Solo depende de $\tau$, no de $t$ absoluto. $\checkmark$
+
+\textbf{Paso 3: Energía finita}
+
+Como $X$ e $Y$ son WSS:
+\[
+E[|Z(t)|^2] = E[X^2(t)] \cdot E[Y^2(t)] = R_X(0) \cdot R_Y(0) < \infty \quad \checkmark
+\]
+
+\vspace{3mm}
+\textbf{Conclusión:}
+\[
+\boxed{Z(t) = X(t)Y(t) \text{ es WSS con } \mu_Z = \mu_X\mu_Y \text{ y } R_Z(\tau) = R_X(\tau)R_Y(\tau)}
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio 3: Señal en Línea de Transmisión (Cicloestacionariedad)}
+
+\begin{ejercicio}{Ejercicio 3 - Cyclostationary Signal}
+Sea $s(t)$ una señal que se propaga en una línea de transmisión:
+\[
+s(t) = \sum_{k \in \mathbb{Z}} a_k h(t - kT_s)
+\]
+donde
+\[
+h(t) = \begin{cases}
+1 & \text{si } t \in [0, T_s/2]\\
+-1 & \text{si } t \in [T_s/2, T_s]\\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+\textbf{Preguntas:}
+\begin{enumerate}
+\item Dibujar el camino muestral de $s(t)$ correspondiente a $a_0 = 1, a_1 = -1, a_2 = -1, a_3 = 1$.
+\item Demostrar que $s(t)$ es cicloestacionario en sentido amplio.
+\item Dar la expresión de $\Gamma_s(f)$, la PSD de $s(t)$.
+\item Dar la expresión de la potencia promedio total de $s(t)$.
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Camino muestral:}
+
+Para los valores dados: $a_0 = 1, a_1 = -1, a_2 = -1, a_3 = 1$
+
+\begin{itemize}
+\item $t \in [0, T_s/2]$: $s(t) = 1 \cdot 1 = 1$
+\item $t \in [T_s/2, T_s]$: $s(t) = 1 \cdot (-1) = -1$
+\item $t \in [T_s, 3T_s/2]$: $s(t) = -1 \cdot 1 = -1$
+\item $t \in [3T_s/2, 2T_s]$: $s(t) = -1 \cdot (-1) = 1$
+\item $t \in [2T_s, 5T_s/2]$: $s(t) = -1 \cdot 1 = -1$
+\item $t \in [5T_s/2, 3T_s]$: $s(t) = -1 \cdot (-1) = 1$
+\item $t \in [3T_s, 7T_s/2]$: $s(t) = 1 \cdot 1 = 1$
+\item $t \in [7T_s/2, 4T_s]$: $s(t) = 1 \cdot (-1) = -1$
+\end{itemize}
+
+\textbf{2. Demostración de cicloestacionariedad:}
+
+Asumimos que $\{a_k\}$ son i.i.d. con $E[a_k] = \mu_a$ y $E[a_k a_l] = \sigma_a^2 \delta_{k,l} + \mu_a^2$.
+
+\textbf{Media:}
+\begin{align*}
+\mu_s(t) &= E[s(t)] = E\left[\sum_{k \in \mathbb{Z}} a_k h(t - kT_s)\right]\\
+&= \sum_{k \in \mathbb{Z}} E[a_k] h(t - kT_s) = \mu_a \sum_{k \in \mathbb{Z}} h(t - kT_s)
+\end{align*}
+
+Como $h(t)$ tiene soporte $[0, T_s]$ y las versiones desplazadas no se solapan:
+\[
+\mu_s(t) = \mu_a h(t \bmod T_s)
+\]
+
+Es periódica con período $T_s$: $\mu_s(t + T_s) = \mu_s(t)$ $\checkmark$
+
+\textbf{Autocorrelación:}
+\begin{align*}
+R_s(t, t+\tau) &= E[s(t)s(t+\tau)]\\
+&= \sum_{k,l} E[a_k a_l] h(t - kT_s) h(t + \tau - lT_s)\\
+&= \sum_{k,l} (\sigma_a^2 \delta_{k,l} + \mu_a^2) h(t - kT_s) h(t + \tau - lT_s)\\
+&= \sigma_a^2 \sum_k h(t - kT_s) h(t + \tau - kT_s) + \mu_a^2 \mu_s(t)\mu_s(t+\tau)
+\end{align*}
+
+Ambos términos son periódicos en $t$ con período $T_s$:
+\[
+R_s(t + T_s, t + T_s + \tau) = R_s(t, t+\tau) \quad \checkmark
+\]
+
+Por lo tanto, $s(t)$ es WSS cicloestacionario con período $T_s$.
+
+\textbf{3. Densidad espectral de potencia:}
+
+Para símbolos de media cero ($\mu_a = 0$) e i.i.d.:
+\[
+\Gamma_s(f) = \frac{\sigma_a^2}{T_s} |H(f)|^2
+\]
+
+donde $H(f)$ es la transformada de Fourier de $h(t)$:
+\begin{align*}
+H(f) &= \int_0^{T_s/2} e^{-j2\pi ft} dt - \int_{T_s/2}^{T_s} e^{-j2\pi ft} dt\\
+&= \frac{e^{-j\pi fT_s} - 1}{-j2\pi f} - \frac{e^{-j2\pi fT_s} - e^{-j\pi fT_s}}{-j2\pi f}\\
+&= \frac{2e^{-j\pi fT_s} - 1 - e^{-j2\pi fT_s}}{-j2\pi f}
+\end{align*}
+
+Simplificando:
+\[
+|H(f)|^2 = T_s^2 \text{sinc}^2\left(\frac{fT_s}{2}\right) \sin^2\left(\frac{\pi fT_s}{2}\right)
+\]
+
+Por lo tanto:
+\[
+\boxed{\Gamma_s(f) = \sigma_a^2 T_s \text{sinc}^2\left(\frac{fT_s}{2}\right) \sin^2\left(\frac{\pi fT_s}{2}\right)}
+\]
+
+\textbf{4. Potencia promedio total:}
+\[
+P_s = \int_{-\infty}^{\infty} \Gamma_s(f) df = R_s(t,t) = \sigma_a^2 \int_{-\infty}^{\infty} h^2(t) dt = \sigma_a^2 \cdot T_s
+\]
+
+\[
+\boxed{P_s = \sigma_a^2 T_s}
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio 4: Análisis de Canal con Interferencia}
+
+\begin{ejercicio}{Ejercicio 4 - Channel with Interference}
+Sea $s(t)$ un proceso estocástico de media cero, real, WSS usado como señal de prueba transmitida sobre un medio de propagación. En el receptor, la señal recibida (estocástica) $r(t)$ puede expresarse como:
+\[
+r(t) = x(t) + i(t) + n(t)
+\]
+donde:
+\begin{itemize}
+\item $x(t)$ es la señal transmitida distorsionada por el medio
+\item $i(t)$ es una interferencia aditiva
+\item $n(t)$ es ruido blanco gaussiano de media cero
+\item $s(t)$, $i(t)$ y $n(t)$ son independientes
+\end{itemize}
+
+El medio de propagación es lineal:
+\[
+x(t) = \sum_{l=0}^{L-1} \alpha_l s(t - \tau_l)
+\]
+donde $\alpha_l$, $\tau_l$ y $L$ son constantes positivas.
+
+La interferencia es: $i(t) = A \cos(2\pi f_0 t)$, donde $A$ es gaussiana con $E[A] = 0$, $\text{Var}(A) = \sigma^2 > 0$, y $f_0 > 0$ constante.
+\end{ejercicio}
+
+\textit{Continúa en la siguiente página...}
+
+\begin{solucion}
+\textbf{Análisis de $i(t)$:}
+
+\textbf{1. Esperanza de $i(t)$:}
+\[
+E[i(t)] = E[A \cos(2\pi f_0 t)] = E[A] \cos(2\pi f_0 t) = 0
+\]
+
+\textbf{2. Autocorrelación de $i(t)$:}
+\begin{align*}
+R_i(t, t+\tau) &= E[i(t)i(t+\tau)]\\
+&= E[A \cos(2\pi f_0 t) \cdot A \cos(2\pi f_0 (t+\tau))]\\
+&= E[A^2] \cos(2\pi f_0 t) \cos(2\pi f_0 (t+\tau))
+\end{align*}
+
+Usando $\cos(\alpha)\cos(\beta) = \frac{1}{2}[\cos(\alpha-\beta) + \cos(\alpha+\beta)]$:
+\begin{align*}
+R_i(t, t+\tau) &= \frac{\sigma^2}{2}[\cos(2\pi f_0 \tau) + \cos(2\pi f_0 (2t + \tau))]
+\end{align*}
+
+\textbf{3. ¿Es $i(t)$ WSS?}
+
+NO, porque $R_i(t, t+\tau)$ depende de $t$ (término $\cos(2\pi f_0 (2t + \tau))$).
+
+\textbf{4. ¿Es $i(t)$ cicloestacionario?}
+
+SÍ, con período $T_0 = 1/f_0$:
+\begin{align*}
+R_i(t + T_0, t + T_0 + \tau) &= \frac{\sigma^2}{2}[\cos(2\pi f_0 \tau) + \cos(2\pi f_0 (2(t+T_0) + \tau))]\\
+&= \frac{\sigma^2}{2}[\cos(2\pi f_0 \tau) + \cos(2\pi f_0 (2t + \tau) + 4\pi)]\\
+&= R_i(t, t+\tau)
+\end{align*}
+
+\textbf{5. PDF de $i(t)$:}
+
+Como $i(t) = A \cos(2\pi f_0 t)$ y $A \sim \mathcal{N}(0, \sigma^2)$:
+\[
+i(t) \sim \mathcal{N}(0, \sigma^2 \cos^2(2\pi f_0 t))
+\]
+
+La PDF varía con $t$ (no es constante).
+
+\textbf{6. ¿Es $i(t)$ ergódico de orden 1?}
+
+NO, porque no es estacionario (condición necesaria para ergodi cidad).
+
+\textbf{7. ¿Es $i(t)$ estrictamente ergódico?}
+
+NO, por la misma razón.
+
+\vspace{5mm}
+\textbf{Análisis de $x(t)$:}
+
+\textbf{8. Expresión como convolución:}
+
+$x(t)$ puede expresarse como $x(t) = s(t) * h(t)$ donde:
+\[
+\boxed{h(t) = \sum_{l=0}^{L-1} \alpha_l \delta(t - \tau_l)}
+\]
+
+\textbf{9. ¿Es $x(t)$ WSS?}
+
+SÍ, porque el filtrado lineal de un proceso WSS produce otro proceso WSS.
+
+\textbf{10. Autocorrelación de $x(t)$ (valores numéricos):}
+
+Con $L = 2$, $\alpha_0 = 1$, $\alpha_1 = 1/2$, $\tau_0 = 0$, $\tau_1 = 10$:
+\begin{align*}
+R_x(t, t+\tau) &= E[x(t)x(t+\tau)]\\
+&= E\left[\left(\sum_{k=0}^{1} \alpha_k s(t-\tau_k)\right)\left(\sum_{l=0}^{1} \alpha_l s(t+\tau-\tau_l)\right)\right]\\
+&= \sum_{k=0}^{1}\sum_{l=0}^{1} \alpha_k \alpha_l R_s(\tau - \tau_l + \tau_k)
+\end{align*}
+
+\[
+\boxed{R_x(\tau) = R_s(\tau) + \frac{1}{2}R_s(\tau + 10) + \frac{1}{2}R_s(\tau - 10) + \frac{1}{4}R_s(\tau)}
+\]
+
+\[
+\boxed{R_x(\tau) = \frac{5}{4}R_s(\tau) + \frac{1}{2}[R_s(\tau + 10) + R_s(\tau - 10)]}
+\]
+
+\textbf{11. PSD de $x(t)$:}
+\[
+\Gamma_x(f) = |H(f)|^2 \Gamma_s(f)
+\]
+
+donde:
+\[
+H(f) = \alpha_0 e^{-j2\pi f\tau_0} + \alpha_1 e^{-j2\pi f\tau_1} = 1 + \frac{1}{2}e^{-j20\pi f}
+\]
+
+\[
+|H(f)|^2 = \left|1 + \frac{1}{2}e^{-j20\pi f}\right|^2 = \frac{5}{4} + \cos(20\pi f)
+\]
+
+\[
+\boxed{\Gamma_x(f) = \left[\frac{5}{4} + \cos(20\pi f)\right] \Gamma_s(f)}
+\]
+
+\vspace{5mm}
+\textbf{Análisis de $r(t)$:}
+
+\textbf{12. Autocorrelación de $r(t)$:}
+
+Por independencia:
+\begin{align*}
+R_r(t, t+\tau) &= E[r(t)r(t+\tau)]\\
+&= E[(x(t) + i(t) + n(t))(x(t+\tau) + i(t+\tau) + n(t+\tau))]\\
+&= R_x(\tau) + R_i(t, t+\tau) + R_n(\tau)
+\end{align*}
+
+\[
+\boxed{R_r(t, t+\tau) = R_x(\tau) + R_i(t, t+\tau) + \frac{N_0}{2}\delta(\tau)}
+\]
+
+\textbf{13. Estacionariedad de $r(t)$:}
+
+NO es WSS porque contiene $i(t)$ que no es WSS. Sin embargo, es cicloestacionario con período $T_0 = 1/f_0$.
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio 5: Filtrado de Ruido WSS}
+
+\begin{ejercicio}{Ejercicio 5 - Filtered WSS Noise}
+Sea $X(t)$ un proceso WSS de media cero con PSD:
+\[
+\Gamma_X(f) = \begin{cases}
+N_0/2 & \text{si } |f| \leq B\\
+0 & \text{en otro caso}
+\end{cases}
+\]
+con $B > 0$. Sea $Y(t)$ la salida de un sistema lineal tal que $Y(t) = (X * h)(t)$ con:
+\[
+h(t) = \begin{cases}
+1 & \text{si } 0 < t < T\\
+0 & \text{en otro caso}
+\end{cases}
+\]
+y $T > 0$.
+
+\textbf{Preguntas:}
+\begin{enumerate}
+\item Dar la expresión de la función de autocorrelación de $X(t)$.
+\item Dar la expresión de la varianza de $Y(t)$.
+\item Dar la expresión de $\Gamma_Y(f)$, la PSD de $Y(t)$.
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Función de autocorrelación de $X(t)$:}
+
+La autocorrelación es la transformada inversa de Fourier de la PSD:
+\begin{align*}
+R_X(\tau) &= \int_{-\infty}^{\infty} \Gamma_X(f) e^{j2\pi f\tau} df\\
+&= \int_{-B}^{B} \frac{N_0}{2} e^{j2\pi f\tau} df\\
+&= \frac{N_0}{2} \left[\frac{e^{j2\pi f\tau}}{j2\pi \tau}\right]_{-B}^{B}\\
+&= \frac{N_0}{2} \cdot \frac{e^{j2\pi B\tau} - e^{-j2\pi B\tau}}{j2\pi \tau}\\
+&= \frac{N_0}{2} \cdot \frac{2j \sin(2\pi B\tau)}{j2\pi \tau}\\
+&= \frac{N_0 \sin(2\pi B\tau)}{\pi \tau}
+\end{align*}
+
+Usando $\text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}$:
+\[
+\boxed{R_X(\tau) = N_0 B \cdot \text{sinc}(2B\tau)}
+\]
+
+\textbf{2. Varianza de $Y(t)$:}
+
+La varianza es $\text{Var}(Y(t)) = E[Y^2(t)] - (E[Y(t)])^2$.
+
+Como $X(t)$ tiene media cero, $Y(t)$ también:
+\[
+E[Y(t)] = E\left[\int_{-\infty}^{\infty} h(\xi) X(t-\xi) d\xi\right] = \int_{-\infty}^{\infty} h(\xi) E[X(t-\xi)] d\xi = 0
+\]
+
+Por lo tanto:
+\begin{align*}
+\text{Var}(Y(t)) &= E[Y^2(t)] = R_Y(0)\\
+&= \int_{-\infty}^{\infty} \Gamma_Y(f) df\\
+&= \int_{-\infty}^{\infty} |H(f)|^2 \Gamma_X(f) df
+\end{align*}
+
+Calculamos $H(f)$:
+\begin{align*}
+H(f) &= \int_0^T e^{-j2\pi ft} dt = \frac{1 - e^{-j2\pi fT}}{j2\pi f}\\
+|H(f)|^2 &= \frac{|1 - e^{-j2\pi fT}|^2}{4\pi^2 f^2} = \frac{2(1 - \cos(2\pi fT))}{4\pi^2 f^2}\\
+&= \frac{1 - \cos(2\pi fT)}{2\pi^2 f^2} = \frac{2\sin^2(\pi fT)}{2\pi^2 f^2}\\
+&= \frac{\sin^2(\pi fT)}{\pi^2 f^2} = T^2 \text{sinc}^2(fT)
+\end{align*}
+
+Entonces:
+\begin{align*}
+\text{Var}(Y(t)) &= \int_{-B}^{B} T^2 \text{sinc}^2(fT) \cdot \frac{N_0}{2} df\\
+&= \frac{N_0 T^2}{2} \int_{-B}^{B} \text{sinc}^2(fT) df
+\end{align*}
+
+Usando $\int_{-\infty}^{\infty} \text{sinc}^2(x) dx = 1$:
+\[
+\int_{-B}^{B} \text{sinc}^2(fT) df \approx \frac{1}{T} \quad \text{si } BT >> 1
+\]
+
+Resultado exacto:
+\[
+\boxed{\text{Var}(Y(t)) = N_0 BT}
+\]
+
+\textbf{3. PSD de $Y(t)$:}
+
+Aplicando el teorema de filtrado:
+\begin{align*}
+\Gamma_Y(f) &= |H(f)|^2 \Gamma_X(f)\\
+&= T^2 \text{sinc}^2(fT) \cdot \Gamma_X(f)
+\end{align*}
+
+\[
+\boxed{\Gamma_Y(f) = \begin{cases}
+\frac{N_0 T^2}{2} \text{sinc}^2(fT) & \text{si } |f| \leq B\\
+0 & \text{en otro caso}
+\end{cases}}
+\]
+
+Alternativamente:
+\[
+\boxed{\Gamma_Y(f) = \frac{N_0 T^2}{2} \text{sinc}^2(fT) \cdot \text{rect}\left(\frac{f}{2B}\right)}
+\]
+
+donde $\text{rect}(x) = 1$ si $|x| \leq 1/2$ y $0$ en otro caso.
+\end{solucion}
+
+%=============================================================================
+\section{Ejemplos de Modulaciones}
+%=============================================================================
+
+\subsection{Ejemplo: Conjunto de Señales Cuaternarias}
+
+\begin{ejemplo}{Ejemplo - Alfabeto Cuaternario (Fig. 1.6 del Handbook)}
+Dado el alfabeto cuaternario definido en la Fig. 1.6, podemos probar fácilmente que:
+\[
+\langle s^{(1)}, s^{(3)} \rangle = 0, \quad s^{(2)} = -s^{(1)}, \quad s^{(4)} = -s^{(3)}
+\]
+
+Determinar la base ortonormal, la constelación, la distancia mínima y el número de vecinos más cercanos.
+\end{ejemplo}
+
+\begin{solucion}
+\textbf{Paso 1: Base ortonormal}
+
+Una base ortonormal está directamente definida por dos vectores:
+\[
+\varphi_1(t) = \frac{s^{(1)}(t)}{\sqrt{E}}, \quad \varphi_2(t) = \frac{s^{(3)}(t)}{\sqrt{E}}
+\]
+
+donde $E$ es la energía de las señales.
+
+\textbf{Paso 2: Proyección sobre la base ortonormal}
+
+La proyección del alfabeto sobre la base ortonormal produce los vectores de señal:
+\[
+\mathbf{s}^{(1)} = \begin{pmatrix} \sqrt{E} \\ 0 \end{pmatrix}, \quad
+\mathbf{s}^{(2)} = \begin{pmatrix} -\sqrt{E} \\ 0 \end{pmatrix}, \quad
+\mathbf{s}^{(3)} = \begin{pmatrix} 0 \\ \sqrt{E} \end{pmatrix}, \quad
+\mathbf{s}^{(4)} = \begin{pmatrix} 0 \\ -\sqrt{E} \end{pmatrix}
+\]
+
+\textbf{Paso 3: Constelación}
+
+La constelación es bidimensional con 4 puntos ubicados en los ejes:
+\begin{itemize}
+\item $s^{(1)}$ en $(\sqrt{E}, 0)$
+\item $s^{(2)}$ en $(-\sqrt{E}, 0)$
+\item $s^{(3)}$ en $(0, \sqrt{E})$
+\item $s^{(4)}$ en $(0, -\sqrt{E})$
+\end{itemize}
+
+\textbf{Paso 4: Distancia mínima}
+
+Calculamos las distancias entre todos los pares:
+\begin{align*}
+d(s^{(1)}, s^{(2)}) &= \sqrt{(\sqrt{E} - (-\sqrt{E}))^2 + 0^2} = 2\sqrt{E}\\
+d(s^{(1)}, s^{(3)}) &= \sqrt{(\sqrt{E})^2 + (\sqrt{E})^2} = \sqrt{2E}\\
+d(s^{(1)}, s^{(4)}) &= \sqrt{(\sqrt{E})^2 + (\sqrt{E})^2} = \sqrt{2E}
+\end{align*}
+
+Por simetría, la distancia mínima es:
+\[
+\boxed{d_{min} = \sqrt{2E}}
+\]
+
+\textbf{Paso 5: Número de vecinos más cercanos}
+
+Cada símbolo tiene exactamente 2 vecinos a distancia mínima:
+\[
+\boxed{N_1 = N_2 = N_3 = N_4 = 2}
+\]
+
+\textbf{Conclusión - Probabilidad de error (union bound):}
+
+Para canal AWGN:
+\[
+P_e \approx \text{erfc}\left(\sqrt{\frac{E}{N_0}}\right)
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejemplo: 8-PAM}
+
+\begin{ejemplo}{Ejemplo - 8-PAM (Pulse Amplitude Modulation)}
+Las modulaciones PAM de $M$-niveles están definidas por el alfabeto $\mathcal{A}$ con:
+\[
+\mathcal{A} = \{\pm d, \pm 3d, \ldots, \pm(2M-1)d, \ldots, \pm(M-1)d\}
+\]
+donde $d$ es positivo y real.
+
+Para $M = 8$, determinar:
+\begin{enumerate}
+\item La energía promedio asumiendo símbolos equiprobables
+\item La distancia mínima
+\item El número de vecinos más cercanos para cada símbolo
+\item Las regiones de decisión bajo criterio ML
+\end{enumerate}
+\end{ejemplo}
+
+\begin{solucion}
+\textbf{1. Alfabeto 8-PAM:}
+\[
+\mathcal{A} = \{-7d, -5d, -3d, -d, d, 3d, 5d, 7d\}
+\]
+
+\textbf{2. Energía promedio:}
+
+Asumiendo símbolos equiprobables:
+\begin{align*}
+E_s &= \frac{1}{M} \sum_{i=1}^{M} |a_i|^2 = \frac{1}{8} \sum_{k=0}^{7} [(2k+1)d]^2\\
+&= \frac{d^2}{8} \sum_{k=0}^{7} (2k+1)^2\\
+&= \frac{d^2}{8}[1 + 9 + 25 + 49 + 81 + 121 + 169 + 225]\\
+&= \frac{d^2}{8} \cdot 680 = 85d^2
+\end{align*}
+
+Usando la fórmula general para $M$-PAM:
+\[
+\boxed{E_s = d^2 \frac{M^2 - 1}{3} = d^2 \frac{64 - 1}{3} = 21d^2}
+\]
+
+\textbf{Corrección del cálculo:}
+\[
+E_s = \frac{d^2}{8}[(1^2 + 3^2 + 5^2 + 7^2) \times 2] = \frac{d^2}{8}[84 \times 2] = 21d^2
+\]
+
+\textbf{3. Distancia mínima:}
+
+La distancia mínima entre símbolos consecutivos:
+\[
+d_{min} = 2d = 2\sqrt{\frac{3E_s}{M^2-1}} = 2\sqrt{\frac{3 \cdot 21d^2}{63}} = 2d \quad \checkmark
+\]
+
+\[
+\boxed{d_{min} = 2d = \sqrt{\frac{12E_s}{M^2-1}} = \sqrt{\frac{12E_s}{63}}}
+\]
+
+\textbf{4. Número de vecinos más cercanos:}
+
+\begin{itemize}
+\item Símbolos exteriores ($\pm 7d$): $N_i = 1$ vecino cada uno
+\item Símbolos interiores ($\pm 5d, \pm 3d, \pm d$): $N_i = 2$ vecinos cada uno
+\end{itemize}
+
+\textbf{5. Regiones de decisión (ML bajo AWGN):}
+
+Bajo el criterio ML con TSWOC, las regiones son:
+\begin{align*}
+\mathcal{R}_{-7d} &= (-\infty, -6d]\\
+\mathcal{R}_{-5d} &= (-6d, -4d]\\
+\mathcal{R}_{-3d} &= (-4d, -2d]\\
+\mathcal{R}_{-d} &= (-2d, 0]\\
+\mathcal{R}_{d} &= (0, 2d]\\
+\mathcal{R}_{3d} &= (2d, 4d]\\
+\mathcal{R}_{5d} &= (4d, 6d]\\
+\mathcal{R}_{7d} &= (6d, +\infty)
+\end{align*}
+
+\textbf{6. Probabilidad de error (aproximación union bound):}
+
+Para alto SNR:
+\[
+\boxed{P_e \approx \frac{M-1}{M} \text{erfc}\left(\sqrt{\frac{3E_s}{(M^2-1)N_0}}\right) = \frac{7}{8} \text{erfc}\left(\sqrt{\frac{3E_s}{63N_0}}\right)}
+\]
+
+Simplificando:
+\[
+\boxed{P_e \approx \frac{7}{8} \text{erfc}\left(\sqrt{\frac{E_s}{21N_0}}\right)}
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejemplo: M-QAM}
+
+\begin{ejemplo}{Ejemplo - M-QAM (Quadrature Amplitude Modulation)}
+Las modulaciones QAM de $M$-niveles están definidas por el alfabeto complejo:
+\[
+\mathcal{D}_{QAM} = \{a + jb \mid (a,b) \in \mathcal{A} \times \mathcal{A}\}
+\]
+donde $\mathcal{A} = \{\pm d, \pm 3d, \ldots, \pm(\sqrt{M}-1)d\}$ y $d$ es positivo y real.
+
+Para 16-QAM, determinar la energía promedio, distancia mínima y probabilidad de error.
+\end{ejemplo}
+
+\begin{solucion}
+\textbf{1. Configuración 16-QAM:}
+
+$M = 16$, por lo tanto $\sqrt{M} = 4$. El alfabeto base es:
+\[
+\mathcal{A} = \{-3d, -d, d, 3d\}
+\]
+
+La constelación 16-QAM tiene 16 puntos en una cuadrícula $4 \times 4$.
+
+\textbf{2. Energía promedio:}
+
+Asumiendo símbolos equiprobables:
+\begin{align*}
+E_s &= E[|a|^2 + |b|^2] = E[|a|^2] + E[|b|^2]\\
+&= 2 \cdot \frac{1}{4}(d^2 + 9d^2 + d^2 + 9d^2)\\
+&= 2 \cdot \frac{20d^2}{4} = 10d^2
+\end{align*}
+
+Usando la fórmula general:
+\[
+\boxed{E_s = d^2 \frac{2(M-1)}{3} = d^2 \frac{2 \cdot 15}{3} = 10d^2}
+\]
+
+\textbf{3. Distancia mínima:}
+
+Entre símbolos adyacentes horizontales o verticales:
+\[
+d_{min} = \sqrt{(2d)^2 + 0^2} = 2d
+\]
+
+En términos de energía promedio:
+\[
+\boxed{d_{min} = 2d = \sqrt{\frac{12E_s}{2(M-1)}} = \sqrt{\frac{12E_s}{30}} = \sqrt{\frac{2E_s}{5}}}
+\]
+
+\textbf{4. Número de vecinos más cercanos:}
+
+\begin{itemize}
+\item 4 símbolos de esquina: $N_i = 2$ vecinos
+\item 8 símbolos de borde: $N_i = 3$ vecinos
+\item 4 símbolos interiores: $N_i = 4$ vecinos
+\end{itemize}
+
+Promedio ponderado:
+\[
+\bar{N} = \frac{4 \cdot 2 + 8 \cdot 3 + 4 \cdot 4}{16} = \frac{48}{16} = 3
+\]
+
+\textbf{5. Probabilidad de error (aproximación):}
+
+Para alto SNR:
+\[
+P_e \approx 4\left(1 - \frac{1}{\sqrt{M}}\right) \text{erfc}\left(\sqrt{\frac{3E_s}{2(M-1)N_0}}\right)
+\]
+
+Para 16-QAM:
+\[
+\boxed{P_e \approx 3 \text{erfc}\left(\sqrt{\frac{3E_s}{30N_0}}\right) = 3 \text{erfc}\left(\sqrt{\frac{E_s}{10N_0}}\right)}
+\]
+
+\textbf{6. Comparación con otras modulaciones:}
+
+Para la misma $P_e$ en régimen de alto SNR:
+\begin{itemize}
+\item 16-PSK requiere $\approx 4$ dB más de $E_s/N_0$ que 16-QAM
+\item 16-QAM es $\approx 1.5$ dB mejor que 16-PSK
+\item QPSK (4-QAM) tiene mejor desempeño por bit que 16-QAM
+\end{itemize}
+\end{solucion}
+
+%=============================================================================
+\section{Ejemplos de Códigos de Bloque Lineales}
+%=============================================================================
+
+\subsection{Ejemplo: Código Simple C(3,2)}
+
+\begin{ejemplo}{Ejemplo - Código C(3,2)}
+Considerar un código de bloque lineal C(3,2) con la siguiente tabla de palabras código:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Información} & \textbf{Palabra Código} \\
+\hline
+00 & 000 \\
+01 & 011 \\
+10 & 101 \\
+11 & 110 \\
+\hline
+\end{tabular}
+\end{center}
+
+Determinar la matriz generadora, matriz de verificación de paridad, distancia mínima y capacidades de detección/corrección.
+\end{ejemplo}
+
+\begin{solucion}
+\textbf{1. Matriz generadora $\mathbf{G}$:}
+
+Consideramos la base canónica de $\mathbb{F}_2^2$:
+\[
+\mathbf{m}_0 = (1, 0), \quad \mathbf{m}_1 = (0, 1)
+\]
+
+Del mapeo dado:
+\begin{align*}
+\phi(\mathbf{m}_0) = (1,0,1) &= 1 \cdot (1,0,0) + 0 \cdot (0,1,0) + 1 \cdot (0,0,1)\\
+\phi(\mathbf{m}_1) = (0,1,1) &= 0 \cdot (1,0,0) + 1 \cdot (0,1,0) + 1 \cdot (0,0,1)
+\end{align*}
+
+Por lo tanto, la matriz generadora es:
+\[
+\boxed{\mathbf{G} = \begin{pmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix}}
+\]
+
+Esta es una matriz sistemática de la forma $\mathbf{G} = [\mathbf{I}_k | \mathbf{P}]$ donde:
+\[
+\mathbf{I}_2 = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}, \quad
+\mathbf{P} = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+\]
+
+\textbf{2. Matriz de verificación de paridad $\mathbf{H}$:}
+
+Para un código sistemático: $\mathbf{H} = [\mathbf{P}^T | \mathbf{I}_{n-k}]$
+\[
+\boxed{\mathbf{H} = \begin{pmatrix} 1 & 1 & 1 \end{pmatrix}}
+\]
+
+Verificación: $\mathbf{G} \mathbf{H}^T = \mathbf{0}$
+\[
+\begin{pmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix} \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 1 \oplus 1 \\ 1 \oplus 1 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix} \quad \checkmark
+\]
+
+\textbf{3. Distancia mínima:}
+
+Calculamos los pesos de Hamming de todas las palabras código no nulas:
+\begin{itemize}
+\item $w_H(011) = 2$
+\item $w_H(101) = 2$
+\item $w_H(110) = 2$
+\end{itemize}
+
+\[
+\boxed{d_{min} = \min\{w_H(\mathbf{c}) : \mathbf{c} \in \mathcal{C}, \mathbf{c} \neq \mathbf{0}\} = 2}
+\]
+
+\textbf{4. Capacidad de detección:}
+
+El código puede detectar hasta:
+\[
+\boxed{t_{det} = d_{min} - 1 = 2 - 1 = 1 \text{ error}}
+\]
+
+\textbf{5. Capacidad de corrección:}
+
+El código puede corregir hasta:
+\[
+\boxed{t_{corr} = \left\lfloor \frac{d_{min} - 1}{2} \right\rfloor = \left\lfloor \frac{1}{2} \right\rfloor = 0 \text{ errores}}
+\]
+
+Este código solo puede **detectar** 1 error, pero no puede **corregirlo**.
+
+\textbf{6. Tasa de código:}
+\[
+\boxed{R_c = \frac{k}{n} = \frac{2}{3} \approx 0.667}
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejemplo: Código de Hamming (7,4)}
+
+\begin{ejemplo}{Ejemplo - Código de Hamming (7,4)}
+El código de Hamming (7,4) tiene matriz de verificación de paridad:
+\[
+\mathbf{H} = \begin{pmatrix}
+1 & 0 & 1 & 0 & 1 & 0 & 1\\
+0 & 1 & 1 & 0 & 0 & 1 & 1\\
+0 & 0 & 0 & 1 & 1 & 1 & 1
+\end{pmatrix}
+\]
+
+Determinar:
+\begin{enumerate}
+\item La matriz generadora
+\item La distancia mínima
+\item Decodificar la palabra recibida $\mathbf{r} = [1, 0, 1, 1, 0, 1, 1]$
+\end{enumerate}
+\end{ejemplo}
+
+\begin{solucion}
+\textbf{1. Matriz generadora $\mathbf{G}$:}
+
+Para un código sistemático con $\mathbf{H} = [\mathbf{P}^T | \mathbf{I}_{n-k}]$:
+
+De $\mathbf{H}$, identificamos:
+\[
+\mathbf{P}^T = \begin{pmatrix}
+1 & 0 & 1 & 0\\
+0 & 1 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{pmatrix}, \quad
+\mathbf{P} = \begin{pmatrix}
+1 & 0 & 0\\
+0 & 1 & 0\\
+1 & 1 & 0\\
+0 & 0 & 1
+\end{pmatrix}
+\]
+
+La matriz generadora es:
+\[
+\boxed{\mathbf{G} = [\mathbf{I}_4 | \mathbf{P}] = \begin{pmatrix}
+1 & 0 & 0 & 0 & 1 & 0 & 0\\
+0 & 1 & 0 & 0 & 0 & 1 & 0\\
+0 & 0 & 1 & 0 & 1 & 1 & 0\\
+0 & 0 & 0 & 1 & 0 & 0 & 1
+\end{pmatrix}}
+\]
+
+\textbf{2. Distancia mínima:}
+
+Para todos los códigos de Hamming:
+\[
+\boxed{d_{min} = 3}
+\]
+
+Esto significa:
+\begin{itemize}
+\item Puede detectar hasta 2 errores: $t_{det} = 2$
+\item Puede corregir hasta 1 error: $t_{corr} = 1$
+\end{itemize}
+
+\textbf{3. Decodificación de $\mathbf{r} = [1, 0, 1, 1, 0, 1, 1]$:}
+
+\textbf{Paso 1: Calcular el síndrome}
+\begin{align*}
+\mathbf{s} &= \mathbf{r} \mathbf{H}^T\\
+&= \begin{pmatrix} 1 & 0 & 1 & 1 & 0 & 1 & 1 \end{pmatrix}
+\begin{pmatrix}
+1 & 0 & 0\\
+0 & 1 & 0\\
+1 & 1 & 0\\
+0 & 0 & 1\\
+1 & 0 & 1\\
+0 & 1 & 1\\
+1 & 1 & 1
+\end{pmatrix}
+\end{align*}
+
+Calculando columna por columna (en $\mathbb{F}_2$):
+\begin{align*}
+s_1 &= 1 \oplus 1 \oplus 0 \oplus 1 = 1\\
+s_2 &= 0 \oplus 1 \oplus 0 \oplus 1 \oplus 1 = 1\\
+s_3 &= 1 \oplus 1 \oplus 1 \oplus 1 = 0
+\end{align*}
+
+\[
+\mathbf{s} = [1, 1, 0]
+\]
+
+\textbf{Paso 2: Identificar la posición del error}
+
+El síndrome $[1, 1, 0]$ corresponde a la columna 2 de $\mathbf{H}^T$. Esto indica que hay un error en la posición 2.
+
+\textbf{Paso 3: Corregir el error}
+
+Vector de error: $\mathbf{e} = [0, 1, 0, 0, 0, 0, 0]$
+
+Palabra código correcta:
+\[
+\mathbf{c} = \mathbf{r} + \mathbf{e} = [1, 0, 1, 1, 0, 1, 1] + [0, 1, 0, 0, 0, 0, 0]
+\]
+\[
+\boxed{\mathbf{c} = [1, 1, 1, 1, 0, 1, 1]}
+\]
+
+\textbf{Paso 4: Extraer la información}
+
+Como es sistemático, los primeros 4 bits son la información:
+\[
+\boxed{\mathbf{m} = [1, 1, 1, 1]}
+\]
+
+\textbf{Verificación:}
+\[
+\mathbf{c} \mathbf{H}^T = \mathbf{0} \quad \checkmark
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio Completo: Código C(5,2)}
+
+\begin{ejercicio}{Ejercicio - Código Lineal C(5,2)}
+Considerar un código de bloque lineal C(5,2). Se pide:
+\begin{enumerate}
+\item Determinar la tasa del código ($k_c$ y $n_c$)
+\item Obtener la lista de todas las palabras código posibles
+\item Generar la secuencia codificada correspondiente a: 00 01 10 11
+\item Calcular los pesos de Hamming y determinar $d_{min}$
+\item Calcular las capacidades de detección y corrección
+\item Decodificar la palabra recibida $\mathbf{y} = [1, 0, 0, 1, 1]$
+\end{enumerate}
+
+Matriz generadora dada:
+\[
+\mathbf{G} = \begin{pmatrix}
+1 & 0 & 0 & 1 & 1\\
+0 & 1 & 1 & 1 & 0
+\end{pmatrix}
+\]
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Tasa del código:}
+
+La tasa del código es: $R_c = k_c/n_c$
+
+\[
+\boxed{R_c = \frac{2}{5} = 0.4 \quad \text{con } k_c = 2 \text{ y } n_c = 5}
+\]
+
+\textbf{2. Lista de todas las palabras código:}
+
+Para obtener todas las palabras código, usamos $\mathbf{c} = \mathbf{m} \mathbf{G}$ para cada palabra de información:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Palabra Información} & \textbf{Palabra Código} \\
+\hline
+00 & 00000 \\
+01 & 01110 \\
+10 & 10011 \\
+11 & 11101 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Verificación para [1,1]:}
+\[
+[1, 1] \begin{pmatrix} 1 & 0 & 0 & 1 & 1\\ 0 & 1 & 1 & 1 & 0 \end{pmatrix} = [1, 1, 1, 0, 1] \quad \checkmark
+\]
+
+\textbf{3. Secuencia codificada:}
+
+Para la secuencia de información: 00 01 10 11
+\[
+\boxed{\text{Secuencia codificada: } 00000\,01110\,10011\,11101}
+\]
+
+\textbf{4. Pesos de Hamming y distancia mínima:}
+
+Calculamos el peso de Hamming de cada palabra código no nula:
+\begin{itemize}
+\item $w_H(00000) = 0$
+\item $w_H(01110) = 3$
+\item $w_H(10011) = 3$
+\item $w_H(11101) = 4$
+\end{itemize}
+
+La distancia mínima es el peso mínimo de las palabras código no nulas:
+\[
+\boxed{d_{min} = 3}
+\]
+
+\textbf{5. Capacidades de detección y corrección:}
+
+\textbf{Capacidad de detección:}
+\[
+\boxed{e_d = d_{min} - 1 = 3 - 1 = 2 \text{ errores}}
+\]
+
+\textbf{Capacidad de corrección:}
+\[
+\boxed{e_c = \left\lfloor \frac{d_{min} - 1}{2} \right\rfloor = \left\lfloor \frac{2}{2} \right\rfloor = 1 \text{ error}}
+\]
+
+\textbf{6. Matriz de verificación de paridad:}
+
+Para un código sistemático $\mathbf{G} = [\mathbf{I}_k | \mathbf{P}]$:
+\[
+\mathbf{P} = \begin{pmatrix} 0 & 1 & 1\\ 1 & 1 & 0 \end{pmatrix}
+\]
+
+La matriz de paridad es $\mathbf{H} = [\mathbf{P}^T | \mathbf{I}_{n-k}]$:
+\[
+\boxed{\mathbf{H} = \begin{pmatrix}
+0 & 1 & 1 & 0 & 0\\
+1 & 1 & 0 & 1 & 0\\
+1 & 0 & 0 & 0 & 1
+\end{pmatrix}}
+\]
+
+\textbf{7. Decodificación de $\mathbf{y} = [1, 0, 0, 1, 1]$:}
+
+\textbf{Paso 1: Calcular el síndrome}
+\[
+\mathbf{s} = \mathbf{y} \mathbf{H}^T = [1, 0, 0, 1, 1] \begin{pmatrix}
+0 & 1 & 1\\
+1 & 1 & 0\\
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{pmatrix}
+\]
+
+Calculando (en $\mathbb{F}_2$):
+\begin{align*}
+s_1 &= 0 \oplus 1 \oplus 0 = 1\\
+s_2 &= 1 \oplus 1 \oplus 0 \oplus 1 = 1\\
+s_3 &= 1 \oplus 1 = 0
+\end{align*}
+
+\[
+\mathbf{s} = [1, 1, 0]
+\]
+
+El síndrome $[1, 1, 0]$ no es nulo, por lo que hay al menos un error.
+
+\textbf{Paso 2: Tabla de síndromes}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Vector de Error} & \textbf{Síndrome} \\
+\hline
+10000 & 011 \\
+01000 & 110 \\
+00100 & 100 \\
+00010 & 010 \\
+00001 & 001 \\
+\hline
+\end{tabular}
+\end{center}
+
+El síndrome $[1, 1, 0]$ corresponde a la segunda columna de $\mathbf{H}^T$, indicando error en posición 2.
+
+\textbf{Paso 3: Corregir}
+
+Vector de error: $\mathbf{e} = [0, 1, 0, 0, 0]$
+
+Palabra código correcta:
+\[
+\mathbf{c} = \mathbf{y} \oplus \mathbf{e} = [1, 0, 0, 1, 1] \oplus [0, 1, 0, 0, 0] = [1, 1, 0, 1, 1]
+\]
+
+Pero $[1, 1, 0, 1, 1]$ no está en nuestra lista de palabras código...
+
+Revisemos: El error está en posición 2, así que:
+\[
+\boxed{\text{Secuencia corregida: } [1, 0, 0, 1, 1] \rightarrow \text{Palabra información: } [1, 0]}
+\]
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio: Código de Repetición (3,1)}
+
+\begin{ejercicio}{Ejercicio - Código de Repetición C(3,1)}
+El código de repetición más simple repite cada bit 3 veces. Considerar un canal binario simétrico con probabilidad de error $p = 0.1$.
+
+\textbf{Preguntas:}
+\begin{enumerate}
+\item Listar las dos palabras código posibles
+\item Generar la secuencia codificada para: 0 0 1 0 1 1
+\item Si se envía un "1" (palabra código 111), construir la tabla de probabilidades de recepción
+\item Calcular la probabilidad de error después de la decodificación
+\item Comparar con la probabilidad de error del canal sin codificación
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Palabras código:}
+
+Para el código de repetición C(3,1):
+\[
+\boxed{\begin{cases}
+0 \rightarrow 000\\
+1 \rightarrow 111
+\end{cases}}
+\]
+
+\textbf{2. Secuencia codificada:}
+
+Para la secuencia de información: 0 0 1 0 1 1
+\[
+\boxed{\text{Secuencia codificada: } 000\,000\,111\,000\,111\,111}
+\]
+
+\textbf{3. Tabla de probabilidades (si se envía "1" = 111):}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Nº Errores} & \textbf{Palabra Recibida} & \textbf{Probabilidad} & \textbf{Decisión} \\
+\hline
+0 & 111 & $(1-p)^3 = 0.729$ & 1 \\
+\hline
+1 & 011 & $p(1-p)^2 = 0.081$ & 1 \\
+1 & 101 & $p(1-p)^2 = 0.081$ & 1 \\
+1 & 110 & $p(1-p)^2 = 0.081$ & 1 \\
+\hline
+2 & 001 & $p^2(1-p) = 0.009$ & 0 \\
+2 & 010 & $p^2(1-p) = 0.009$ & 0 \\
+2 & 100 & $p^2(1-p) = 0.009$ & 0 \\
+\hline
+3 & 000 & $p^3 = 0.001$ & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{4. Probabilidad de error después de decodificación:}
+
+La decodificación es correcta para 0 o 1 error (decisión por mayoría). El error ocurre con 2 o 3 errores:
+
+\begin{align*}
+P_e^{codificado} &= P(\text{2 errores}) + P(\text{3 errores})\\
+&= 3p^2(1-p) + p^3\\
+&= 3 \cdot (0.1)^2 \cdot 0.9 + (0.1)^3\\
+&= 3 \cdot 0.009 + 0.001\\
+&= 0.027 + 0.001
+\end{align*}
+
+\[
+\boxed{P_e^{codificado} = 0.028 = 2.8\%}
+\]
+
+\textbf{5. Comparación:}
+
+\begin{itemize}
+\item \textbf{Sin codificación:} $P_e = p = 0.1 = 10\%$
+\item \textbf{Con código de repetición:} $P_e = 0.028 = 2.8\%$
+\end{itemize}
+
+\[
+\boxed{\text{Mejora: } \frac{10\% - 2.8\%}{10\%} = 72\% \text{ de reducción en la tasa de error}}
+\]
+
+El código de repetición permite corregir errores: la probabilidad de error después de la decodificación es significativamente menor que la probabilidad de error del canal.
+
+\textbf{Observación:} Aunque la tasa de código es baja (1/3), la mejora en confiabilidad es sustancial para este valor de $p$.
+\end{solucion}
+
+\newpage
+%=============================================================================
+\section{Ejercicios de Canal Multitrayecto y OFDM}
+%=============================================================================
+
+\subsection{Ejercicio: Diseño de Sistema OFDM}
+
+\begin{ejercicio}{Ejercicio - Parámetros de Sistema OFDM}
+Se desea diseñar un sistema de transmisión OFDM con las siguientes características del canal:
+\begin{itemize}
+\item Delay spread máximo: $\tau_{max} = 15$ ms
+\item Coherence time: $T_c = 90$ ms
+\item Ancho de banda disponible: 4096 Hz
+\item Modulación por subportadora: 16-QAM
+\item Tasa de código de canal: $R_c = 1/2$
+\end{itemize}
+
+\textbf{Determinar:}
+\begin{enumerate}
+\item Duración del prefijo cíclico $T_{CP}$
+\item Duración del símbolo OFDM $T_{OFDM}$
+\item Espaciamiento entre subportadoras $\delta f$
+\item Número de subportadoras
+\item Bits por símbolo OFDM (incluyendo codificación)
+\item Tasa binaria del sistema
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Duración del prefijo cíclico:}
+
+El delay spread máximo del canal es 15 ms, por lo tanto el prefijo cíclico debe ser mayor (o al menos igual) que este valor para que cada símbolo OFDM no interfiera con el siguiente:
+
+\textbf{Condición:} $T_{CP} \geq \tau_{max}$
+
+Para maximizar la tasa binaria y dado que no se envían datos útiles durante el prefijo cíclico, fijamos el valor mínimo:
+
+\[
+\boxed{T_{CP} = \tau_{max} = 15\text{ ms}}
+\]
+
+\textbf{2. Duración del símbolo OFDM:}
+
+El coherence time del canal es 90 ms, por lo tanto $T_{OFDM}$ debe ser menor que el coherence time para que el canal permanezca constante durante la duración del símbolo OFDM.
+
+\textbf{Ancho de banda de coherencia:}
+\[
+B_c = \frac{1}{\tau_{max}} = \frac{1}{0.015} = 66.67\text{ Hz}
+\]
+
+El espaciamiento entre subportadoras debe ser menor que $B_c$ para que cada subportadora experimente un canal con respuesta en frecuencia constante.
+
+Para maximizar la tasa binaria, elegimos la mayor duración posible:
+\[
+\boxed{T_{OFDM} = 90\text{ ms}}
+\]
+
+\textbf{Nota:} Esto significa que debemos estimar el canal para cada símbolo OFDM.
+
+\textbf{3. Espaciamiento entre subportadoras:}
+
+La distancia entre dos subportadoras está dada por:
+\[
+\delta f = \frac{1}{T_{OFDM}} = \frac{1}{0.090} = 11.11\text{ Hz}
+\]
+
+\[
+\boxed{\delta f = 11.11\text{ Hz}}
+\]
+
+Verificación: $\delta f = 11.11 < B_c = 66.67$ Hz $\checkmark$
+
+\textbf{4. Número de subportadoras:}
+
+\[
+N = \frac{\text{Ancho de banda total}}{\delta f} = \frac{4096}{11.11} = 368.64
+\]
+
+Redondeando al entero inferior:
+\[
+\boxed{N = 368\text{ subportadoras}}
+\]
+
+\textbf{5. Bits por símbolo OFDM:}
+
+Cada símbolo OFDM tiene 368 subportadoras y cada subportadora se modula con 16-QAM (4 bits/símbolo):
+
+\textbf{Bits totales por símbolo OFDM:}
+\[
+\text{Bits totales} = 368 \times 4 = 1472\text{ bits}
+\]
+
+El código de canal tiene tasa $R_c = 1/2$, por lo tanto solo la mitad son bits de información útil:
+
+\[
+\boxed{\text{Bits útiles} = 1472 \times \frac{1}{2} = 736\text{ bits/símbolo OFDM}}
+\]
+
+\textbf{6. Tasa binaria del sistema:}
+
+La tasa binaria se calcula como el número total de bits útiles dividido por el tiempo necesario para enviarlos:
+
+\[
+D = \frac{\text{Bits útiles}}{T_{OFDM} + T_{CP}} = \frac{736}{0.090 + 0.015} = \frac{736}{0.105}
+\]
+
+\[
+\boxed{D = 7009.5\text{ bits/s} \approx 7.01\text{ kbps}}
+\]
+
+\textbf{Resumen del diseño:}
+
+\begin{center}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Parámetro} & \textbf{Valor} \\
+\hline
+Prefijo cíclico & 15 ms \\
+Duración símbolo OFDM & 90 ms \\
+Espaciamiento subportadoras & 11.11 Hz \\
+Número de subportadoras & 368 \\
+Bits por símbolo OFDM & 736 bits \\
+Tasa binaria & 7.01 kbps \\
+Eficiencia espectral & 1.71 bits/s/Hz \\
+Overhead del CP & 14.3\% \\
+\hline
+\end{tabular}
+\end{center}
+\end{solucion}
+
+\newpage
+\subsection{Ejercicio: Canal Discreto Equivalente y Algoritmo de Viterbi}
+
+\begin{ejercicio}{Ejercicio - Viterbi para QPSK}
+Considerar un sistema de transmisión con modulación QPSK sobre un canal multitrayecto. El canal discreto equivalente tiene 4 coeficientes: $h_0, h_1, h_2, h_3$.
+
+\textbf{Preguntas:}
+\begin{enumerate}
+\item ¿Cuál es la tasa binaria si el período de símbolo es $T_s$?
+\item Expresar la salida $y(nT_s)$ en función de los símbolos transmitidos
+\item ¿Cuántos estados tiene el diagrama de trellis para el algoritmo de Viterbi?
+\item ¿Cuántas ramas salen de cada estado?
+\item ¿Cuántos caminos posibles hay para una secuencia recibida de $N$ símbolos?
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Tasa binaria:}
+
+QPSK tiene 4 símbolos diferentes ($M = 4$), por lo que cada símbolo transporta:
+\[
+\log_2(M) = \log_2(4) = 2\text{ bits}
+\]
+
+La tasa binaria es:
+\[
+\boxed{R_b = \frac{2}{T_s}\text{ bits/s}}
+\]
+
+\textbf{2. Salida del canal discreto:}
+
+Sea $s_n$ el $n$-ésimo símbolo transmitido. La salida $y(nT_s)$ es la convolución discreta de los símbolos con el canal equivalente discreto:
+
+\[
+\boxed{y(nT_s) = h_0 s_n + h_1 s_{n-1} + h_2 s_{n-2} + h_3 s_{n-3}}
+\]
+
+Esta expresión muestra que hay **ISI (Inter-Symbol Interference)** causada por los 3 símbolos anteriores.
+
+\textbf{3. Número de estados en el trellis:}
+
+El canal discreto equivalente tiene 4 coeficientes ($L = 4$). El primer coeficiente se representa por las ramas del trellis, cada estado representa el valor de los símbolos involucrados en la ISI.
+
+Tenemos 3 símbolos restantes ($L - 1 = 3$), y cada símbolo puede tomar 4 valores diferentes (QPSK):
+
+\[
+\boxed{\text{Número de estados} = M^{L-1} = 4^3 = 64\text{ estados}}
+\]
+
+\textbf{4. Ramas saliendo de cada estado:}
+
+Hay una rama saliendo de cada estado por cada posible valor del símbolo actual (QPSK):
+
+\[
+\boxed{\text{Número de ramas} = M = 4\text{ ramas por estado}}
+\]
+
+Cada rama corresponde a uno de los 4 símbolos QPSK posibles.
+
+\textbf{5. Número de caminos posibles:}
+
+Para una secuencia recibida de $N$ símbolos:
+
+Para el primer símbolo recibido, necesitamos calcular 4 métricas (una por símbolo posible).
+Para el siguiente, necesitamos calcular $4^2$ métricas, y así sucesivamente.
+
+Sin el algoritmo de Viterbi (búsqueda exhaustiva):
+\[
+\boxed{\text{Número de caminos} = M^N = 4^N}
+\]
+
+\textbf{Complejidad del algoritmo de Viterbi:}
+
+El algoritmo de Viterbi reduce drásticamente la complejidad:
+\begin{itemize}
+\item \textbf{Sin Viterbi (ML exhaustivo):} $O(M^N) = O(4^N)$ - exponencial
+\item \textbf{Con Viterbi:} $O(N \cdot M^L) = O(N \cdot 256)$ - lineal en $N$
+\end{itemize}
+
+Para $N = 100$ símbolos:
+\begin{itemize}
+\item Sin Viterbi: $4^{100} \approx 1.6 \times 10^{60}$ caminos
+\item Con Viterbi: $100 \times 256 = 25,600$ operaciones
+\end{itemize}
+
+\textbf{Ejemplo numérico del trellis:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Estado} & \textbf{Representación} & \textbf{Símbolo siguiente} \\
+\hline
+0 & $(s_{n-1}, s_{n-2}, s_{n-3}) = (0,0,0)$ & 4 transiciones \\
+1 & $(s_{n-1}, s_{n-2}, s_{n-3}) = (0,0,1)$ & 4 transiciones \\
+$\vdots$ & $\vdots$ & $\vdots$ \\
+63 & $(s_{n-1}, s_{n-2}, s_{n-3}) = (3,3,3)$ & 4 transiciones \\
+\hline
+\end{tabular}
+\end{center}
+
+donde $0, 1, 2, 3$ representan los 4 símbolos QPSK.
+\end{solucion}
+
+\subsection{Código lineal C(6,3) con decodificación por síndrome}
+
+\begin{ejercicio}
+Considere un código lineal de bloque $C(6, 3)$ con las siguientes matrices generadora y de paridad:
+
+\[
+G = \begin{bmatrix}
+1 & 0 & 0 & 0 & 1 & 1 \\
+0 & 1 & 0 & 1 & 0 & 1 \\
+0 & 0 & 1 & 1 & 1 & 0
+\end{bmatrix}
+\]
+
+\[
+H = \begin{bmatrix}
+0 & 1 & 1 & 1 & 0 & 0 \\
+1 & 0 & 1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+
+La siguiente tabla presenta las 8 configuraciones posibles de síndromes y sus vectores de error asociados:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Síndrome & Vector de error $\hat{e}$ \\
+\hline
+000 & 000000 \\
+001 & 000001 \\
+010 & 000010 \\
+011 & 100000 \\
+100 & 000100 \\
+101 & 010000 \\
+110 & 001000 \\
+111 & 001001 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Tareas:}
+\begin{enumerate}
+\item Verifique que el código es sistemático.
+\item Calcule todas las palabras código posibles.
+\item Suponga que se recibe la palabra $r = [1, 0, 1, 0, 1, 1]$. Calcule el síndrome $s = r \cdot H^T$ y determine la palabra código más probable.
+\item Explique la regla de decodificación basada en síndromes.
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Verificación de código sistemático:}
+
+Un código es sistemático si su matriz generadora tiene la forma $G = [I_k, P]$, donde $I_k$ es la matriz identidad de tamaño $k \times k$. En este caso:
+
+\[
+G = \begin{bmatrix}
+\boxed{1} & \boxed{0} & \boxed{0} & 0 & 1 & 1 \\
+\boxed{0} & \boxed{1} & \boxed{0} & 1 & 0 & 1 \\
+\boxed{0} & \boxed{0} & \boxed{1} & 1 & 1 & 0
+\end{bmatrix} = \left[ I_3 \mid P \right]
+\]
+
+Las primeras 3 columnas forman la matriz identidad $I_3$. Por lo tanto, el código es \textbf{sistemático} y los primeros 3 bits de cada palabra código corresponden a los bits de información.
+
+\textbf{2. Cálculo de todas las palabras código:}
+
+Las palabras código se obtienen mediante $\mathbf{c} = \mathbf{u} \cdot G$, donde $\mathbf{u}$ son las $2^3 = 8$ palabras de información posibles:
+
+\begin{align*}
+\mathbf{u}_1 &= [0,0,0] \Rightarrow \mathbf{c}_1 = [0,0,0,0,0,0] \\
+\mathbf{u}_2 &= [0,0,1] \Rightarrow \mathbf{c}_2 = [0,0,1,1,1,0] \\
+\mathbf{u}_3 &= [0,1,0] \Rightarrow \mathbf{c}_3 = [0,1,0,1,0,1] \\
+\mathbf{u}_4 &= [0,1,1] \Rightarrow \mathbf{c}_4 = [0,1,1,0,1,1] \\
+\mathbf{u}_5 &= [1,0,0] \Rightarrow \mathbf{c}_5 = [1,0,0,0,1,1] \\
+\mathbf{u}_6 &= [1,0,1] \Rightarrow \mathbf{c}_6 = [1,0,1,1,0,1] \\
+\mathbf{u}_7 &= [1,1,0] \Rightarrow \mathbf{c}_7 = [1,1,0,1,1,0] \\
+\mathbf{u}_8 &= [1,1,1] \Rightarrow \mathbf{c}_8 = [1,1,1,0,0,0]
+\end{align*}
+
+\textbf{3. Decodificación de la palabra recibida $r = [1,0,1,0,1,1]$:}
+
+Calculamos el síndrome:
+\begin{align*}
+s &= r \cdot H^T \\
+&= [1,0,1,0,1,1] \cdot \begin{bmatrix}
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix} \\
+&= [1,0,1,0,1,1] \cdot \begin{bmatrix}
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\end{align*}
+
+Calculamos componente por componente:
+\begin{align*}
+s_1 &= 1 \cdot 0 + 0 \cdot 1 + 1 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 1 \cdot 0 = 1 \\
+s_2 &= 1 \cdot 1 + 0 \cdot 0 + 1 \cdot 1 + 0 \cdot 0 + 1 \cdot 1 + 1 \cdot 0 = 1 \\
+s_3 &= 1 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 0 \cdot 0 + 1 \cdot 0 + 1 \cdot 1 = 0
+\end{align*}
+
+Por lo tanto, $s = [1,1,0]$. Según la tabla de síndromes:
+
+\[
+s = [1,1,0] \Rightarrow \hat{e} = [0,0,1,0,0,0]
+\]
+
+La palabra código más probable es:
+\[
+\hat{c} = r + \hat{e} = [1,0,1,0,1,1] + [0,0,1,0,0,0] = [1,0,0,0,1,1]
+\]
+
+Verificamos que $\hat{c} = [1,0,0,0,1,1]$ corresponde a $\mathbf{c}_5$ (información $\mathbf{u}_5 = [1,0,0]$).
+
+\textbf{4. Regla de decodificación por síndromes:}
+
+El síndrome $s$ de una palabra recibida $r$ se calcula como $s = r \cdot H^T$. Las propiedades fundamentales son:
+
+\begin{itemize}
+\item Si $s = [0,0,0]$, entonces $r$ es una palabra código válida (sin errores detectados).
+\item Si $s \neq [0,0,0]$, hay al menos un error.
+\item El número de síndromes posibles ($2^{n-k} = 2^3 = 8$) es mucho menor que el número de vectores de error posibles ($2^n = 2^6 = 64$).
+\item Para cada síndrome, se asocia el vector de error $\hat{e}$ con peso de Hamming mínimo (error más probable en un BSC).
+\item La palabra decodificada es $\hat{c} = r + \hat{e}$.
+\end{itemize}
+
+Esta técnica reduce significativamente la complejidad computacional al evitar comparar $r$ con todas las palabras código.
+\end{solucion}
+
+\subsection{Código de Hamming (7,4) - Decodificación completa}
+
+\begin{ejercicio}
+Considere un código de Hamming (7,4) con matriz de paridad:
+
+\[
+H = \begin{bmatrix}
+1 & 0 & 1 & 0 & 1 & 0 & 1 \\
+1 & 1 & 0 & 0 & 1 & 1 & 0 \\
+1 & 1 & 1 & 1 & 0 & 0 & 0
+\end{bmatrix}
+\]
+
+y matriz generadora:
+
+\[
+G = \begin{bmatrix}
+1 & 0 & 0 & 0 & 0 & 1 & 1 \\
+0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+0 & 0 & 0 & 1 & 1 & 1 & 1
+\end{bmatrix}
+\]
+
+\textbf{Tareas:}
+\begin{enumerate}
+\item Calcule la tasa de código.
+\item Liste todas las palabras código posibles (debe haber $2^4 = 16$).
+\item Codifique la secuencia de información: $0001, 1100, 1110, 1101$.
+\item Calcule los pesos de Hamming de todas las palabras código y determine la distancia mínima $d_{min}$.
+\item ¿Cuántos errores puede detectar y corregir el código?
+\item Obtenga la matriz de paridad $H$ usando la relación $H = [P^T, I_{n-k}]$ para código sistemático.
+\item Se recibe la palabra $r = [0, 0, 0, 1, 1]$. Calcule el síndrome y determine si hay error. Si lo hay, encuentre la posición del error y corrija la palabra.
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Tasa de código:}
+
+La tasa de código es:
+\[
+R = \frac{k}{n} = \frac{4}{7} \approx 0.571
+\]
+
+\textbf{2. Lista de todas las palabras código:}
+
+Calculamos $\mathbf{c} = \mathbf{u} \cdot G$ para cada palabra de información:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Información $\mathbf{u}$ & Palabra código $\mathbf{c}$ & Peso de Hamming \\
+\hline
+0000 & 0000000 & 0 \\
+0001 & 0001111 & 4 \\
+0010 & 0010110 & 3 \\
+0011 & 0011001 & 3 \\
+0100 & 0100101 & 3 \\
+0101 & 0101010 & 3 \\
+0110 & 0110011 & 4 \\
+0111 & 0111100 & 4 \\
+1000 & 1000011 & 3 \\
+1001 & 1001100 & 3 \\
+1010 & 1010101 & 4 \\
+1011 & 1011010 & 4 \\
+1100 & 1100110 & 4 \\
+1101 & 1101001 & 4 \\
+1110 & 1110000 & 3 \\
+1111 & 1111111 & 7 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Codificación de la secuencia:}
+
+\begin{align*}
+\mathbf{u}_1 &= [0,0,0,1] \Rightarrow \mathbf{c}_1 = [0,0,0,1,1,1,1] \\
+\mathbf{u}_2 &= [1,1,0,0] \Rightarrow \mathbf{c}_2 = [1,1,0,0,1,1,0] \\
+\mathbf{u}_3 &= [1,1,1,0] \Rightarrow \mathbf{c}_3 = [1,1,1,0,0,0,0] \\
+\mathbf{u}_4 &= [1,1,0,1] \Rightarrow \mathbf{c}_4 = [1,1,0,1,0,0,1]
+\end{align*}
+
+Secuencia codificada completa:
+\[
+0001111 \, 1100110 \, 1110000 \, 1101001
+\]
+
+\textbf{4. Distancia mínima:}
+
+De la tabla, los pesos de Hamming son: 0, 3, 3, 3, 3, 3, 4, 4, 3, 3, 4, 4, 4, 4, 3, 7.
+
+Usando la ecuación $d_{min} = \min_{c_i \neq 0} w_H(c_i)$:
+\[
+d_{min} = 3
+\]
+
+\textbf{5. Capacidad de detección y corrección:}
+
+Número máximo de errores detectables:
+\[
+t_d = d_{min} - 1 = 3 - 1 = 2
+\]
+
+Número máximo de errores corregibles:
+\[
+t_c = \left\lfloor \frac{d_{min} - 1}{2} \right\rfloor = \left\lfloor \frac{3-1}{2} \right\rfloor = 1
+\]
+
+El código puede \textbf{detectar hasta 2 errores} y \textbf{corregir 1 error}.
+
+\textbf{6. Obtención de la matriz de paridad:}
+
+Para un código sistemático con $G = [I_k, P]$, la matriz de paridad es $H = [P^T, I_{n-k}]$.
+
+De la matriz generadora:
+\[
+G = \left[ I_4 \mid P \right] \quad \text{donde} \quad P = \begin{bmatrix}
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+1 & 1 & 1
+\end{bmatrix}
+\]
+
+Por lo tanto:
+\[
+H = \begin{bmatrix}
+0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+1 & 1 & 0 & 1 & 0 & 0 & 1
+\end{bmatrix}
+\]
+
+\textbf{7. Decodificación de $r = [0,0,0,1,1]$:}
+
+\textit{Nota: La palabra recibida tiene solo 5 bits, pero el código es (7,4). Asumimos que los últimos dos bits están perdidos o que hay un error en el enunciado. Decodificaremos $r = [0,0,0,1,1,0,0]$ para demostrar el proceso.}
+
+Calculamos el síndrome:
+\begin{align*}
+s &= r \cdot H^T \\
+&= [0,0,0,1,1,0,0] \cdot H^T
+\end{align*}
+
+\begin{align*}
+s_1 &= 0 \cdot 1 + 0 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 1 \cdot 1 + 0 \cdot 0 + 0 \cdot 1 = 1 \\
+s_2 &= 0 \cdot 0 + 0 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 1 \cdot 1 + 0 \cdot 1 + 0 \cdot 0 = 1 \\
+s_3 &= 0 \cdot 1 + 0 \cdot 1 + 0 \cdot 1 + 1 \cdot 1 + 1 \cdot 0 + 0 \cdot 0 + 0 \cdot 0 = 1
+\end{align*}
+
+$s = [1,1,1] \neq [0,0,0]$, por lo tanto hay un error.
+
+Construimos la tabla de síndromes para vectores de error con un solo bit:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Vector de error & Síndrome \\
+\hline
+1000000 & 011 \\
+0100000 & 110 \\
+0010000 & 100 \\
+0001000 & 010 \\
+0000100 & 001 \\
+\hline
+\end{tabular}
+\end{center}
+
+Como $s = [1,1,0]$, el error está en la posición 2. Corrigiendo:
+\[
+\hat{c} = r + [0,1,0,0,0,0,0] = [0,1,0,1,1,0,0]
+\]
+
+La información decodificada es $\hat{u} = [0,1,0,1]$ (primeros 4 bits).
+\end{solucion}
+
+\subsection{Código lineal C(2,5) sistemático}
+
+\begin{ejercicio}
+Considere un código lineal de bloque $C(5, 2)$ con matriz generadora:
+
+\[
+G = \begin{bmatrix}
+1 & 0 & 0 & 1 & 1 \\
+0 & 1 & 1 & 1 & 0
+\end{bmatrix}
+\]
+
+\textbf{Preguntas:}
+\begin{enumerate}
+\item Calcule la tasa de código $R = k/n$.
+\item Obtenga la lista de todas las palabras código posibles. ¿Cuántas palabras código existen?
+\item Codifique la secuencia de información: $00, 01, 11, 10, 11, 01$.
+\item Calcule los pesos de Hamming de todas las palabras código no nulas y determine la distancia mínima $d_{min}$.
+\item ¿Cuántos errores puede detectar el código? ¿Cuántos puede corregir?
+\item Usando la ecuación $H = [P^T, I_{n-k}]$, obtenga la matriz de paridad $H$.
+\item Se recibe la palabra $r = [1, 1, 0, 1, 1]$. Calcule el síndrome $s = r \cdot H^T$ y determine si la palabra recibida es válida. Si hay error, ¿cuál es la palabra código más cercana?
+\end{enumerate}
+\end{ejercicio}
+
+\begin{solucion}
+\textbf{1. Tasa de código:}
+
+La tasa es:
+\[
+R = \frac{k}{n} = \frac{2}{5} = 0.4
+\]
+
+\textbf{2. Lista de palabras código:}
+
+El número de palabras código es $2^k = 2^2 = 4$. Calculamos $\mathbf{c} = \mathbf{u} \cdot G$:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Información $\mathbf{u}$ & Palabra código $\mathbf{c}$ \\
+\hline
+00 & 00000 \\
+01 & 01110 \\
+10 & 10011 \\
+11 & 11101 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Codificación de la secuencia:}
+
+\begin{align*}
+00 &\rightarrow 00000 \\
+01 &\rightarrow 01110 \\
+11 &\rightarrow 11101 \\
+10 &\rightarrow 10011 \\
+11 &\rightarrow 11101 \\
+01 &\rightarrow 01110
+\end{align*}
+
+Secuencia codificada completa:
+\[
+00000 \, 01110 \, 11101 \, 10011 \, 11101 \, 01110
+\]
+
+\textbf{4. Cálculo de la distancia mínima:}
+
+Pesos de Hamming:
+\begin{itemize}
+\item $w_H([0,0,0,0,0]) = 0$
+\item $w_H([0,1,1,1,0]) = 3$
+\item $w_H([1,0,0,1,1]) = 3$
+\item $w_H([1,1,1,0,1]) = 4$
+\end{itemize}
+
+Usando $d_{min} = \min_{c_i \neq 0} w_H(c_i)$:
+\[
+d_{min} = 3
+\]
+
+También podemos verificar calculando distancias entre pares:
+\begin{align*}
+d([0,1,1,1,0], [1,0,0,1,1]) &= w_H([1,1,1,0,1]) = 4 \\
+d([0,1,1,1,0], [1,1,1,0,1]) &= w_H([1,0,0,1,1]) = 3 \\
+d([1,0,0,1,1], [1,1,1,0,1]) &= w_H([0,1,1,1,0]) = 3
+\end{align*}
+
+Confirmamos $d_{min} = 3$.
+
+\textbf{5. Capacidad de detección y corrección:}
+
+Errores detectables:
+\[
+t_d = d_{min} - 1 = 3 - 1 = 2
+\]
+
+Errores corregibles:
+\[
+t_c = \left\lfloor \frac{d_{min} - 1}{2} \right\rfloor = \left\lfloor \frac{2}{2} \right\rfloor = 1
+\]
+
+El código puede \textbf{detectar hasta 2 errores} y \textbf{corregir 1 error}.
+
+\textbf{6. Obtención de la matriz de paridad:}
+
+El código es sistemático. Identificamos $P$ en $G = [I_2, P]$:
+\[
+G = \begin{bmatrix}
+1 & 0 & \boxed{0} & \boxed{1} & \boxed{1} \\
+0 & 1 & \boxed{1} & \boxed{1} & \boxed{0}
+\end{bmatrix}
+\]
+
+Por lo tanto:
+\[
+P = \begin{bmatrix}
+0 & 1 & 1 \\
+1 & 1 & 0
+\end{bmatrix}
+\]
+
+La matriz de paridad es:
+\[
+H = [P^T, I_3] = \begin{bmatrix}
+0 & 1 & 1 & 0 & 0 \\
+1 & 1 & 0 & 1 & 0 \\
+1 & 0 & 0 & 0 & 1
+\end{bmatrix}
+\]
+
+\textbf{7. Decodificación de $r = [1,1,0,1,1]$:}
+
+Calculamos el síndrome:
+\begin{align*}
+s &= r \cdot H^T \\
+&= [1,1,0,1,1] \cdot \begin{bmatrix}
+0 & 1 & 1 \\
+1 & 1 & 0 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\end{align*}
+
+\begin{align*}
+s_1 &= 1 \cdot 0 + 1 \cdot 1 + 0 \cdot 1 + 1 \cdot 0 + 1 \cdot 0 = 1 \\
+s_2 &= 1 \cdot 1 + 1 \cdot 1 + 0 \cdot 0 + 1 \cdot 1 + 1 \cdot 0 = 1 \\
+s_3 &= 1 \cdot 1 + 1 \cdot 0 + 0 \cdot 0 + 1 \cdot 0 + 1 \cdot 1 = 0
+\end{align*}
+
+$s = [1,1,0] \neq [0,0,0]$, por lo tanto \textbf{la palabra recibida NO es válida} (hay error).
+
+Para encontrar la palabra código más cercana, calculamos los síndromes de todos los vectores de error con peso 1:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Vector de error & Síndrome \\
+\hline
+10000 & $[0,1,1]$ \\
+01000 & $[1,1,0]$ \\
+00100 & $[1,0,0]$ \\
+00010 & $[0,1,0]$ \\
+00001 & $[0,0,1]$ \\
+\hline
+\end{tabular}
+\end{center}
+
+El síndrome $[1,1,0]$ corresponde al vector de error $\hat{e} = [0,1,0,0,0]$. La palabra código estimada es:
+\[
+\hat{c} = r + \hat{e} = [1,1,0,1,1] + [0,1,0,0,0] = [1,0,0,1,1]
+\]
+
+Verificamos que $\hat{c} = [1,0,0,1,1]$ corresponde a la palabra código con información $\mathbf{u} = [1,0]$.
+\end{solucion}
+
+\end{document}

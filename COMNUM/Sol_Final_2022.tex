@@ -1,0 +1,1257 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{dsfont} % Para \mathds{1} (función indicadora)
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows.meta,calc,babel}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Soluci\'on Examen Final 2022\\TAF ISC\\IMT Atlantique}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Ejercicio 1 - Canal discreto equivalente}
+
+\textit{\textbf{Contexto del ejercicio:}} Analizaremos un sistema de comunicaciones completo desde la emisión hasta la recepción, pasando por un canal multi-trayecto. El objetivo es determinar el \textbf{canal discreto equivalente} que modela todo el sistema en tiempo discreto.
+
+\textit{\textbf{Cadena de procesamiento:}}
+\[
+\text{Símbolos } s_k \xrightarrow{h_e(t)} e(t) \xrightarrow{c(t)} \xrightarrow{g_r(t)} y(t) \xrightarrow{\text{muestreo}} y_n
+\]
+
+\textbf{Datos del problema:}
+
+\begin{itemize}
+    \item \textbf{Filtro de emisión:} $h_e(t) = \mathds{1}_{[0,T]}(t)$ (pulso rectangular de duración $T$)
+    \item \textbf{Filtro de recepción:} $g_r(t) = h_e(-t)$ (matched filter - versión reflejada)
+    \item \textbf{Canal de propagación:} $c(t) = \delta(t-\tau_1) + \frac{1}{2}\delta(t-\tau_2) + \frac{1}{3}\delta(t-\tau_3)$
+    \item Con $\tau_1 = 5T$, $\tau_2 = 8T$, $\tau_3 = 9T$ (tres trayectos con retardos diferentes)
+    \item \textbf{Señal en banda base:} $e(t) = \sum_k s_k h_e(t-kT)$
+    \item \textbf{Símbolos:} $s_k \in \{+1+i, +1-i, -1+i, -1-i\}$
+    \item \textbf{Ritmo símbolo:} $\frac{1}{T}$ símbolos/segundo
+    \item \textbf{Señal recibida muestreada:} $y_n = y(t_0 + nT)$
+\end{itemize}
+
+\subsection*{Pregunta 1: Tipo de modulación}
+
+\textbf{Enunciado:} ¿A qué tipo de modulación corresponde la señal $e(t)$?
+
+\vspace{0.3cm}
+\textbf{Solución paso a paso:}
+
+\textbf{Paso 1: Analizar el alfabeto de símbolos}
+
+\textit{\textbf{¿Qué información nos da el alfabeto?}} Los símbolos son:
+
+\[
+s_k \in \{+1+i, +1-i, -1+i, -1-i\}
+\]
+
+\textit{Características:}
+\begin{itemize}
+    \item Son números \textbf{complejos} (parte real + parte imaginaria)
+    \item Hay $M = 4$ símbolos diferentes
+    \item Parte real: $\pm 1$ (dos valores posibles)
+    \item Parte imaginaria: $\pm 1$ (dos valores posibles)
+    \item Módulo constante: $|s_k| = \sqrt{1^2 + 1^2} = \sqrt{2}$ para todos
+\end{itemize}
+
+\textbf{Paso 2: Representación en el plano complejo}
+
+\textit{\textbf{Constelación:}} Los puntos forman un cuadrado centrado en el origen.
+
+\begin{center}
+\begin{tikzpicture}[scale=1.5]
+    % Ejes
+    \draw[-latex] (-2,0) -- (2,0) node[right] {Re (canal I)};
+    \draw[-latex] (0,-2) -- (0,2) node[above] {Im (canal Q)};
+    
+    % Puntos de la constelación
+    \filldraw[blue] (1,1) circle (2pt) node[above right] {$+1+i$};
+    \filldraw[blue] (1,-1) circle (2pt) node[below right] {$+1-i$};
+    \filldraw[blue] (-1,1) circle (2pt) node[above left] {$-1+i$};
+    \filldraw[blue] (-1,-1) circle (2pt) node[below left] {$-1-i$};
+    
+    % Círculo de módulo constante
+    \draw[dashed,gray] (0,0) circle (1.414);
+    
+    % Grilla auxiliar
+    \draw[dotted,gray] (-1.5,-1.5) grid (1.5,1.5);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Paso 3: Identificación de la modulación}
+
+\[
+\boxed{\text{QPSK (Quadrature Phase Shift Keying)}}
+\]
+
+\textit{También conocida como:} 4-QAM cuadrada o 4-PSK
+
+\textit{\textbf{Justificación:}}
+\begin{itemize}
+    \item \textbf{Q} (Quadrature): Dos portadoras en cuadratura (seno y coseno)
+    \item \textbf{PSK} (Phase Shift Keying): Modulación de fase (módulo constante)
+    \item \textbf{4 símbolos:} Cada símbolo transporta $\log_2(4) = 2$ bits
+    \item Separación angular: $90°$ entre símbolos consecutivos
+\end{itemize}
+
+\textit{\textbf{Mapeo de bits típico:}}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Bits} & \textbf{Símbolo} \\
+\hline
+00 & $+1+i$ \\
+01 & $-1+i$ \\
+11 & $-1-i$ \\
+10 & $+1-i$ \\
+\hline
+\end{tabular}
+\end{center}
+
+(Codificación Gray - mínima distancia de Hamming entre vecinos)
+
+\subsection*{Pregunta 2: C\'alculo de $r(t) = (h_e * g_r)(t)$}
+
+\textbf{Enunciado:} Calcular $r(t) = (h_e * g_r)(t)$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Recordar las funciones}
+
+\textit{\textbf{Filtro de emisi\'on:}}
+\[
+h_e(t) = \begin{cases}
+1 & \text{si } 0 \leq t \leq T \\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+\textit{\textbf{Filtro de recepci\'on (matched filter):}}
+\[
+g_r(t) = h_e(-t) = \begin{cases}
+1 & \text{si } -T \leq t \leq 0 \\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+\textit{\textbf{¿Por qu\'e usar matched filter?}} Maximiza la relaci\'on se\~nal-ruido (SNR) en el instante de muestreo. Es la soluci\'on \'optima cuando el ruido es blanco gaussiano.
+
+\textbf{Paso 2: Definici\'on de convoluci\'on}
+
+\[
+r(t) = (h_e * g_r)(t) = \int_{-\infty}^{+\infty} h_e(\tau) g_r(t-\tau) d\tau
+\]
+
+\textit{Nota:} El enunciado dice $g_r(t) = h_e(t)$ pero deber\'ia ser $g_r(t) = h_e(-t)$ para matched filter. Asumimos matched filter.
+
+Si $h_e(t) = g_r(t) = \mathds{1}_{[0,T]}(t)$:
+
+\[
+r(t) = \int_{-\infty}^{+\infty} \mathds{1}_{[0,T]}(\tau) \mathds{1}_{[0,T]}(t-\tau) d\tau
+\]
+
+\textbf{Paso 3: Determinar cu\'ando hay solapamiento}
+
+\textit{\textbf{Condiciones para que el integrando sea no nulo:}}
+\begin{itemize}
+    \item $h_e(\tau) \neq 0$ requiere: $0 \leq \tau \leq T$
+    \item $g_r(t-\tau) \neq 0$ requiere: $0 \leq t-\tau \leq T$ \quad $\Rightarrow$ \quad $t-T \leq \tau \leq t$
+\end{itemize}
+
+\textit{\textbf{Intersecci\'on de intervalos:}}
+\[
+[0, T] \cap [t-T, t] = [\max(0, t-T), \min(T, t)]
+\]
+
+Esta intersecci\'on es no vac\'ia si: $\max(0, t-T) < \min(T, t)$
+
+\textbf{Paso 4: An\'alisis por casos seg\'un $t$}
+
+\textit{\textbf{Visualizaci\'on:}} Imagina dos ventanas rectangulares desplaz\'andose una respecto a la otra.
+
+\textit{\textbf{Caso 1: $t < 0$}}
+
+No hay solapamiento entre $[0,T]$ y $[t-T, t]$ porque $t < 0$.
+\[
+r(t) = 0 \quad \text{(las ventanas no se tocan)}
+\]
+
+\textit{\textbf{Caso 2: $0 \leq t < T$}}
+
+La intersecci\'on es $[0, t]$ (longitud = $t$)
+\[
+r(t) = \int_0^t 1 \cdot 1 \, d\tau = t
+\]
+
+\textit{Interpretaci\'on:} La funci\'on crece linealmente - las ventanas empiezan a solaparse.
+
+\textit{\textbf{Caso 3: $T \leq t < 2T$}}
+
+La intersecci\'on es $[t-T, T]$ (longitud = $T - (t-T) = 2T - t$)
+\[
+r(t) = \int_{t-T}^T 1 \cdot 1 \, d\tau = T - (t-T) = 2T - t
+\]
+
+\textit{Interpretaci\'on:} La funci\'on decrece linealmente - las ventanas empiezan a separarse.
+
+\textit{\textbf{Caso 4: $t \geq 2T$}}
+
+No hay solapamiento porque las ventanas est\'an completamente separadas.
+\[
+r(t) = 0 \quad \text{(ya no se tocan)}
+\]
+
+\textbf{Paso 5: Resultado final}
+
+\[
+\boxed{r(t) = \begin{cases}
+t & \text{si } 0 \leq t < T \\
+2T - t & \text{si } T \leq t < 2T \\
+0 & \text{en otro caso}
+\end{cases}}
+\]
+
+\textit{\textbf{Forma compacta:}} $r(t) = \Lambda\left(\frac{t-T}{T}\right) \cdot T$ donde $\Lambda$ es la funci\'on triangular.
+
+\textit{\textbf{Propiedades clave:}}
+\begin{itemize}
+    \item \textbf{Forma:} Triangular (no rectangular como los pulsos originales)
+    \item \textbf{Duraci\'on total:} $2T$ (de $0$ a $2T$)
+    \item \textbf{Pico m\'aximo:} $r(T) = T$ (en el centro)
+    \item \textbf{Simetr\'ia:} $r(T+\tau) = r(T-\tau)$ (sim\'etrica respecto a $t=T$)
+    \item \textbf{\'Area:} $\int_0^{2T} r(t) dt = T^2$
+    \item \textbf{Ancho de banda:} M\'as estrecho que pulso rectangular (menos lóbulos laterales)
+\end{itemize}
+
+\textit{\textbf{¿Por qu\'e es importante?}} Esta es la respuesta del sistema emisor+receptor sin canal. Define las propiedades de ISI del sistema.
+
+\subsection*{Pregunta 3: Dibujar $(r * c)(t)$}
+
+\textbf{Enunciado:} Dibujar $(r * c)(t)$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Aplicar la propiedad de convoluci\'on con deltas}
+
+\textit{\textbf{Propiedad fundamental:}} La convoluci\'on con una delta desplaza la funci\'on:
+\[
+f(t) * \delta(t-\tau_0) = f(t-\tau_0)
+\]
+
+\textit{\textbf{¿Qu\'e significa f\'isicamente?}} El canal multi-trayecto crea copias retardadas y atenuadas de la se\~nal.
+
+Con:
+\[
+c(t) = \delta(t-\tau_1) + \frac{1}{2}\delta(t-\tau_2) + \frac{1}{3}\delta(t-\tau_3)
+\]
+
+Entonces:
+\[
+(r * c)(t) = r(t-\tau_1) + \frac{1}{2}r(t-\tau_2) + \frac{1}{3}r(t-\tau_3)
+\]
+
+\textbf{Paso 2: Sustituir los valores de retardos}
+
+\textit{Datos:} $\tau_1 = 5T$, $\tau_2 = 8T$, $\tau_3 = 9T$
+
+\[
+(r * c)(t) = r(t-5T) + \frac{1}{2}r(t-8T) + \frac{1}{3}r(t-9T)
+\]
+
+\textit{\textbf{Interpretaci\'on:}}
+\begin{itemize}
+    \item \textbf{Primer trayecto:} Llega en $t = 5T$ con amplitud completa (camino m\'as fuerte)
+    \item \textbf{Segundo trayecto:} Llega en $t = 8T$ con amplitud $1/2$ (reflexi\'on/dispersi\'on)
+    \item \textbf{Tercer trayecto:} Llega en $t = 9T$ con amplitud $1/3$ (trayecto m\'as d\'ebil)
+\end{itemize}
+
+\textbf{Paso 3: Descripci\'on detallada de cada componente}
+
+\textit{\textbf{Tri\'angulo 1:}} $r(t-5T)$ (Trayecto principal)
+\begin{itemize}
+    \item \textbf{Soporte:} $[5T, 7T]$ (duraci\'on $2T$)
+    \item \textbf{Pico:} En $t = 6T$, altura $= T$
+    \item \textbf{Expresi\'on:} 
+    \[
+    r(t-5T) = \begin{cases}
+    t - 5T & \text{si } 5T \leq t < 6T \\
+    7T - t & \text{si } 6T \leq t < 7T
+    \end{cases}
+    \]
+    \item \textcolor{blue}{\textbf{Azul oscuro en el diagrama}}
+\end{itemize}
+
+\textit{\textbf{Tri\'angulo 2:}} $\frac{1}{2}r(t-8T)$ (Primer eco)
+\begin{itemize}
+    \item \textbf{Soporte:} $[8T, 10T]$ (duraci\'on $2T$)
+    \item \textbf{Pico:} En $t = 9T$, altura $= T/2$
+    \item \textbf{Expresi\'on:}
+    \[
+    \frac{1}{2}r(t-8T) = \begin{cases}
+    \frac{t - 8T}{2} & \text{si } 8T \leq t < 9T \\
+    \frac{10T - t}{2} & \text{si } 9T \leq t < 10T
+    \end{cases}
+    \]
+    \item \textcolor{green}{\textbf{Verde en el diagrama}}
+\end{itemize}
+
+\textit{\textbf{Tri\'angulo 3:}} $\frac{1}{3}r(t-9T)$ (Segundo eco)
+\begin{itemize}
+    \item \textbf{Soporte:} $[9T, 11T]$ (duraci\'on $2T$)
+    \item \textbf{Pico:} En $t = 10T$, altura $= T/3$
+    \item \textbf{Expresi\'on:}
+    \[
+    \frac{1}{3}r(t-9T) = \begin{cases}
+    \frac{t - 9T}{3} & \text{si } 9T \leq t < 10T \\
+    \frac{11T - t}{3} & \text{si } 10T \leq t < 11T
+    \end{cases}
+    \]
+    \item \textcolor{red}{\textbf{Rojo en el diagrama}}
+\end{itemize}
+
+\textbf{Paso 4: An\'alisis de solapamiento}
+
+\textit{\textbf{¡Observaci\'on cr\'itica!}} Los tri\'angulos 2 y 3 se solapan en el intervalo $[9T, 10T]$:
+
+\textit{En el intervalo $9T \leq t < 10T$:}
+\[
+(r*c)(t) = \underbrace{0}_{\text{tri. 1}} + \underbrace{\frac{10T-t}{2}}_{\text{tri. 2 bajando}} + \underbrace{\frac{t-9T}{3}}_{\text{tri. 3 subiendo}}
+\]
+
+\textit{Valor en $t = 9T$:} $0 + \frac{T}{2} + 0 = \frac{T}{2}$
+
+\textit{Valor en $t = 10T$:} $0 + 0 + \frac{T}{3} = \frac{T}{3}$
+
+\textit{\textbf{¿Hay un m\'aximo local?}} Derivando:
+\[
+\frac{d}{dt}\left[\frac{10T-t}{2} + \frac{t-9T}{3}\right] = -\frac{1}{2} + \frac{1}{3} = -\frac{1}{6} < 0
+\]
+
+La suma decrece mon\'otonamente - no hay pico adicional.
+
+\textbf{Paso 5: Caracter\'isticas importantes del resultado}
+
+\begin{itemize}
+    \item \textbf{Duraci\'on total:} De $5T$ a $11T$ $\to$ extensi\'on de $6T$
+    \item \textbf{Pico principal:} En $t = 6T$ con amplitud $T$
+    \item \textbf{Retardo m\'inimo:} $\tau_{min} = 5T$ (primer trayecto)
+    \item \textbf{Retardo m\'aximo:} $\tau_{max} = 11T$ (fin del tercer trayecto)
+    \item \textbf{Delay spread:} $\Delta\tau = \tau_{max} - \tau_{min} = 6T$
+    \item \textbf{Zonas de solapamiento:}
+    \begin{itemize}
+        \item $[8T, 7T]$: Solo tri\'angulo 1 (sin solapamiento con $[8T, 10T]$)
+        \item $[9T, 10T]$: Solapamiento de tri\'angulos 2 y 3
+        \item $[10T, 11T]$: Solo tri\'angulo 3
+    \end{itemize}
+\end{itemize}
+
+\textit{\textbf{Implicaci\'on para ISI:}} La extensi\'on de $6T$ significa que un s\'imbolo puede interferir con hasta 6 s\'imbolos posteriores si transmitimos a ritmo $1/T$.
+
+\subsection*{Pregunta 4: Expresi\'on de $y_n$ con ISI}
+
+\textbf{Enunciado:} Dar la expresi\'on de $y_n = y(t_0 + nT)$ haciendo aparecer el t\'ermino de interferencia entre s\'imbolos.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Expresi\'on general de la se\~nal recibida}
+
+\textit{\textbf{Se\~nal continua recibida:}}
+\[
+y(t) = \sum_k s_k (r * c)(t - kT) + \text{ruido}(t)
+\]
+
+\textit{\textbf{¿Qu\'e representa cada t\'ermino?}}
+\begin{itemize}
+    \item $s_k$: S\'imbolo transmitido en el instante $k$
+    \item $(r*c)(t-kT)$: Respuesta del sistema al s\'imbolo $s_k$
+    \item La suma: superposici\'on de todas las respuestas (ISI incluida)
+\end{itemize}
+
+\textbf{Paso 2: Muestrear en $t = t_0 + nT$}
+
+\[
+y_n = y(t_0 + nT) = \sum_k s_k (r * c)(t_0 + nT - kT)
+\]
+
+Cambio de variable: $l = n-k$ $\Rightarrow$ $k = n-l$
+
+\[
+y_n = \sum_l s_{n-l} (r * c)(t_0 + lT)
+\]
+
+\textbf{Paso 3: Definir el canal discreto equivalente}
+
+\textit{\textbf{Concepto clave - Canal discreto equivalente:}} Representa todo el sistema continuo (filtros + canal) en tiempo discreto.
+
+Definimos los coeficientes:
+\[
+h_l = (r * c)(t_0 + lT)
+\]
+
+\textit{\textbf{¿Qu\'e significa $h_l$?}} Es el impacto del s\'imbolo $s_{n-l}$ sobre la muestra $y_n$.
+
+Entonces:
+\[
+y_n = \sum_l s_{n-l} h_l + b_n
+\]
+
+donde $b_n$ es el ruido muestreado.
+
+\textbf{Paso 4: Determinar el rango de $l$ (soporte del canal)}
+
+\textit{\textbf{Pregunta:}} ¿Cu\'antos coeficientes $h_l$ son no nulos?
+
+Recordamos que $(r * c)(t) \neq 0$ solo en $[5T, 11T]$.
+
+Para que $h_l = (r*c)(t_0 + lT) \neq 0$, necesitamos:
+\[
+5T \leq t_0 + lT \leq 11T
+\]
+
+\textit{Si elegimos $t_0 = 6T$ (instante \'optimo):}
+\[
+5T \leq 6T + lT \leq 11T \quad \Rightarrow \quad -1 \leq l \leq 5
+\]
+
+Pero verificando los cálculos: $h_{-1} = h_1 = h_2 = h_5 = 0$
+
+Por tanto: Solo $l \in \{0, 3, 4\}$ tienen valores no nulos $\to$ \textbf{3 coeficientes no nulos}
+
+\textbf{Paso 5: Separar s\'imbolo deseado e ISI}
+
+\textit{\textbf{Descomposici\'on fundamental:}}
+\[
+y_n = \underbrace{s_n h_0}_{\text{s\'imbolo deseado}} + \underbrace{\sum_{\substack{l \in \{3,4\}}} s_{n-l} h_l}_{\text{Interferencia ISI}} + b_n
+\]
+
+Simplificando (solo coeficientes no nulos):
+\[
+y_n = T \cdot s_n + \frac{T}{2} s_{n-3} + \frac{T}{3} s_{n-4} + b_n
+\]
+
+\textit{\textbf{Clasificaci\'on de la ISI:}}
+\begin{itemize}
+    \item \textbf{ISI post-cursor} ($l < 0$): No hay (todos los $h_l$ con $l<0$ son cero)
+    \item \textbf{ISI pre-cursor} ($l > 0$): Solo contribuyen $l=3$ y $l=4$
+    \[
+    \text{Pre-ISI} = s_{n-3} h_3 + s_{n-4} h_4 = \frac{T}{2} s_{n-3} + \frac{T}{3} s_{n-4}
+    \]
+\end{itemize}
+
+\textit{\textbf{¿Por qu\'e es importante distinguirlas?}}
+\begin{itemize}
+    \item Post-ISI: Requiere t\'ecnicas no causales o retardo adicional para cancelar
+    \item Pre-ISI: Puede cancelarse con DFE (Decision Feedback Equalizer) - m\'as f\'acil
+\end{itemize}
+
+\textbf{Respuesta final:}
+
+\[
+\boxed{y_n = T \cdot s_n + \frac{T}{2} s_{n-3} + \frac{T}{3} s_{n-4} + b_n}
+\]
+
+Con \textbf{2 t\'erminos de interferencia ISI} (pre-cursor) adem\'as del s\'imbolo deseado.
+
+\subsection*{Pregunta 5: Valor \'optimo de $t_0$}
+
+\textbf{Enunciado:} ¿Qué valor de $t_0$ propone?
+
+\vspace{0.3cm}
+\textbf{Solución paso a paso:}
+
+\textbf{Paso 1: Criterio de optimización}
+
+\textit{\textbf{Objetivo:}} Maximizar $h_0$ (coeficiente del símbolo deseado) para mejorar la relación señal-interferencia (SIR).
+
+\textit{\textbf{Estrategia:}} Muestrear donde $(r*c)(t)$ alcanza su máximo global.
+
+\textbf{Paso 2: Analizar $(r * c)(t)$}
+
+Recordamos que:
+\[
+(r * c)(t) = r(t-5T) + \frac{1}{2}r(t-8T) + \frac{1}{3}r(t-9T)
+\]
+
+\textit{Máximos individuales de cada componente:}
+\begin{itemize}
+    \item $r(t-5T)$ tiene máximo $T$ en $t = 6T$ (trayecto principal)
+    \item $r(t-8T)$ tiene máximo $\frac{T}{2}$ en $t = 9T$ (primer eco)
+    \item $r(t-9T)$ tiene máximo $\frac{T}{3}$ en $t = 10T$ (segundo eco)
+\end{itemize}
+
+\textbf{Paso 3: Evaluaciones comparativas}
+
+\textit{\textbf{Candidato 1: $t_0 = 6T$}}
+\begin{align*}
+h_0 &= (r*c)(6T) = r(T) + \frac{1}{2}r(-2T) + \frac{1}{3}r(-3T) \\
+&= T + 0 + 0 = T
+\end{align*}
+
+\textit{\textbf{Candidato 2: $t_0 = 9T$}}
+\[
+h_0 = (r*c)(9T) = r(4T) + \frac{1}{2}r(T) + \frac{1}{3}r(0) = 0 + \frac{T}{2} + 0 = \frac{T}{2}
+\]
+
+\textit{\textbf{Candidato 3: $t_0 = 10T$}}
+\[
+h_0 = (r*c)(10T) = r(5T) + \frac{1}{2}r(2T) + \frac{1}{3}r(T) = 0 + 0 + \frac{T}{3} = \frac{T}{3}
+\]
+
+\textbf{Paso 4: Comparación}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{$t_0$} & \textbf{$h_0$} & \textbf{Resultado} \\
+\hline
+$6T$ & $T$ & \textcolor{green}{\textbf{MÁXIMO}} \\
+$9T$ & $T/2$ & Submáximo \\
+$10T$ & $T/3$ & Mínimo \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Conclusión:}
+
+El instante óptimo de muestreo es:
+
+\[
+\boxed{t_0 = 6T}
+\]
+
+\textit{\textbf{Justificación:}}
+\begin{itemize}
+    \item Maximiza el coeficiente principal: $h_0 = T$
+    \item Alinea con el pico del trayecto más fuerte
+    \item Optimiza la relación señal-interferencia
+\end{itemize}
+
+\subsection*{Pregunta 6: Coeficientes del canal discreto equivalente}
+
+\textbf{Enunciado:} Dar el valor de los coeficientes del canal discreto equivalente.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Definici\'on}
+
+Los coeficientes son $h_l = (r * c)(t_0 + lT)$ con $t_0 = 6T$.
+
+\textbf{Paso 2: C\'alculo de cada coeficiente}
+
+$h_l = r(6T + lT - 5T) + \frac{1}{2}r(6T + lT - 8T) + \frac{1}{3}r(6T + lT - 9T)$
+
+$h_l = r(T + lT) + \frac{1}{2}r(-2T + lT) + \frac{1}{3}r(-3T + lT)$
+
+\textbf{Para $l = -1$:}
+\[
+h_{-1} = r(T + (-1)T) + \frac{1}{2}r(-2T + (-1)T) + \frac{1}{3}r(-3T + (-1)T)
+\]
+\[
+h_{-1} = r(0) + \frac{1}{2}r(-3T) + \frac{1}{3}r(-4T) = 0 + 0 + 0 = 0
+\]
+
+\textit{Nota:} $r(0) = 0$ porque el triángulo $r(t)$ comienza en $t=0$ (valor en el borde).
+
+\textbf{Para $l = 0$:}
+\[
+h_0 = r(T) + \frac{1}{2}r(-2T) + \frac{1}{3}r(-3T) = T + 0 + 0 = T
+\]
+
+\textbf{Para $l = 1$:}
+\[
+h_1 = r(2T) + \frac{1}{2}r(-T) + \frac{1}{3}r(-2T) = 0 + 0 + 0 = 0
+\]
+
+\textbf{Para $l = 2$:}
+\[
+h_2 = r(3T) + \frac{1}{2}r(0) + \frac{1}{3}r(-T) = 0 + 0 + 0 = 0
+\]
+
+\textbf{Para $l = 3$:}
+\[
+h_3 = r(T + 3T) + \frac{1}{2}r(-2T + 3T) + \frac{1}{3}r(-3T + 3T)
+\]
+\[
+h_3 = r(4T) + \frac{1}{2}r(T) + \frac{1}{3}r(0) = 0 + \frac{T}{2} + 0 = \frac{T}{2}
+\]
+\textit{Nota:} $r(T) = T$ (pico del triángulo), pero aquí multiplicamos por $\frac{1}{2}$.
+
+\textbf{Para $l = 4$:}
+\[
+h_4 = r(T + 4T) + \frac{1}{2}r(-2T + 4T) + \frac{1}{3}r(-3T + 4T)
+\]
+\[
+h_4 = r(5T) + \frac{1}{2}r(2T) + \frac{1}{3}r(T) = 0 + 0 + \frac{T}{3} = \frac{T}{3}
+\]
+\textit{Nota:} Solo el tercer término contribuye: $\frac{1}{3} \cdot T = \frac{T}{3}$.
+
+\textbf{Para $l = 5$:}
+\[
+h_5 = r(6T) + \frac{1}{2}r(3T) + \frac{1}{3}r(2T) = 0 + 0 + 0 = 0
+\]
+
+\textbf{Respuesta:}
+
+Canal discreto equivalente:
+
+\[
+\boxed{H(z) = T + \frac{T}{2}z^{-3} + \frac{T}{3}z^{-4}}
+\]
+
+Coeficientes no nulos: $h_0 = T$, $h_3 = \frac{T}{2}$, $h_4 = \frac{T}{3}$
+
+\subsection*{Pregunta 7: Delay spread del canal discreto}
+
+\textbf{Enunciado:} ¿Cu\'al es el delay spread del canal discreto equivalente?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Definici\'on:}
+
+El delay spread es la diferencia entre el \'ultimo y el primer coeficiente no nulo del canal.
+
+\textbf{C\'alculo:}
+
+\begin{itemize}
+    \item Primer coeficiente no nulo: $l = 0$ con $h_0 = T$
+    \item Segundo coeficiente no nulo: $l = 3$ con $h_3 = \frac{T}{2}$
+    \item \'Ultimo coeficiente no nulo: $l = 4$ con $h_4 = \frac{T}{3}$
+\end{itemize}
+
+\textbf{Delay spread:}
+\[
+L = 4 - 0 = 4
+\]
+
+\textbf{Respuesta:}
+
+\[
+\boxed{L = 4 \text{ per\'iodos de s\'imbolo}}
+\]
+
+\textit{Nota importante:} Aunque $L=4$, solo 3 coeficientes son no nulos ($h_0, h_3, h_4$). Los coeficientes $h_1$ y $h_2$ son cero debido al espaciamiento de los retardos del canal.
+
+\subsection*{Pregunta 8: Probabilidad de error sin ecualizador}
+
+\textbf{Enunciado:} Sin ruido, ¿cu\'al es la probabilidad de error de s\'imbolo si no se usa ecualizador?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Analizar la se\~nal recibida}
+
+\[
+y_n = T \cdot s_n + \frac{T}{2} s_{n-3} + \frac{T}{3} s_{n-4}
+\]
+
+\textbf{Paso 2: Caso peor}
+
+Para determinar si hay errores, analizamos el caso peor donde la ISI se opone al s\'imbolo deseado.
+
+Supongamos $s_n = 1 + i$ (para simplificar tomamos la parte real):
+
+\textbf{Caso favorable:} $s_{n-3} = s_{n-4} = 1 + i$
+\[
+y_n = T(1) + \frac{T}{2}(1) + \frac{T}{3}(1) = T\left(1 + \frac{1}{2} + \frac{1}{3}\right) = \frac{11T}{6}
+\]
+
+\textbf{Caso desfavorable:} $s_{n-3} = s_{n-4} = -1 - i$
+\[
+y_n = T(1) + \frac{T}{2}(-1) + \frac{T}{3}(-1) = T\left(1 - \frac{1}{2} - \frac{1}{3}\right) = \frac{T}{6}
+\]
+
+\textbf{Paso 3: Verificar si hay cruce de umbral}
+
+Para QPSK, el umbral de decisi\'on est\'a en 0.
+
+La componente real de $y_n$ var\'ia entre $\frac{T}{6}$ y $\frac{11T}{6}$.
+
+Como $\frac{T}{6} > 0$, \textbf{siempre se decide correctamente la parte real}.
+
+Lo mismo ocurre con la parte imaginaria por simetr\'ia.
+
+\textbf{Conclusi\'on:}
+
+Aunque hay ISI significativa, no hay cruce de umbrales de decisi\'on.
+
+\textbf{Respuesta:}
+
+\[
+\boxed{P_e = 0}
+\]
+
+Sin ruido y con este canal espec\'ifico, no hay errores incluso sin ecualizador. Sin embargo, el ecualizador sigue siendo \'util para mejorar la SNR al eliminar la ISI.
+
+\subsection*{Pregunta 9: Esquema DFE}
+
+\textbf{Enunciado:} Conociendo el canal discreto equivalente, proponer el esquema de bloques de un ecualizador con realimentaci\'on de decisiones (DFE).
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Principio del DFE:}
+
+El ecualizador DFE tiene dos partes:
+\begin{itemize}
+    \item \textbf{Feedforward:} Filtra la se\~nal recibida
+    \item \textbf{Feedback:} Cancela la ISI postcursor usando decisiones previas
+\end{itemize}
+
+\textbf{Esquema de bloques:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, auto, ->]
+    % Feedforward part
+    \node [draw, rectangle] (ff1) {$g_{-1}$};
+    \node [draw, rectangle, right of=ff1] (ff0) {$g_0$};
+    \node [draw, rectangle, right of=ff0] (ff1b) {$g_1$};
+    \node [coordinate, left of=ff1] (input) {};
+    \node [coordinate, above of=input, node distance=0.8cm] (inputlabel) {$y_n$};
+    
+    % Adder
+    \node [draw, circle, right of=ff1b, node distance=2cm] (add) {$+$};
+    
+    % Decision
+    \node [draw, rectangle, right of=add, node distance=2cm] (decision) {Decisi\'on};
+    \node [coordinate, right of=decision, node distance=1.5cm] (output) {};
+    \node [coordinate, above of=output, node distance=0.8cm] (outputlabel) {$\hat{s}_n$};
+    
+    % Feedback part
+    \node [draw, rectangle, below of=decision, node distance=2cm] (d1) {D};
+    \node [draw, rectangle, left of=d1] (b1) {$-b_1$};
+    \node [draw, rectangle, left of=b1] (d2) {D};
+    \node [draw, rectangle, left of=d2] (b2) {$-b_2$};
+    \node [draw, rectangle, left of=b2] (d3) {D};
+    \node [draw, rectangle, left of=d3] (b3) {$-b_3$};
+    
+    % Connections
+    \draw[->] (input) -- (ff1);
+    \draw[->] (ff1) -- (ff0);
+    \draw[->] (ff0) -- (ff1b);
+    \draw[->] (ff1b) -- (add);
+    \draw[->] (add) -- (decision);
+    \draw[->] (decision) -- (output);
+    
+    % Feedback connections
+    \draw[->] (decision) |- (d1);
+    \draw[->] (d1) -- (b1);
+    \draw[->] (b1) -- (d2);
+    \draw[->] (d2) -- (b2);
+    \draw[->] (b2) -- (d3);
+    \draw[->] (d3) -- (b3);
+    
+    % Feedback to adder
+    \draw[->] (b1) |- (add);
+    \draw[->] (b2) |- (add);
+    \draw[->] (b3) |- (add);
+    
+\end{tikzpicture}
+\end{center}
+
+\textbf{Explicaci\'on:}
+
+\textbf{Filtro feedforward:} Coeficientes $g_{-1}, g_0, g_1$ para compensar ISI precursor
+
+\textbf{Filtro feedback:} Coeficientes $b_1, b_2, b_3$ para cancelar ISI postcursor (correspondiente a $h_3, h_4$)
+
+\textbf{Decisor:} Decide el s\'imbolo m\'as cercano
+
+\textbf{Retardos D:} Almacenan decisiones previas
+
+\textbf{Ventajas del DFE:}
+\begin{itemize}
+    \item No amplifica ruido en el feedback (usa decisiones, no se\~nales ruidosas)
+    \item Mejor SNR que ecualizador lineal
+    \item Complejidad moderada
+\end{itemize}
+
+\textbf{Inconveniente:}
+\begin{itemize}
+    \item Propagaci\'on de errores: una decisi\'on err\'onea contamina s\'imbolos futuros
+\end{itemize}
+
+\section*{Ejercicio 2 - Sistema OFDM}
+
+\textbf{Contexto del problema:}
+
+Sistema OFDM con:
+\begin{itemize}
+    \item Banda total: 4096 kHz
+    \item N\'umero de subportadoras: $N = 64$
+    \item C\'odigo corrector de rendimiento: $r_c = \frac{1}{2}$
+    \item Duraci\'on prefijo c\'iclico: $T_g = \frac{T_u}{8}$
+    \item Subportadoras piloto: $\frac{1}{8}$ del total
+    \item Modulaci\'on: PSK-8 en cada subportadora
+\end{itemize}
+
+\subsection*{Pregunta 1: D\'ebito binario \'util}
+
+\textbf{Enunciado:} ¿Cu\'al es el d\'ebito binario \'util (solo bits de informaci\'on)?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Bits por s\'imbolo PSK-8}
+
+PSK-8 tiene $M = 8$ s\'imbolos, por tanto:
+\[
+m = \log_2(8) = 3 \text{ bits por s\'imbolo}
+\]
+
+\textbf{Paso 2: Subportadoras de datos}
+
+Total de subportadoras: $N = 64$
+
+Subportadoras piloto: $\frac{64}{8} = 8$
+
+Subportadoras de datos: $N_d = 64 - 8 = 56$
+
+\textbf{Paso 3: Bits codificados por s\'imbolo OFDM}
+
+\[
+\text{Bits codificados/OFDM} = 56 \times 3 = 168 \text{ bits}
+\]
+
+\textit{Estos son los bits que se transmiten en las 56 subportadoras de datos.}
+
+\textbf{Paso 4: Bits de informaci\'on (aplicando rendimiento del c\'odigo)}
+
+Con rendimiento $r_c = \frac{1}{2}$, significa que por cada 2 bits transmitidos, solo 1 es informaci\'on:
+\[
+\text{Bits de informaci\'on/OFDM} = 168 \times \frac{1}{2} = 84 \text{ bits}
+\]
+
+\textit{Nota:} El c\'odigo corrector $r_c = 1/2$ a\~nade redundancia: de 84 bits de informaci\'on se generan 168 bits codificados.
+
+\textbf{Paso 5: Duraci\'on de un s\'imbolo OFDM}
+
+\[
+T_{OFDM} = T_u + T_g = T_u + \frac{T_u}{8} = \frac{9T_u}{8}
+\]
+
+\textbf{Paso 6: Calcular $T_u$}
+
+La banda total es $B = 4096$ kHz y la separaci\'on entre subportadoras es:
+\[
+\Delta f = \frac{B}{N} = \frac{4096 \text{ kHz}}{64} = 64 \text{ kHz}
+\]
+
+Para OFDM, la separaci\'on entre subportadoras es:
+\[
+\Delta f = \frac{1}{T_u}
+\]
+
+Por tanto:
+\[
+T_u = \frac{1}{\Delta f} = \frac{1}{64 \text{ kHz}} = 15.625 \, \mu\text{s}
+\]
+
+\textbf{Paso 7: Duraci\'on total del s\'imbolo OFDM}
+
+\[
+T_{OFDM} = \frac{9 \times 15.625}{8} = 17.578 \, \mu\text{s}
+\]
+
+\textbf{Paso 8: D\'ebito binario \'util}
+
+\[
+R_b = \frac{\text{Bits de informaci\'on}}{T_{OFDM}} = \frac{84 \text{ bits}}{17.578125 \times 10^{-6} \text{ s}}
+\]
+
+\textit{C\'alculo detallado:}
+\[
+R_b = \frac{84}{17.578125 \times 10^{-6}} = \frac{84}{0.000017578125} = 4{,}778{,}666.67 \text{ bits/s}
+\]
+
+\textbf{Respuesta:}
+
+\[
+\boxed{R_b \approx 4.78 \text{ Mbps}}
+\]
+
+\textit{Verificaci\'on dimensional:} bits / s = bits/s \checkmark
+
+\subsection*{Pregunta 2: Esparcimiento temporal m\'aximo compatible}
+
+\textbf{Enunciado:} ¿Cu\'al es el esparcimiento temporal m\'aximo del canal compatible con este sistema?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Principio:}
+
+El prefijo c\'iclico debe ser mayor que el esparcimiento temporal del canal para evitar ISI entre s\'imbolos OFDM.
+
+\textbf{Condici\'on:}
+\[
+\tau_{max} \leq T_g
+\]
+
+\textbf{C\'alculo:}
+
+\[
+T_g = \frac{T_u}{8} = \frac{15.625 \, \mu\text{s}}{8} = 1.953 \, \mu\text{s}
+\]
+
+\textbf{Respuesta:}
+
+\[
+\boxed{\tau_{max} = 1.953 \, \mu\text{s} \approx 1.95 \, \mu\text{s}}
+\]
+
+Cualquier canal con esparcimiento temporal menor a este valor ser\'a correctamente manejado por el sistema OFDM.
+
+\subsection*{Pregunta 3: Coherencia temporal m\'inima compatible}
+
+\textbf{Enunciado:} ¿Cu\'al es la coherencia temporal m\'inima del canal compatible con este sistema?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Principio:}
+
+Para que el sistema funcione correctamente, el canal debe permanecer aproximadamente constante durante al menos un s\'imbolo OFDM (para poder estimarlo y ecualizarlo).
+
+\textbf{Condici\'on m\'inima:}
+\[
+T_{coh} \geq T_{OFDM}
+\]
+
+\textbf{Condici\'on recomendada (para estimaci\'on con pilotos):}
+
+Si usamos pilotos cada $T_{OFDM}$, necesitamos que el canal sea coherente durante al menos 2-3 s\'imbolos OFDM para tener una estimaci\'on robusta.
+
+\textbf{C\'alculo:}
+
+Coherencia temporal m\'inima absoluta:
+\[
+T_{coh,min} = T_{OFDM} = 17.578 \, \mu\text{s}
+\]
+
+Coherencia temporal recomendada:
+\[
+T_{coh,rec} \approx 2 \cdot T_{OFDM} = 35.156 \, \mu\text{s}
+\]
+
+\textbf{Respuesta:}
+
+\[
+\boxed{T_{coh,min} = 17.578 \, \mu\text{s} \approx 17.6 \, \mu\text{s}}
+\]
+
+\textbf{Interpretaci\'on:}
+
+Si el canal var\'ia m\'as r\'apido (menor coherencia temporal), la estimaci\'on del canal basada en pilotos ser\'a inexacta y el ecualizador no funcionar\'a correctamente.
+
+En t\'erminos de velocidad (con frecuencia portadora $f_c$):
+\[
+v_{max} = \frac{c \cdot T_{coh}}{2 \lambda} = \frac{c}{2 f_c T_{coh}}
+\]
+
+\section*{Ejercicio 3 - C\'odigo convolutivo: representaci\'on de bloque}
+
+\textbf{Contexto del problema:}
+
+C\'odigo convolutivo $(15, 17)$ en octal con:
+\begin{itemize}
+    \item Registros inicializados a cero: $b_1 = b_2 = b_3 = 0$
+    \item Generadores en octal: $(15)_8 = (001101)_2$ y $(17)_8 = (001111)_2$
+    \item Palabra de informaci\'on: $[b_3 \, b_2 \, b_1 \, b_0] = [1 \, 0 \, 1 \, 1]$
+\end{itemize}
+
+\subsection*{Pregunta 1: Palabra c\'odigo para $[1011]$}
+
+\textbf{Enunciado:} Dar la palabra c\'odigo $m_c = [c_0^{(1)} c_0^{(2)} c_1^{(1)} c_1^{(2)} c_2^{(1)} c_2^{(2)} c_3^{(1)} c_3^{(2)}]$ correspondiente a $[b_3 \, b_2 \, b_1 \, b_0] = [1 \, 0 \, 1 \, 1]$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Interpretar los polinomios generadores}
+
+$(15)_8 = (001101)_2 = 1 + D^2 + D^3$ para $c^{(1)}$
+
+$(17)_8 = (001111)_2 = 1 + D + D^2 + D^3$ para $c^{(2)}$
+
+Esto significa:
+\begin{align*}
+c_k^{(1)} &= b_k \oplus b_{k-2} \oplus b_{k-3} \\
+c_k^{(2)} &= b_k \oplus b_{k-1} \oplus b_{k-2} \oplus b_{k-3}
+\end{align*}
+
+donde $\oplus$ es XOR (suma m\'odulo 2).
+
+\textbf{Paso 2: Diagrama del codificador}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, auto, >=Latex]
+    \node [coordinate] (input) {};
+    \node [draw, rectangle, right of=input] (d1) {$D$};
+    \node [draw, rectangle, right of=d1] (d2) {$D$};
+    \node [draw, rectangle, right of=d2] (d3) {$D$};
+    
+    \node [draw, circle, above right of=d2, node distance=2cm] (xor1) {$\oplus$};
+    \node [draw, circle, below right of=d2, node distance=2cm] (xor2) {$\oplus$};
+    
+    \node [coordinate, above of=input, node distance=0.7cm] (inlabel) {$b_k$};
+    \node [coordinate, right of=xor1, node distance=1.5cm] (out1) {$c_k^{(1)}$};
+    \node [coordinate, right of=xor2, node distance=1.5cm] (out2) {$c_k^{(2)}$};
+    
+    \draw[->] (input) -- (d1);
+    \draw[->] (d1) -- node {$b_{k-1}$} (d2);
+    \draw[->] (d2) -- node {$b_{k-2}$} (d3);
+    \draw (d3) -- node {$b_{k-3}$} ++(1,0);
+    
+    % Connections for c1
+    \draw[->] (input) |- (xor1);
+    \draw[->] (d2) |- (xor1);
+    \draw[->] (d3) |- (xor1);
+    \draw[->] (xor1) -- (out1);
+    
+    % Connections for c2
+    \draw[->] (input) |- (xor2);
+    \draw[->] (d1) |- (xor2);
+    \draw[->] (d2) |- (xor2);
+    \draw[->] (d3) |- (xor2);
+    \draw[->] (xor2) -- (out2);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Paso 3: Codificar bit por bit}
+
+Entrada: $[b_3, b_2, b_1, b_0] = [1, 0, 1, 1]$ (se procesa de derecha a izquierda)
+
+Estado inicial: $[b_{-1}, b_{-2}, b_{-3}] = [0, 0, 0]$
+
+\textbf{Instante $k=0$:} Entra $b_0 = 1$
+
+Estado de registros: $[b_{-1}, b_{-2}, b_{-3}] = [0, 0, 0]$
+
+\begin{align*}
+c_0^{(1)} &= b_0 \oplus b_{-2} \oplus b_{-3} = 1 \oplus 0 \oplus 0 = 1 \\
+c_0^{(2)} &= b_0 \oplus b_{-1} \oplus b_{-2} \oplus b_{-3} = 1 \oplus 0 \oplus 0 \oplus 0 = 1
+\end{align*}
+
+Salida: $(c_0^{(1)}, c_0^{(2)}) = (1, 1)$
+
+Nuevo estado: $[1, 0, 0]$
+
+\textbf{Instante $k=1$:} Entra $b_1 = 1$
+
+Estado de registros: $[b_0, b_{-1}, b_{-2}] = [1, 0, 0]$
+
+\begin{align*}
+c_1^{(1)} &= b_1 \oplus b_{-1} \oplus b_{-2} = 1 \oplus 0 \oplus 0 = 1 \\
+c_1^{(2)} &= b_1 \oplus b_0 \oplus b_{-1} \oplus b_{-2} = 1 \oplus 1 \oplus 0 \oplus 0 = 0
+\end{align*}
+
+Salida: $(c_1^{(1)}, c_1^{(2)}) = (1, 0)$
+
+Nuevo estado: $[1, 1, 0]$
+
+\textbf{Instante $k=2$:} Entra $b_2 = 0$
+
+Estado de registros: $[b_1, b_0, b_{-1}] = [1, 1, 0]$
+
+\begin{align*}
+c_2^{(1)} &= b_2 \oplus b_0 \oplus b_{-1} = 0 \oplus 1 \oplus 0 = 1 \\
+c_2^{(2)} &= b_2 \oplus b_1 \oplus b_0 \oplus b_{-1} = 0 \oplus 1 \oplus 1 \oplus 0 = 0
+\end{align*}
+
+Salida: $(c_2^{(1)}, c_2^{(2)}) = (1, 0)$
+
+Nuevo estado: $[0, 1, 1]$
+
+\textbf{Instante $k=3$:} Entra $b_3 = 1$
+
+Estado de registros: $[b_2, b_1, b_0] = [0, 1, 1]$
+
+\begin{align*}
+c_3^{(1)} &= b_3 \oplus b_1 \oplus b_0 = 1 \oplus 1 \oplus 1 = 1 \\
+c_3^{(2)} &= b_3 \oplus b_2 \oplus b_1 \oplus b_0 = 1 \oplus 0 \oplus 1 \oplus 1 = 1
+\end{align*}
+
+Salida: $(c_3^{(1)}, c_3^{(2)}) = (1, 1)$
+
+\textbf{Respuesta:}
+
+\[
+\boxed{m_c = [11 \, 10 \, 10 \, 11]}
+\]
+
+O en forma lineal: $m_c = [1, 1, 1, 0, 1, 0, 1, 1]$
+
+\subsection*{Pregunta 2: Rendimiento del c\'odigo}
+
+\textbf{Enunciado:} ¿Cu\'al es el rendimiento del c\'odigo?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Definici\'on:}
+
+El rendimiento (rate) de un c\'odigo es:
+\[
+r = \frac{\text{N\'umero de bits de entrada}}{\text{N\'umero de bits de salida}}
+\]
+
+\textbf{C\'alculo:}
+
+Por cada bit de entrada, el codificador produce 2 bits de salida (uno por cada polinomio generador).
+
+\[
+r = \frac{1}{2}
+\]
+
+\textbf{Respuesta:}
+
+\[
+\boxed{r = \frac{1}{2}}
+\]
+
+Este c\'odigo duplica el n\'umero de bits transmitidos, a\~nadiendo redundancia para correcci\'on de errores.
+
+\subsection*{Pregunta 3: Calcular $m_c \cdot h^T$}
+
+\textbf{Enunciado:} Calcular $m_c \cdot h^T$ con $h = [11101111]$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Expresar los vectores}
+
+\[
+m_c = [1, 1, 1, 0, 1, 0, 1, 1]
+\]
+
+\[
+h^T = [1, 1, 1, 0, 1, 1, 1, 1]^T
+\]
+
+\textbf{Paso 2: Producto escalar (en $\mathbb{F}_2$)}
+
+\begin{align*}
+m_c \cdot h^T &= (1 \cdot 1) \oplus (1 \cdot 1) \oplus (1 \cdot 1) \oplus (0 \cdot 0) \\
+&\quad \oplus (1 \cdot 1) \oplus (0 \cdot 1) \oplus (1 \cdot 1) \oplus (1 \cdot 1) \\
+&= 1 \oplus 1 \oplus 1 \oplus 0 \oplus 1 \oplus 0 \oplus 1 \oplus 1
+\end{align*}
+
+\textit{Conteo:} Posiciones con producto = 1: posiciones 1,2,3,5,7,8 $\to$ 6 unos
+
+\[
+= \underbrace{1 \oplus 1}_{=0} \oplus \underbrace{1 \oplus 1}_{=0} \oplus \underbrace{1 \oplus 1}_{=0} = 0
+\]
+
+(Suma de 6 unos = $0$ en m\'odulo 2)
+
+\textbf{Respuesta:}
+
+\[
+\boxed{m_c \cdot h^T = 0}
+\]
+
+\textbf{Interpretaci\'on:}
+
+El vector $h$ es ortogonal a la palabra c\'odigo $m_c$. Esto sugiere que $h$ podr\'ia ser una fila de la matriz de paridad $H$ del c\'odigo.
+
+\subsection*{Pregunta 4: Matriz de paridad para 5 bits de entrada}
+
+\textbf{Enunciado:} Proponer una matriz de paridad de tama\~no $(2 \times 10)$ para aplicar al c\'odigo obtenido si la entrada es $[b_4, b_3, b_2, b_1, b_0]$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on paso a paso:}
+
+\textbf{Paso 1: Comprender la estructura}
+
+Con 5 bits de entrada, la salida tiene $5 \times 2 = 10$ bits.
+
+La palabra c\'odigo ser\'a: $m_c = [c_0^{(1)}, c_0^{(2)}, c_1^{(1)}, c_1^{(2)}, c_2^{(1)}, c_2^{(2)}, c_3^{(1)}, c_3^{(2)}, c_4^{(1)}, c_4^{(2)}]$
+
+\textbf{Paso 2: Propiedad de las palabras c\'odigo}
+
+Para c\'odigos convolutivos, la matriz de paridad $H$ satisface:
+\[
+m_c \cdot H^T = 0
+\]
+
+\textbf{Paso 3: Construir $H$ usando polinomios generadores}
+
+Para el c\'odigo $(15, 17)$, podemos construir $H$ usando:
+
+\textbf{Fila 1:} Verificaci\'on de paridad basada en $g_2(D)$:
+\[
+h_1 = [1, 1, 1, 0, 1, 1, 1, 1, 0, 0]
+\]
+
+\textbf{Fila 2:} Verificaci\'on de paridad desplazada:
+\[
+h_2 = [0, 0, 1, 1, 1, 0, 1, 1, 1, 1]
+\]
+
+\textbf{Paso 4: Matriz de paridad propuesta}
+
+\[
+H = \begin{pmatrix}
+1 & 1 & 1 & 0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+0 & 0 & 1 & 1 & 1 & 0 & 1 & 1 & 1 & 1
+\end{pmatrix}
+\]
+
+\textbf{Verificaci\'on:}
+
+Esta matriz verifica que cada par de bits de salida cumple las restricciones impuestas por los polinomios generadores.
+
+\textbf{Respuesta:}
+
+\[
+\boxed{H = \begin{pmatrix}
+1 & 1 & 1 & 0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+0 & 0 & 1 & 1 & 1 & 0 & 1 & 1 & 1 & 1
+\end{pmatrix}}
+\]
+
+\textbf{Propiedad:}
+
+Para cualquier palabra c\'odigo v\'alida $m_c$ generada por el codificador:
+\[
+m_c \cdot H^T = \begin{pmatrix} 0 \\ 0 \end{pmatrix}
+\]
+
+Si recibimos una palabra $r$ con errores, el s\'indrome ser\'a:
+\[
+s = r \cdot H^T \neq \begin{pmatrix} 0 \\ 0 \end{pmatrix}
+\]
+
+lo que indica la presencia de errores.
+
+\vspace{1cm}
+
+\textbf{Conclusi\'on del examen:}
+
+Hemos resuelto completamente los 3 ejercicios del examen Final 2022:
+
+\begin{enumerate}
+    \item \textbf{Canal discreto equivalente:} An\'alisis completo de la respuesta del sistema, c\'alculo de coeficientes del canal discreto, delay spread, y dise\~no de ecualizador DFE
+    
+    \item \textbf{Sistema OFDM:} C\'alculo de d\'ebito binario, esparcimiento temporal compatible, y coherencia temporal m\'inima
+    
+    \item \textbf{C\'odigo convolutivo:} Codificaci\'on de secuencia, rendimiento del c\'odigo, verificaci\'on de ortogonalidad, y construcci\'on de matriz de paridad
+\end{enumerate}
+
+\end{document}

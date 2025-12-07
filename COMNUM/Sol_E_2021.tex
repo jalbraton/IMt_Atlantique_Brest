@@ -1,0 +1,435 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\usepackage{enumitem}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Soluci\'on PC Not\'ee 2021-2022\\TAF ISC - UEC 2\\28/10/2021}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Sistema de modulaci\'on 8-PSK}
+
+\textbf{Datos del problema:}
+\begin{itemize}
+    \item Modulaci\'on: 8-PSK
+    \item D\'ebito binario: $D_b = 48$ Mbps
+    \item Frecuencia portadora: $\nu_0 = 2.4$ GHz
+    \item Elementos binarios independientes e id\'enticamente distribuidos con probabilidad igual en $\{0,1\}$
+\end{itemize}
+
+\textbf{Se\~nal transmitida:}
+\[
+s(t) = A\sum_k \left[a_k h(t-kT)\cos(2\pi\nu_0 t) - b_k h(t-kT)\sin(2\pi\nu_0 t)\right]
+\]
+
+\textbf{Funci\'on de transferencia del filtro:}
+\[
+H(\nu) = \begin{cases}
+\sqrt{T} & |\nu| \leq \frac{1}{3T} \\
+\sqrt{2T\left(1 - \frac{3T}{2}|\nu|\right)} & \frac{1}{3T} \leq |\nu| \leq \frac{2}{3T} \\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+\textbf{Canal:} AWGN con ruido $n(t)$ de media cero y densidad espectral de potencia $\frac{N_0}{2}$
+
+\textbf{Se\~nal recibida:} $r(t) = s(t) + n(t)$
+
+\subsection*{Pregunta 1: Alfabeto 8-PSK}
+
+\textbf{Enunciado:} Definimos $d_k = a_k + ib_k$ y $\mathcal{D}$ el conjunto de todos los valores posibles de $d_k$. Dar el alfabeto 8-PSK $\mathcal{D}$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El alfabeto 8-PSK consiste en 8 s\'imbolos uniformemente distribuidos en un c\'irculo:
+
+\[
+\boxed{\mathcal{D} = \left\{e^{i\frac{(2k+1)\pi}{8}} \mid k \in \{0, 1, 2, 3, 4, 5, 6, 7\}\right\}}
+\]
+
+Expresado en forma expl\'icita:
+\[
+\mathcal{D} = \left\{e^{i\frac{\pi}{8}}, e^{i\frac{3\pi}{8}}, e^{i\frac{5\pi}{8}}, e^{i\frac{7\pi}{8}}, e^{i\frac{9\pi}{8}}, e^{i\frac{11\pi}{8}}, e^{i\frac{13\pi}{8}}, e^{i\frac{15\pi}{8}}\right\}
+\]
+
+\textbf{Representaci\'on gr\'afica:} Los 8 puntos est\'an en los \'angulos $\frac{\pi}{8}, \frac{3\pi}{8}, \frac{5\pi}{8}, \ldots, \frac{15\pi}{8}$, todos con m\'odulo unitario (si normalizamos a amplitud 1).
+
+\textbf{Interpretaci\'on:}
+\begin{itemize}
+    \item Cada s\'imbolo codifica $\log_2(8) = 3$ bits
+    \item Los s\'imbolos est\'an equiespaciados angularmente (cada $45°$)
+    \item Todos tienen la misma energ\'ia (modulaci\'on de fase pura)
+\end{itemize}
+
+
+
+\subsection*{Pregunta 2: Mapping de Gray}
+
+\textbf{Enunciado:} Proponer una conversi\'on binario a s\'imbolo que satisfaga la regla de Gray mapping.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El Gray mapping asegura que s\'imbolos adyacentes difieran en solo un bit. Una propuesta es:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{\'Angulo} & \textbf{S\'imbolo} & \textbf{C\'odigo Gray} \\
+\hline
+$\frac{\pi}{8}$ & $e^{i\pi/8}$ & 000 \\
+$\frac{3\pi}{8}$ & $e^{i3\pi/8}$ & 001 \\
+$\frac{5\pi}{8}$ & $e^{i5\pi/8}$ & 011 \\
+$\frac{7\pi}{8}$ & $e^{i7\pi/8}$ & 010 \\
+$\frac{9\pi}{8}$ & $e^{i9\pi/8}$ & 110 \\
+$\frac{11\pi}{8}$ & $e^{i11\pi/8}$ & 111 \\
+$\frac{13\pi}{8}$ & $e^{i13\pi/8}$ & 101 \\
+$\frac{15\pi}{8}$ & $e^{i15\pi/8}$ & 100 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Verificaci\'on del Gray mapping:}
+\begin{itemize}
+    \item $000 \rightarrow 001$: difieren en 1 bit ✓
+    \item $001 \rightarrow 011$: difieren en 1 bit ✓
+    \item $011 \rightarrow 010$: difieren en 1 bit ✓
+    \item Cada par de s\'imbolos adyacentes difiere en exactamente 1 bit
+\end{itemize}
+
+\textbf{Ventaja:} Minimiza la tasa de error binaria cuando ocurren errores en s\'imbolos adyacentes.
+
+
+
+\subsection*{Pregunta 3: Rapidez de s\'imbolo y valor de T}
+
+\textbf{Enunciado:} Calcular la rapidez de s\'imbolo y deducir el valor de $T$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+La relaci\'on entre d\'ebito binario y rapidez de s\'imbolo es:
+\[
+D_s = \frac{D_b}{\log_2(M)}
+\]
+
+Para 8-PSK: $M = 8$, por lo tanto:
+\[
+D_s = \frac{48 \times 10^6}{3} = \boxed{16 \times 10^6 \text{ s\'imbolos/s} = 16 \text{ Mbauds}}
+\]
+
+El periodo s\'imbolo es:
+\[
+T = \frac{1}{D_s} = \frac{1}{16 \times 10^6} = \boxed{6.25 \times 10^{-8} \text{ s} = 62.5 \text{ ns}}
+\]
+
+\textbf{Interpretaci\'on:}
+\begin{itemize}
+    \item Cada s\'imbolo transporta 3 bits
+    \item Se transmiten 16 millones de s\'imbolos por segundo
+    \item Cada s\'imbolo dura 62.5 nanosegundos
+\end{itemize}
+
+
+
+\subsection*{Pregunta 4: Banda ocupada y condici\'on narrowband}
+
+\textbf{Enunciado:} Calcular la banda ocupada. ¿Se satisface la condici\'on de banda estrecha?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{C\'alculo de la banda ocupada:}
+
+Del soporte de $H(\nu)$, vemos que el filtro pasa-bajo tiene banda $\left[-\frac{2}{3T}, \frac{2}{3T}\right]$.
+
+Para la se\~nal modulada, la banda ocupada es:
+\[
+B_{occ} = 2 \times \frac{2}{3T} = \frac{4}{3T}
+\]
+
+Sustituyendo $T = 6.25 \times 10^{-8}$:
+\[
+B_{occ} = \frac{4}{3 \times 6.25 \times 10^{-8}} = \frac{4}{1.875 \times 10^{-7}} = \boxed{21.33 \times 10^6 \text{ Hz} = 21.33 \text{ MHz}}
+\]
+
+\textbf{Verificaci\'on de la condici\'on narrowband:}
+
+La condici\'on de banda estrecha requiere:
+\[
+B_{occ} \ll \nu_0
+\]
+
+Comparamos:
+\begin{align*}
+B_{occ} &= 21.33 \times 10^6 \text{ Hz} \\
+\nu_0 &= 2.4 \times 10^9 \text{ Hz}
+\end{align*}
+
+Ratio:
+\[
+\frac{B_{occ}}{\nu_0} = \frac{21.33 \times 10^6}{2.4 \times 10^9} = 0.0089 \approx 0.9\%
+\]
+
+\textbf{Conclusi\'on:} $\boxed{\text{SÍ, la condici\'on narrowband se satisface}}$ ya que $B_{occ}$ es menor del 1\% de $\nu_0$.
+
+\textbf{Consecuencia:} Podemos usar aproximaciones de banda estrecha en el an\'alisis del sistema.
+
+
+
+\subsection*{Pregunta 5: Estructura del receptor ML \'optimo}
+
+\textbf{Enunciado:} Dar la estructura del receptor \'optimo de m\'axima verosimilitud (ML). (No se demanda demostraci\'on).
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Estructura del receptor \'optimo ML:}
+
+\begin{center}
+\begin{tabular}{c}
+\texttt{r(t)} \\
+$\downarrow$ \\
+\hline
+\textbf{Rama I (In-phase):} \\
+\fbox{$\times \cos(2\pi\nu_0 t)$} $\rightarrow$ \fbox{Filtro PB $g(t) = h(t_0-t)$} $\rightarrow$ \fbox{Muestreo $t_0+kT$} $\rightarrow a_k'$ \\
+\hline
+\textbf{Rama Q (Quadrature):} \\
+\fbox{$\times (-\sin(2\pi\nu_0 t))$} $\rightarrow$ \fbox{Filtro PB $g(t) = h(t_0-t)$} $\rightarrow$ \fbox{Muestreo $t_0+kT$} $\rightarrow b_k'$ \\
+\hline
+$\downarrow$ \\
+\fbox{Formar $z_k = a_k' + ib_k'$} \\
+$\downarrow$ \\
+\fbox{Decisor ML: $\hat{d}_k = \arg\min_{d \in \mathcal{D}} |z_k - d|$} \\
+$\downarrow$ \\
+\texttt{Bits estimados}
+\end{tabular}
+\end{center}
+
+\textbf{Descripci\'on de los bloques:}
+
+\begin{enumerate}
+    \item \textbf{Demoduladores I/Q:} Separan las componentes en fase y cuadratura multiplicando por $\cos(2\pi\nu_0 t)$ y $-\sin(2\pi\nu_0 t)$
+    
+    \item \textbf{Filtros adaptados:} $g(t) = h(t_0 - t)$ maximizan el SNR y eliminan componentes de alta frecuencia
+    
+    \item \textbf{Muestreadores:} Toman muestras en los instantes \'optimos $t_0 + kT$
+    
+    \item \textbf{Formador de s\'imbolo complejo:} Combina las salidas I/Q: $z_k = a_k' + ib_k'$
+    
+    \item \textbf{Decisor ML:} Elige el s\'imbolo m\'as cercano de $\mathcal{D}$:
+    \[
+    \hat{d}_k = \arg\min_{d \in \mathcal{D}} |z_k - d|^2
+    \]
+    
+    \item \textbf{Demapping:} Convierte el s\'imbolo decidido a bits usando la tabla de Gray mapping inversa
+\end{enumerate}
+
+\textbf{Propiedades:}
+\begin{itemize}
+    \item Minimiza la probabilidad de error de s\'imbolo
+    \item Maximiza el SNR
+    \item Permite detecci\'on s\'imbolo por s\'imbolo si se cumple TSWOC
+\end{itemize}
+
+
+
+\subsection*{Pregunta 6: Detecci\'on s\'imbolo por s\'imbolo y TSWOC}
+
+\textbf{Enunciado:} Mostrar que la detecci\'on \'optima puede hacerse s\'imbolo por s\'imbolo. Deducir que $\int_{\mathbb{R}} |h(t)|^2\, dt = 1$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Demostraci\'on del TSWOC:}
+
+El criterio TSWOC se satisface si:
+\[
+\sum_p |H(\nu - p/T)|^2 = T, \quad \forall \nu \in \mathbb{R}
+\]
+
+Analizamos la suma en diferentes intervalos:
+
+\textbf{Intervalo 1:} $\left[\frac{p}{T} - \frac{1}{3T}, \frac{p}{T} + \frac{1}{3T}\right]$
+
+Solo $|H(\nu - p/T)|^2$ es no nulo:
+\[
+\sum_k |H(\nu - k/T)|^2 = |H(\nu - p/T)|^2 = T \quad ✓
+\]
+
+\textbf{Intervalo 2:} $\left[\frac{p}{T} + \frac{1}{3T}, \frac{p}{T} + \frac{2}{3T}\right]$
+
+Son no nulos $|H(\nu - p/T)|^2$ y $|H(\nu - (p+1)/T)|^2$:
+
+\begin{align*}
+\sum_k |H(\nu - k/T)|^2 &= |H(\nu - p/T)|^2 + |H(\nu - (p+1)/T)|^2 \\
+&= 2T\left(1 - \frac{3T}{2}(\nu - p/T)\right) + 2T\left(1 - \frac{3T}{2}(-(nu - (p+1)/T))\right) \\
+&= 2T\left(1 - \frac{3T}{2}(\nu - p/T)\right) + 2T\left(1 - \frac{3T}{2}(-\nu + p/T + 1/T)\right) \\
+&= 2T + 2T\left(1 - \frac{3}{2}\right) \\
+&= T \quad ✓
+\end{align*}
+
+\textbf{Conclusi\'on:} El TSWOC se satisface: $\sum_p |H(\nu - p/T)|^2 = T$ para todo $\nu$.
+
+\textbf{Consecuencia - Detecci\'on s\'imbolo por s\'imbolo:}
+
+Como TSWOC se satisface:
+\[
+\int_{\mathbb{R}} h(t) h(t - kT)\, dt = \delta_{k,0}
+\]
+
+Esto implica que no hay interferencia entre s\'imbolos (ISI) y la detecci\'on puede hacerse s\'imbolo por s\'imbolo.
+
+\textbf{Deducci\'on de la normalizaci\'on:}
+
+Para $k = 0$:
+\[
+\int_{\mathbb{R}} h(t) h(t)\, dt = \int_{\mathbb{R}} |h(t)|^2\, dt = 1
+\]
+
+Por lo tanto: $\boxed{\int_{\mathbb{R}} |h(t)|^2\, dt = 1}$
+
+\textbf{Interpretaci\'on f\'isica:}
+\begin{itemize}
+    \item El filtro est\'a normalizado en energ\'ia unitaria
+    \item Esta normalizaci\'on simplifica las expresiones del SNR
+    \item Garantiza que la potencia del s\'imbolo dependa solo de la amplitud $A$ y los s\'imbolos $a_k, b_k$
+\end{itemize}
+
+
+
+\subsection*{Pregunta 7: Expresi\'on de $z_k$}
+
+\textbf{Enunciado:} Calcular la expresi\'on de $z_k$ definida como la entrada del dispositivo de decisi\'on desde el cual se toma la decisi\'on sobre $d_k$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{An\'alisis de la rama I (In-phase):}
+
+\begin{align*}
+r_c(t) &= r(t) \cos(2\pi\nu_0 t) \\
+&= \frac{A}{2}\sum_n a_n h(t-nT) + \frac{A}{2}\sum_n a_n h(t-nT)\cos(4\pi\nu_0 t) \\
+&\quad + \text{t\'erminos en cuadratura} + n_c(t)
+\end{align*}
+
+Tras el filtro adaptado $g(t) = h(t_0 - t)$ y el muestreo en $t = t_0 + kT$:
+
+\begin{align*}
+a_k' &= (r_c * g)(t_0 + kT) \\
+&= \frac{A}{2}\sum_n a_n \int_{\mathbb{R}} h(\tau) h(t_0 + kT - \tau - nT)\, d\tau + w_{c,k} \\
+&= \frac{A}{2}\sum_n a_n \int_{\mathbb{R}} h(\tau) h(\tau + (k-n)T)\, d\tau + w_{c,k}
+\end{align*}
+
+Por TSWOC:
+\[
+a_k' = \frac{A}{2} a_k + w_{c,k}
+\]
+
+\textbf{An\'alisis de la rama Q (Quadrature):}
+
+De forma similar:
+\[
+b_k' = \frac{A}{2} b_k + w_{s,k}
+\]
+
+\textbf{S\'imbolo complejo a la entrada del decisor:}
+
+\[
+\boxed{z_k = a_k' + ib_k' = \frac{A}{2}(a_k + ib_k) + (w_{c,k} + iw_{s,k}) = \frac{A}{2}d_k + w_k}
+\]
+
+Donde:
+\begin{itemize}
+    \item $d_k = a_k + ib_k$ es el s\'imbolo transmitido
+    \item $w_k = w_{c,k} + iw_{s,k}$ es el ruido complejo gaussiano con varianza $\sigma^2 = \frac{N_0}{2}$ por componente
+\end{itemize}
+
+\textbf{Interpretaci\'on:}
+\begin{itemize}
+    \item La salida es una versi\'on escalada del s\'imbolo transmitido m\'as ruido aditivo
+    \item El factor $\frac{A}{2}$ viene de la demodulaci\'on coherente
+    \item No hay interferencia entre s\'imbolos gracias al TSWOC
+\end{itemize}
+
+
+
+\subsection*{Pregunta 8: Constelaci\'on recibida y regiones de decisi\'on}
+
+\textbf{Enunciado:} A partir de la pregunta 7, trazar la constelaci\'on recibida asumiendo que el ruido es cero. Dibujar las regiones de decisi\'on binarias.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Constelaci\'on recibida (sin ruido):}
+
+Con ruido cero, $z_k = \frac{A}{2}d_k$ donde $d_k \in \mathcal{D}$.
+
+La constelaci\'on recibida es:
+\[
+\left\{\frac{A}{2}e^{i\frac{(2k+1)\pi}{8}} \mid k \in \{0,1,2,3,4,5,6,7\}\right\}
+\]
+
+\textbf{Representaci\'on gr\'afica con Gray mapping:}
+
+\begin{center}
+\textit{[Constelaci\'on 8-PSK con s\'imbolos en \'angulos m\'ultiplos de 45$^\circ$]}
+\begin{itemize}
+    \item $\frac{\pi}{8}$ (22.5$^\circ$): 000
+    \item $\frac{3\pi}{8}$ (67.5$^\circ$): 001
+    \item $\frac{5\pi}{8}$ (112.5$^\circ$): 011
+    \item $\frac{7\pi}{8}$ (157.5$^\circ$): 010
+    \item $\frac{9\pi}{8}$ (202.5$^\circ$): 110
+    \item $\frac{11\pi}{8}$ (247.5$^\circ$): 111
+    \item $\frac{13\pi}{8}$ (292.5$^\circ$): 101
+    \item $\frac{15\pi}{8}$ (337.5$^\circ$): 100
+\end{itemize}
+\end{center}
+
+\textbf{Regiones de decisi\'on binarias:}
+
+Las fronteras de decisi\'on son las mediatrices perpendiculares entre s\'imbolos adyacentes, que pasan por el origen y est\'an en los \'angulos $0°, 45°, 90°, 135°, 180°, 225°, 270°, 315°$.
+
+\textbf{Regla de decisi\'on ML:}
+
+Decidir el s\'imbolo $\hat{d}_k$ m\'as cercano a $z_k$:
+\[
+\hat{d}_k = \arg\min_{d \in \mathcal{D}} |z_k - d|^2
+\]
+
+Equivalentemente, en t\'erminos del \'angulo:
+\[
+\text{Si } \arg(z_k) \in \left[\frac{(2k+1)\pi}{8} - \frac{\pi}{8}, \frac{(2k+1)\pi}{8} + \frac{\pi}{8}\right] \Rightarrow \hat{d}_k = e^{i\frac{(2k+1)\pi}{8}}
+\]
+
+\textbf{Decisi\'on binaria:}
+
+Para cada bit del c\'odigo Gray, hay una frontera que separa los s\'imbolos con ese bit a 0 de los que lo tienen a 1.
+
+\textbf{Ejemplo - Bit m\'as significativo (MSB):}
+\begin{itemize}
+    \item MSB = 0: s\'imbolos en el semiplano derecho (Re$(z_k) > 0$)
+    \item MSB = 1: s\'imbolos en el semiplano izquierdo (Re$(z_k) < 0$)
+\end{itemize}
+
+
+
+\vspace{1cm}
+\begin{center}
+\rule{0.8\linewidth}{0.4pt}\\
+\textit{Fin del examen}
+\end{center}
+
+\end{document}

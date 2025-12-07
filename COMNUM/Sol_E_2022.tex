@@ -1,0 +1,654 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Soluci\'on Examen 2022-2023\\TAF STAR-ISC - UEC B\\18/10/2022}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Preguntas con respuestas cortas}
+
+\subsection*{a) Constelaciones 16-PSK y 16-QAM}
+
+\textbf{Enunciado:} Dibujar la constelaci\'on elemental de transmisi\'on para cada uno de los dos formatos de modulaci\'on siguientes: 16-PSK y 16-QAM.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{16-PSK:} 16 s\'imbolos uniformemente distribuidos en un c\'irculo, separados por \'angulos de $\frac{2\pi}{16} = \frac{\pi}{8} = 22.5°$
+
+\'Angulos: $0°, 22.5°, 45°, 67.5°, 90°, 112.5°, 135°, 157.5°, 180°, ..., 337.5°$
+
+\textbf{16-QAM:} Ret\'icula cuadrada de $4 \times 4$ s\'imbolos.
+
+S\'imbolos en posiciones: $\{-3, -1, +1, +3\} \times \{-3, -1, +1, +3\}$
+
+\textit{(Los diagramas deben dibujarse en el plano complejo con los 16 puntos correspondientes)}
+
+
+
+\subsection*{b) Gray mapping}
+
+\textbf{Enunciado:} Proponer un mapping binario de Gray para cada una de ellas.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Principio del Gray mapping:} Dos s\'imbolos adyacentes deben diferir en exactamente un bit.
+
+\textbf{16-PSK con Gray mapping:}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{\'Angulo} & \textbf{C\'odigo} \\
+\hline
+$0°$ & 0000 \\
+$22.5°$ & 0001 \\
+$45°$ & 0011 \\
+$67.5°$ & 0010 \\
+$90°$ & 0110 \\
+$112.5°$ & 0111 \\
+$135°$ & 0101 \\
+$157.5°$ & 0100 \\
+$180°$ & 1100 \\
+$202.5°$ & 1101 \\
+$225°$ & 1111 \\
+$247.5°$ & 1110 \\
+$270°$ & 1010 \\
+$292.5°$ & 1011 \\
+$315°$ & 1001 \\
+$337.5°$ & 1000 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{16-QAM con Gray mapping:}
+
+Para una ret\'icula $4 \times 4$, se codifica cada dimensi\'on independientemente con Gray:
+
+Dimensi\'on I (horizontal): $-3 \rightarrow 00$, $-1 \rightarrow 01$, $+1 \rightarrow 11$, $+3 \rightarrow 10$
+
+Dimensi\'on Q (vertical): $-3 \rightarrow 00$, $-1 \rightarrow 01$, $+1 \rightarrow 11$, $+3 \rightarrow 10$
+
+C\'odigo completo: [2 bits I][2 bits Q]
+
+Ejemplo: S\'imbolo $(-3-3i) \rightarrow 0000$, s\'imbolo $(+3+3i) \rightarrow 1010$
+
+
+
+\subsection*{c) Comparaci\'on de rendimiento}
+
+\textbf{Enunciado:} Los dos formatos de modulaci\'on est\'an dise\~nados para la misma energ\'ia media de transmisi\'on por s\'imbolo. ¿Cu\'al alcanza la m\'inima probabilidad de error binaria en el canal AWGN? Se requiere una respuesta justificada pero concisa (sin c\'alculo).
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Respuesta:} $\boxed{\text{16-QAM tiene mejor rendimiento}}$
+
+\textbf{Justificaci\'on:}
+
+Para la misma energ\'ia media, la \textbf{geometr\'ia de la constelaci\'on 16-QAM es superior} a la de 16-PSK:
+
+\begin{enumerate}
+    \item \textbf{Distancia m\'inima mayor:} En 16-QAM, con energ\'ia fija, la distancia euclidiana m\'inima entre s\'imbolos adyacentes es mayor que en 16-PSK.
+    
+    \item \textbf{N\'umero de vecinos m\'as cercanos:} 
+    \begin{itemize}
+        \item 16-PSK: cada s\'imbolo tiene 2 vecinos m\'as cercanos
+        \item 16-QAM: los s\'imbolos internos tienen 4 vecinos, pero la distancia compensa
+    \end{itemize}
+    
+    \item \textbf{Factor dominante:} La distancia m\'inima $d_{min}$ tiene mayor impacto en la probabilidad de error que el n\'umero de vecinos, ya que:
+    \[
+    P_e \propto Q\left(\sqrt{\frac{d_{min}^2}{2N_0}}\right)
+    \]
+    La funci\'on $Q$ decae exponencialmente con $d_{min}^2$.
+\end{enumerate}
+
+\textbf{Conclusi\'on num\'erica:} Para la misma $E_s$ (energ\'ia por s\'imbolo), 16-QAM tiene t\'ipicamente $d_{min}$ aproximadamente 1.6 veces mayor que 16-PSK, lo que resulta en una probabilidad de error significativamente menor.
+
+
+
+\subsection*{d) C\'alculo de rapidez de s\'imbolo}
+
+\textbf{Enunciado:} El d\'ebito binario es igual a $D_b = 1$ Mbps. Calcular la rapidez de s\'imbolo para cada formato de modulaci\'on.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+La rapidez de s\'imbolo se relaciona con el d\'ebito binario mediante:
+\[
+D_s = \frac{D_b}{\log_2(M)}
+\]
+
+Para ambas modulaciones: $M = 16$, por lo tanto $\log_2(16) = 4$ bits/s\'imbolo
+
+\[
+\boxed{D_s = \frac{10^6}{4} = 250 \times 10^3 \text{ s\'imbolos/s} = 250 \text{ kbauds}}
+\]
+
+\textbf{Observaci\'on:} La rapidez de s\'imbolo es \textbf{id\'entica para ambas modulaciones} ya que solo depende del orden de modulaci\'on $M$, no de la geometr\'ia de la constelaci\'on.
+
+\textbf{Interpretaci\'on:}
+\begin{itemize}
+    \item Cada s\'imbolo transporta 4 bits
+    \item Se transmiten 250,000 s\'imbolos por segundo
+    \item Periodo s\'imbolo: $T = \frac{1}{D_s} = 4 \times 10^{-6}$ s = 4 μs
+\end{itemize}
+
+
+
+\newpage
+\section*{Transmisi\'on 8-ASK sobre canal AWGN}
+
+\textbf{Datos del problema:}
+\begin{itemize}
+    \item Elementos binarios independientes e id\'enticamente distribuidos con probabilidad igual
+    \item Frecuencia portadora: $\nu_0 = 900$ MHz
+    \item Periodo s\'imbolo: $T = 5 \times 10^{-5}$ s
+    \item Canal: AWGN
+\end{itemize}
+
+\textbf{Se\~nal transmitida:}
+\[
+x(t) = A\sum_k a_k h(t-kT)\cos(2\pi\nu_0 t)
+\]
+
+con $a_k \in \mathcal{A}$ (alfabeto 8-ASK).
+
+\textbf{Filtro:} Soporte de $H(\nu)$ es $[-(1+\beta)R, (1+\beta)R]$ donde $R = D_s = \frac{1}{T}$ y $\beta \in (0,1]$
+
+\textbf{Se\~nal recibida:} $r(t) = s(t) + n(t)$
+
+\subsection*{Pregunta 1: Alfabeto 8-ASK y Gray mapping}
+
+\textbf{Enunciado:} Dar el alfabeto 8-ASK $\mathcal{A}$ y proponer un Gray mapping.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Alfabeto 8-ASK:}
+\[
+\boxed{\mathcal{A} = \{-7, -5, -3, -1, +1, +3, +5, +7\}}
+\]
+
+\textbf{Gray mapping propuesto:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{$a_k$} & \textbf{$m_{3k}$} & \textbf{$m_{3k+1}$} & \textbf{$m_{3k+2}$} & \textbf{C\'odigo completo} \\
+\hline
+$-7$ & 0 & 0 & 0 & 000 \\
+$-5$ & 0 & 0 & 1 & 001 \\
+$-3$ & 0 & 1 & 1 & 011 \\
+$-1$ & 0 & 1 & 0 & 010 \\
+$+1$ & 1 & 1 & 0 & 110 \\
+$+3$ & 1 & 1 & 1 & 111 \\
+$+5$ & 1 & 0 & 1 & 101 \\
+$+7$ & 1 & 0 & 0 & 100 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Verificaci\'on del Gray mapping:}
+\begin{itemize}
+    \item $000 \rightarrow 001$: difieren en 1 bit (posici\'on 2) ✓
+    \item $001 \rightarrow 011$: difieren en 1 bit (posici\'on 1) ✓
+    \item $011 \rightarrow 010$: difieren en 1 bit (posici\'on 2) ✓
+    \item Todos los pares adyacentes difieren en exactamente 1 bit ✓
+\end{itemize}
+
+\textbf{Propiedades:}
+\begin{itemize}
+    \item $M = 8$ s\'imbolos $\Rightarrow$ $\log_2(8) = 3$ bits por s\'imbolo
+    \item S\'imbolos equiespaciados con separaci\'on $\Delta = 2$
+    \item Modulaci\'on unidimensional (solo amplitud)
+\end{itemize}
+
+
+
+\subsection*{Pregunta 2: Densidad espectral de potencia}
+
+\textbf{Enunciado:} Dar la expresi\'on te\'orica de la densidad espectral de potencia de la se\~nal modulada.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Para una modulaci\'on lineal sobre portadora, la densidad espectral de potencia es:
+
+\[
+\boxed{S_x(\nu) = \frac{A^2 \sigma_a^2}{4T}\left[|H(\nu - \nu_0)|^2 + |H(\nu + \nu_0)|^2\right]}
+\]
+
+Donde:
+\begin{itemize}
+    \item $A$ es la amplitud de la portadora
+    \item $\sigma_a^2 = \mathbb{E}[a_k^2]$ es la varianza de los s\'imbolos
+    \item $T$ es el periodo s\'imbolo
+    \item $H(\nu)$ es la funci\'on de transferencia del filtro de conformaci\'on
+    \item $\nu_0$ es la frecuencia portadora
+\end{itemize}
+
+\textbf{C\'alculo de $\sigma_a^2$ para 8-ASK:}
+
+Con alfabeto $\{-7, -5, -3, -1, +1, +3, +5, +7\}$ y probabilidad uniforme:
+
+\begin{align*}
+\sigma_a^2 &= \mathbb{E}[a_k^2] = \frac{1}{8}(49 + 25 + 9 + 1 + 1 + 9 + 25 + 49) \\
+&= \frac{1}{8} \times 168 = 21
+\end{align*}
+
+Por lo tanto:
+\[
+\boxed{S_x(\nu) = \frac{21A^2}{4T}\left[|H(\nu - \nu_0)|^2 + |H(\nu + \nu_0)|^2\right]}
+\]
+
+\textbf{Interpretaci\'on:}
+\begin{itemize}
+    \item El espectro est\'a centrado en $\pm\nu_0$ (frecuencias positiva y negativa)
+    \item La forma del espectro est\'a determinada por $|H(\nu)|^2$
+    \item La potencia total es proporcional a $A^2\sigma_a^2$
+\end{itemize}
+
+
+
+\subsection*{Pregunta 3: Banda ocupada y condici\'on narrowband}
+
+\textbf{Enunciado:} Calcular la banda ocupada para $\beta = 0.5$. ¿Se satisface la condici\'on narrowband?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{C\'alculo de la rapidez de s\'imbolo:}
+\[
+R = D_s = \frac{1}{T} = \frac{1}{5 \times 10^{-5}} = 20 \times 10^3 \text{ Hz} = 20 \text{ kHz}
+\]
+
+\textbf{Banda ocupada:}
+
+El soporte de $H(\nu)$ es $[-(1+\beta)R, (1+\beta)R]$.
+
+Para la se\~nal modulada en paso banda, la banda ocupada es:
+\[
+B_{occ} = 2(1+\beta)R
+\]
+
+Con $\beta = 0.5$:
+\[
+B_{occ} = 2 \times 1.5 \times 20 \times 10^3 = \boxed{60 \times 10^3 \text{ Hz} = 60 \text{ kHz}}
+\]
+
+\textbf{Verificaci\'on condici\'on narrowband:}
+
+La condici\'on narrowband requiere $B_{occ} \ll \nu_0$.
+
+Comparaci\'on:
+\begin{align*}
+B_{occ} &= 6 \times 10^4 \text{ Hz} \\
+\nu_0 &= 9 \times 10^8 \text{ Hz}
+\end{align*}
+
+Ratio:
+\[
+\frac{B_{occ}}{\nu_0} = \frac{6 \times 10^4}{9 \times 10^8} = \frac{6}{9} \times 10^{-4} \approx 0.0067\%
+\]
+
+\textbf{Conclusi\'on:} $\boxed{\text{SÍ, la condici\'on narrowband se satisface ampliamente}}$
+
+La banda ocupada es menos del 0.01\% de la frecuencia portadora, por lo que las aproximaciones de banda estrecha son v\'alidas.
+
+
+
+\subsection*{Pregunta 4: Estructura del receptor ML \'optimo}
+
+\textbf{Enunciado:} Dibujar cuidadosamente la estructura del receptor \'optimo de m\'axima verosimilitud (ML) y comentar el rol de cada dispositivo. (No se demanda demostraci\'on, pero se requiere una descripci\'on completa y anotada).
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Estructura del receptor \'optimo ML para 8-ASK:}
+
+\begin{center}
+\begin{tabular}{c}
+\texttt{r(t)} \\
+$\downarrow$ \\
+\fbox{Multiplicador: $\times \cos(2\pi\nu_0 t)$} \\
+$\downarrow$ \\
+\fbox{Filtro pasa-bajo: $g(t) = h(t_0 - t)$} \\
+$\downarrow$ \\
+\fbox{Muestreador: $t = t_0 + kT$} \\
+$\downarrow$ \\
+$z_k$ \\
+$\downarrow$ \\
+\fbox{Decisor ML: $\hat{a}_k = \arg\min_{a \in \mathcal{A}} |z_k - a|$} \\
+$\downarrow$ \\
+\fbox{Demapper Gray: S\'imbolo $\rightarrow$ Bits} \\
+$\downarrow$ \\
+\texttt{$\hat{m}_{3k}, \hat{m}_{3k+1}, \hat{m}_{3k+2}$}
+\end{tabular}
+\end{center}
+
+\textbf{Descripci\'on detallada de cada bloque:}
+
+\begin{enumerate}
+    \item \textbf{Multiplicador por $\cos(2\pi\nu_0 t)$:}
+    \begin{itemize}
+        \item \textit{Funci\'on:} Demodulaci\'on coherente - translada el espectro de paso banda a banda base
+        \item \textit{Salida:} $r_c(t) = r(t)\cos(2\pi\nu_0 t)$ contiene componente banda base + componente en $2\nu_0$
+        \item \textit{Requisito:} Sincronizaci\'on perfecta de fase con la portadora de transmisi\'on
+    \end{itemize}
+    
+    \item \textbf{Filtro pasa-bajo adaptado $g(t) = h(t_0 - t)$:}
+    \begin{itemize}
+        \item \textit{Funci\'on dual:}
+        \begin{enumerate}
+            \item Eliminar la componente de alta frecuencia centrada en $2\nu_0$
+            \item Maximizar el SNR a la salida (filtro adaptado)
+        \end{enumerate}
+        \item \textit{Propiedad:} Si $h(t)$ satisface TSWOC, entonces no hay ISI
+        \item \textit{Par\'ametro $t_0$:} Retardo que compensa el no-causalidad del filtro adaptado
+    \end{itemize}
+    
+    \item \textbf{Muestreador en $t = t_0 + kT$:}
+    \begin{itemize}
+        \item \textit{Funci\'on:} Extraer las muestras en los instantes \'optimos
+        \item \textit{Salida:} Valores discretos $z_k$ que contienen la informaci\'on de los s\'imbolos $a_k$ m\'as ruido
+        \item \textit{Requisito:} Sincronizaci\'on temporal perfecta (recuperaci\'on de reloj)
+    \end{itemize}
+    
+    \item \textbf{Decisor ML:}
+    \begin{itemize}
+        \item \textit{Funci\'on:} Decidir qu\'e s\'imbolo del alfabeto $\mathcal{A}$ fue transmitido
+        \item \textit{Criterio:} Distancia m\'inima (regiones de Voronoi):
+        \[
+        \hat{a}_k = \arg\min_{a \in \mathcal{A}} |z_k - a|^2
+        \]
+        \item \textit{Implementaci\'on:} Comparadores de umbral en $-6, -4, -2, 0, 2, 4, 6$
+    \end{itemize}
+    
+    \item \textbf{Demapper Gray:}
+    \begin{itemize}
+        \item \textit{Funci\'on:} Convertir el s\'imbolo estimado $\hat{a}_k$ en los 3 bits correspondientes
+        \item \textit{Tabla:} Inversa del mapping definido en la pregunta 1
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Propiedades del receptor completo:}
+\begin{itemize}
+    \item Minimiza la probabilidad de error de s\'imbolo en canal AWGN
+    \item Maximiza el SNR en el punto de decisi\'on
+    \item Permite detecci\'on s\'imbolo por s\'imbolo si TSWOC se satisface
+    \item Requiere sincronizaci\'on perfecta de portadora y de s\'imbolo
+\end{itemize}
+
+
+
+\subsection*{Pregunta 5: Expresi\'on de $z_k$}
+
+\textbf{Enunciado:} Calcular la expresi\'on de $z_k$ definida como la entrada del dispositivo de decisi\'on desde la cual se toma la decisi\'on sobre $a_k$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Paso 1: Demodulaci\'on}
+
+\begin{align*}
+r_c(t) &= r(t)\cos(2\pi\nu_0 t) \\
+&= \left[A\sum_n a_n h(t-nT)\cos(2\pi\nu_0 t) + n(t)\right]\cos(2\pi\nu_0 t)
+\end{align*}
+
+Usando $\cos^2(x) = \frac{1 + \cos(2x)}{2}$:
+
+\[
+r_c(t) = \frac{A}{2}\sum_n a_n h(t-nT) + \frac{A}{2}\sum_n a_n h(t-nT)\cos(4\pi\nu_0 t) + n_c(t)
+\]
+
+donde $n_c(t) = n(t)\cos(2\pi\nu_0 t)$.
+
+\textbf{Paso 2: Filtrado adaptado}
+
+La salida del filtro $g(t) = h(t_0 - t)$ es:
+
+\[
+z(t) = (r_c * g)(t) = \int_{\mathbb{R}} r_c(\tau) g(t-\tau)\, d\tau
+\]
+
+El t\'ermino de alta frecuencia es eliminado por el filtro pasa-bajo. La componente banda base da:
+
+\[
+z(t) = \frac{A}{2}\sum_n a_n (h * g)(t-nT) + w(t)
+\]
+
+donde $w(t) = (n_c * g)(t)$ y $(h * g)(t) = \int_{\mathbb{R}} h(\tau)g(t-\tau)\, d\tau = \int_{\mathbb{R}} h(\tau)h(t_0-t+\tau)\, d\tau$
+
+\textbf{Paso 3: Muestreo en $t = t_0 + kT$}
+
+\begin{align*}
+z_k &= z(t_0 + kT) \\
+&= \frac{A}{2}\sum_n a_n \int_{\mathbb{R}} h(\tau)h(t_0 + kT - t_0 + \tau - nT)\, d\tau + w_k \\
+&= \frac{A}{2}\sum_n a_n \int_{\mathbb{R}} h(\tau)h(\tau + (k-n)T)\, d\tau + w_k
+\end{align*}
+
+\textbf{Paso 4: Aplicaci\'on del TSWOC}
+
+Si el filtro satisface el criterio TSWOC:
+\[
+\int_{\mathbb{R}} h(\tau)h(\tau + mT)\, d\tau = \delta_{m,0} \int_{\mathbb{R}} |h(\tau)|^2\, d\tau
+\]
+
+Por lo tanto, solo el t\'ermino con $n = k$ sobrevive:
+
+\[
+\boxed{z_k = \frac{A}{2}a_k \int_{\mathbb{R}} |h(\tau)|^2\, d\tau + w_k}
+\]
+
+Si adem\'as normalizamos $\int_{\mathbb{R}} |h(t)|^2\, dt = 1$:
+
+\[
+\boxed{z_k = \frac{A}{2}a_k + w_k}
+\]
+
+Donde:
+\begin{itemize}
+    \item $a_k \in \{-7, -5, -3, -1, +1, +3, +5, +7\}$ es el s\'imbolo transmitido
+    \item $w_k$ es ruido gaussiano con media cero y varianza $\sigma_w^2 = \frac{N_0}{2}$
+\end{itemize}
+
+\textbf{Interpretaci\'on:}
+\begin{itemize}
+    \item La muestra $z_k$ es una versi\'on escalada del s\'imbolo m\'as ruido aditivo
+    \item No hay interferencia entre s\'imbolos (ISI) gracias al TSWOC
+    \item El factor $\frac{A}{2}$ proviene de la demodulaci\'on coherente
+\end{itemize}
+
+
+
+\subsection*{Pregunta 6: Condici\'on para detecci\'on s\'imbolo por s\'imbolo}
+
+\textbf{Enunciado:} Dar la condici\'on sobre $h$ que asegura que la detecci\'on \'optima puede hacerse s\'imbolo por s\'imbolo (se requiere una formulaci\'on matem\'atica de la condici\'on).
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+La condici\'on que garantiza detecci\'on \'optima s\'imbolo por s\'imbolo es el \textbf{criterio TSWOC}:
+
+\[
+\boxed{\int_{\mathbb{R}} h(\tau)h(\tau - kT)\, d\tau = \delta_{k,0}}
+\]
+
+O equivalentemente, en el dominio frecuencial:
+
+\[
+\boxed{\sum_p |H(\nu - p/T)|^2 = T, \quad \forall \nu \in \mathbb{R}}
+\]
+
+Donde:
+\begin{itemize}
+    \item $h(t)$ es la respuesta impulsional del filtro de conformaci\'on
+    \item $H(\nu)$ es su transformada de Fourier
+    \item $T$ es el periodo s\'imbolo
+    \item $\delta_{k,0}$ es la delta de Kronecker (1 si $k=0$, 0 en caso contrario)
+\end{itemize}
+
+\textbf{Consecuencias del TSWOC:}
+
+\begin{enumerate}
+    \item \textbf{Ausencia de ISI:} En los instantes de muestreo $t_0 + kT$, no hay contribuci\'on de s\'imbolos vecinos:
+    \[
+    q(t_0 + kT) = \int_{\mathbb{R}} h(\tau)h(t_0 - (t_0 + kT) + \tau)\, d\tau = \delta_{k,0}
+    \]
+    
+    \item \textbf{Detecci\'on independiente:} La decisi\'on sobre $a_k$ puede tomarse sin conocer $\{a_n\}_{n \neq k}$
+    
+    \item \textbf{SNR m\'aximo:} El filtro adaptado $g(t) = h(t_0 - t)$ combinado con TSWOC maximiza el SNR
+\end{enumerate}
+
+\textbf{Ejemplos de filtros que satisfacen TSWOC:}
+\begin{itemize}
+    \item Filtro rectangular (sinc en frecuencia)
+    \item Filtro raised cosine
+    \item Filtro root raised cosine (cascada de dos)
+\end{itemize}
+
+
+
+\subsection*{Pregunta 7: Constelaci\'on y regiones de decisi\'on}
+
+\textbf{Enunciado:} Asumimos que la condici\'on sobre $h$ se satisface.
+
+\textbf{7-a)} Trazar la constelaci\'on recibida asumiendo que el ruido es cero.
+
+\textbf{7-b)} Dibujar las regiones de decisi\'on binarias.
+
+\textbf{7-c)} Dar las reglas de decisi\'on binarias involucrando $z_k$.
+
+\textbf{7-d)} ¿Est\'an los elementos binarios igualmente protegidos?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{7-a) Constelaci\'on recibida (ruido cero):}
+
+Con $w_k = 0$, tenemos $z_k = \frac{A}{2}a_k$.
+
+La constelaci\'on recibida es:
+\[
+\left\{-\frac{7A}{2}, -\frac{5A}{2}, -\frac{3A}{2}, -\frac{A}{2}, +\frac{A}{2}, +\frac{3A}{2}, +\frac{5A}{2}, +\frac{7A}{2}\right\}
+\]
+
+\textit{Representaci\'on en eje real con 8 puntos equiespaciados, separados por $A$.}
+
+\textbf{7-b) Regiones de decisi\'on:}
+
+Las fronteras de decisi\'on est\'an a mitad de camino entre s\'imbolos adyacentes:
+
+Fronteras: $-3A, -2A, -A, 0, +A, +2A, +3A$
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Eje
+\draw[->] (-8,0) -- (8,0) node[right] {$z_k$};
+
+% S\'imbolos (suponiendo A=1 para visualizaci\'on)
+\foreach \x/\label in {-3.5/-7A/2, -2.5/-5A/2, -1.5/-3A/2, -0.5/-A/2, 0.5/+A/2, 1.5/+3A/2, 2.5/+5A/2, 3.5/+7A/2}
+{
+    \fill[blue] (\x,0) circle (3pt);
+}
+
+% Etiquetas de s\'imbolos con c\'odigos Gray
+\node[below] at (-3.5,-0.3) {000};
+\node[below] at (-2.5,-0.3) {001};
+\node[below] at (-1.5,-0.3) {011};
+\node[below] at (-0.5,-0.3) {010};
+\node[below] at (0.5,-0.3) {110};
+\node[below] at (1.5,-0.3) {111};
+\node[below] at (2.5,-0.3) {101};
+\node[below] at (3.5,-0.3) {100};
+
+% Fronteras de decisi\'on
+\foreach \x in {-3, -2, -1, 0, 1, 2, 3}
+{
+    \draw[red, thick, dashed] (\x,-0.5) -- (\x,0.5);
+}
+
+% Regiones para cada bit
+\draw[<->, thick, green!70!black] (-4,1) -- (0,1) node[midway, above] {$\hat{m}_{3k}=0$};
+\draw[<->, thick, green!70!black] (0,1) -- (4,1) node[midway, above] {$\hat{m}_{3k}=1$};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{7-c) Reglas de decisi\'on binarias:}
+
+Definiendo $\beta = \frac{A}{2}$:
+
+\textbf{Bit $\hat{m}_{3k}$ (MSB):}
+\[
+\boxed{\hat{m}_{3k} = \begin{cases}
+0 & \text{si } z_k < 0 \\
+1 & \text{si } z_k \geq 0
+\end{cases}}
+\]
+
+\textbf{Bit $\hat{m}_{3k+1}$:}
+\[
+\boxed{\hat{m}_{3k+1} = \begin{cases}
+1 & \text{si } |z_k| < 2\beta \\
+0 & \text{si } |z_k| \geq 2\beta
+\end{cases}}
+\]
+
+Equivalentemente: $\hat{m}_{3k+1} = 1$ si $-A < z_k < A$
+
+\textbf{Bit $\hat{m}_{3k+2}$ (LSB):}
+\[
+\boxed{\hat{m}_{3k+2} = \begin{cases}
+1 & \text{si } \beta < |z_k| < 3\beta \\
+0 & \text{si } |z_k| < \beta \text{ o } |z_k| > 3\beta
+\end{cases}}
+\]
+
+Equivalentemente: $\hat{m}_{3k+2} = 1$ si $\frac{A}{2} < |z_k| < \frac{3A}{2}$
+
+\textbf{7-d) Protecci\'on igual de bits:}
+
+\textbf{Respuesta:} $\boxed{\text{NO, los bits NO est\'an igualmente protegidos}}$
+
+\textbf{An\'alisis:}
+
+\begin{itemize}
+    \item \textbf{Bit $m_{3k}$ (MSB):} Una sola frontera de decisi\'on en $z_k = 0$. Para que este bit sea err\'oneo, el ruido debe ser suficientemente grande para cruzar esta frontera. Distancia m\'inima a la frontera: $\frac{A}{2}$ (s\'imbolos $\pm\frac{A}{2}$).
+    
+    \item \textbf{Bit $m_{3k+1}$:} Dos fronteras en $z_k = \pm A$. Distancia m\'inima: $\frac{A}{2}$ (s\'imbolos $\pm\frac{A}{2}$).
+    
+    \item \textbf{Bit $m_{3k+2}$ (LSB):} M\'ultiples fronteras en $z_k = \pm\frac{A}{2}, \pm\frac{3A}{2}$. Los s\'imbolos exteriores ($\pm\frac{7A}{2}$) est\'an m\'as protegidos (distancia $2A$ a la frontera), pero los interiores tienen menor protecci\'on.
+\end{itemize}
+
+\textbf{Conclusi\'on:} Los bits tienen diferente nivel de protecci\'on dependiendo de su posici\'on en el c\'odigo Gray. El MSB est\'a relativamente bien protegido, mientras que el LSB tiene protecci\'on variable seg\'un el s\'imbolo transmitido.
+
+\textbf{Consecuencia pr\'actica:} Se puede usar esta propiedad para transmisi\'on jer\'arquica (bits m\'as importantes en posiciones m\'as protegidas).
+
+
+
+\vspace{1cm}
+\begin{center}
+\rule{0.8\linewidth}{0.4pt}\\
+\textit{Fin del examen}
+\end{center}
+
+\end{document}

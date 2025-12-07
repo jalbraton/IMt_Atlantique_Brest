@@ -1,0 +1,1482 @@
+﻿\documentclass[8pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{booktabs}
+
+\geometry{margin=0.5cm}
+
+% Definir colores personalizados
+\definecolor{sectioncolor}{RGB}{0,102,204}
+
+\title{\textbf{\Large Formulario Comunicaciones Num�ricas\\\normalsize TAF ISC - IMT Atlantique}}
+\author{}
+\date{}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+\setlength{\itemsep}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{multicols}{3}
+\footnotesize
+
+\section*{\color{sectioncolor}\normalsize 1. MODULACIONES DIGITALES}
+\vspace{-3mm}
+
+\subsection*{\small 1.1 Par�metros Fundamentales}
+\vspace{-2mm}
+
+\textbf{D�bito Binario:}
+\[
+D_b = D_s \times \log_2(M)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $D_b$ [bits/s]: D�bito binario (velocidad de transmisi�n de bits)
+    \item $D_s$ [bauds]: Rapidez de modulaci�n (s�mbolos/segundo)
+    \item $M$: Orden de la modulaci�n (n�mero de s�mbolos en el alfabeto)
+    \item $\log_2(M)$ [bits/s�mbolo]: N�mero de bits por s�mbolo
+\end{itemize}
+
+\textbf{Per�odo S�mbolo:}
+\[
+T_s = \frac{1}{D_s}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $T_s$ [s]: Duraci�n de un s�mbolo
+    \item $D_s$ [bauds]: Rapidez de modulaci�n
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 1.2 Eficiencia Espectral}
+\vspace{-2mm}
+
+\textbf{Eficiencia Espectral:}
+\[
+\eta = \frac{D_b}{B_{occ}}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\eta$ [bits/s/Hz]: Eficiencia espectral (bits por segundo por Hertz)
+    \item $D_b$ [bits/s]: D�bito binario
+    \item $B_{occ}$ [Hz]: Ancho de banda ocupado
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 1.3 Modulaciones Espec�ficas}
+\vspace{-2mm}
+
+\textbf{BPSK (2-PSK):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $M = 2$ s�mbolos: $\{+A, -A\}$
+    \item $\log_2(2) = 1$ bit/s�mbolo
+    \item $d_{min} = 2A$, $E_s = A^2$
+\end{itemize}
+
+\textbf{QPSK (4-PSK):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $M = 4$ s�mbolos
+    \item $\log_2(4) = 2$ bits/s�mbolo
+    \item Alfabeto: $\{+1+i, +1-i, -1+i, -1-i\}$
+    \item M�dulo constante: $|s_k| = \sqrt{2}$
+    \item $E_s = 2$ (normalizado)
+\end{itemize}
+
+\textbf{8-PSK:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $M = 8$ s�mbolos
+    \item $\log_2(8) = 3$ bits/s�mbolo
+    \item S�mbolos equiespaciados cada $45�$
+\end{itemize}
+
+\textbf{M-PAM (Modulaci�n Amplitud):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item S�mbolos: $\{\pm\Delta, \pm3\Delta, \ldots, \pm(M-1)\Delta\}$
+    \item $E_s = \frac{M^2-1}{3}\Delta^2$, $d_{min} = 2\Delta$
+\end{itemize}
+
+\textbf{M-QAM (Modulaci�n de Amplitud en Cuadratura):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $M = 2^k$ (ej: 16-QAM, 64-QAM, 256-QAM)
+    \item $k$ bits/s�mbolo
+    \item 16-QAM: $E_s = 10\Delta^2$ ($4\times4$ cuadrada)
+\end{itemize}
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 2. PROCESOS ESTOC�STICOS}
+\vspace{-3mm}
+
+\subsection*{\small 2.1 Proceso Estacionario en Sentido Amplio (WSS)}
+\vspace{-2mm}
+
+\textbf{Condiciones WSS:}
+\begin{enumerate}[leftmargin=*,itemsep=0pt]
+    \item Media constante: $m_X(t) = m_X$ (independiente de $t$)
+    \item Autocorrelaci�n depende solo de $\tau$: $R_X(t_1, t_2) = R_X(\tau)$ donde $\tau = t_2 - t_1$
+\end{enumerate}
+
+\textbf{Densidad Espectral de Potencia:}
+\[
+S_X(f) = \mathcal{F}\{R_X(\tau)\} = \int_{-\infty}^{+\infty} R_X(\tau) e^{-j2\pi f\tau} d\tau
+\]
+
+\textbf{Potencia Total:}
+\[
+P_X = R_X(0) = \int_{-\infty}^{+\infty} S_X(f) df
+\]
+
+\vspace{-2mm}
+\subsection*{\small 2.2 Proceso Cicloestacionario}
+\vspace{-2mm}
+
+\textbf{Definici�n:}
+
+Un proceso $X(t)$ es cicloestacionario de per�odo $T_0$ si:
+\[
+m_X(t + T_0) = m_X(t) \quad \text{y} \quad R_X(t + T_0, t + T_0 + \tau) = R_X(t, t + \tau)
+\]
+
+\textbf{Media y autocorrelaci�n peri�dicas con per�odo $T_0$}
+
+\vspace{-2mm}
+\subsection*{\small 2.3 Ruido Filtrado}
+\vspace{-2mm}
+
+\textbf{Entrada: Ruido Blanco $n(t)$ con DEP $S_n(f) = N_0/2$}
+
+\textbf{Salida del filtro $h(t)$:}
+\[
+S_Y(f) = |H(f)|^2 \cdot S_n(f) = |H(f)|^2 \cdot \frac{N_0}{2}
+\]
+
+\textbf{Autocorrelaci�n de salida:}
+\[
+R_Y(\tau) = (h * h^*)(\tau) \cdot \frac{N_0}{2}
+\]
+
+donde $(h * h^*)(\tau) = \int h(t)h^*(t-\tau)dt$
+
+\textbf{Potencia de salida:}
+\[
+P_Y = R_Y(0) = \frac{N_0}{2} \int_{-\infty}^{+\infty} |H(f)|^2 df
+\]
+
+\vspace{-2mm}
+\subsection*{\small 2.4 Relaciones �tiles}
+\vspace{-2mm}
+
+\textbf{Varianza (media nula):}
+\[
+\sigma_X^2 = R_X(0) - m_X^2 = R_X(0) \quad \text{si } m_X = 0
+\]
+
+\textbf{Coeficiente de correlaci�n:}
+\[
+\rho_{XY}(\tau) = \frac{R_{XY}(\tau)}{\sqrt{R_X(0)R_Y(0)}}
+\]
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 3. FILTRADO Y CONFORMACI�N}
+\vspace{-3mm}
+
+\subsection*{\small 3.1 Filtro Raised Cosine}
+\vspace{-2mm}
+
+\textbf{Banda Ocupada:}
+\[
+B_{occ} = D_s \times (1 + \beta)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $B_{occ}$ [Hz]: Ancho de banda total ocupado
+    \item $D_s$ [bauds]: Rapidez de modulaci�n
+    \item $\beta$: Coeficiente de roll-off ($0 \leq \beta \leq 1$)
+\end{itemize}
+
+\textbf{Exceso de Banda:}
+\[
+\Delta B = D_s \times \beta
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\Delta B$ [Hz]: Exceso de banda sobre el m�nimo te�rico
+    \item Banda m�nima: $B_{min} = D_s$
+\end{itemize}
+
+\textbf{Valores t�picos de $\beta$:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\beta = 0$: Rectangular (m�nima banda, ISI sensible)
+    \item $\beta = 0.5$: Compromiso t�pico
+    \item $\beta = 1$: M�xima robustez, doble ancho de banda
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 3.2 Criterio TSWOC}
+\vspace{-2mm}
+
+\textbf{Ortogonalidad Temporal:}
+\[
+\int_{\mathbb{R}} h(t) h(t - kT_s)\, dt = \delta_{k,0}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $h(t)$: Respuesta impulsional del filtro
+    \item $T_s$ [s]: Per�odo s�mbolo
+    \item $k$: Desplazamiento temporal (entero)
+    \item $\delta_{k,0}$: Delta de Kronecker (1 si $k=0$, 0 en otro caso)
+\end{itemize}
+
+\textbf{Garantiza:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Ausencia de ISI (Interferencia Entre S�mbolos)
+    \item Detecci�n s�mbolo por s�mbolo �ptima
+    \item Maximizaci�n del SNR
+\end{itemize}
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 4. OFDM}
+\vspace{-3mm}
+
+\subsection*{\small 4.1 Par�metros B�sicos}
+\vspace{-2mm}
+
+\textbf{Espaciado entre Subportadoras:}
+\[
+\Delta f = \frac{1}{T_u}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\Delta f$ [Hz]: Separaci�n entre subportadoras
+    \item $T_u$ [s]: Duraci�n �til del s�mbolo OFDM (sin prefijo c�clico)
+\end{itemize}
+
+\textbf{Estructura Temporal:}
+\[
+T_{OFDM} = T_u + T_{CP}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $T_{OFDM}$ [s]: Duraci�n total del s�mbolo OFDM
+    \item $T_u$ [s]: Duraci�n �til (donde ocurre la FFT)
+    \item $T_{CP}$ [s]: Duraci�n del prefijo c�clico
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 4.2 Prefijo C�clico}
+\vspace{-2mm}
+
+\textbf{Criterio de Dise�o:}
+\[
+T_{CP} \geq \tau_{max}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $T_{CP}$ [s]: Duraci�n del prefijo c�clico
+    \item $\tau_{max}$ [s]: Retardo m�ximo del canal (delay spread)
+\end{itemize}
+
+\textbf{Prop�sito del CP:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Convertir convoluci�n lineal en circular
+    \item Eliminar ISI entre s�mbolos OFDM
+    \item Mantener ortogonalidad de subportadoras
+\end{itemize}
+
+\textbf{Overhead del CP:}
+\[
+\text{Overhead}_{CP} = \frac{T_{CP}}{T_u} = \frac{T_{CP}}{T_{OFDM} - T_{CP}}
+\]
+
+\vspace{-2mm}
+\subsection*{\small 4.3 Ancho de Banda}
+\vspace{-2mm}
+
+\textbf{Banda Total:}
+\[
+B_{total} = N \times \Delta f
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $B_{total}$ [Hz]: Ancho de banda total ocupado
+    \item $N$: N�mero de subportadoras
+    \item $\Delta f$ [Hz]: Espaciado entre subportadoras
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 4.4 D�bito con C�digo Corrector}
+\vspace{-2mm}
+
+\textbf{Bits de Informaci�n:}
+\[
+N_{bits,info} = N_{data} \times \log_2(M) \times R_c
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $N_{bits,info}$ [bits]: Bits de informaci�n por s�mbolo OFDM
+    \item $N_{data}$: N�mero de subportadoras de datos (excluye pilotos)
+    \item $M$: Orden de modulaci�n en cada subportadora
+    \item $R_c$: Rendimiento del c�digo corrector ($R_c = k/n < 1$)
+\end{itemize}
+
+\textbf{D�bito Efectivo:}
+\[
+D_b = \frac{N_{bits,info}}{T_{OFDM}}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $D_b$ [bits/s]: D�bito binario efectivo
+    \item Incluye overhead del CP y c�digo corrector
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 4.5 Pilotos en Frecuencia}
+\vspace{-2mm}
+
+\textbf{Criterio de Nyquist Frecuencial:}
+\[
+\Delta f_{pilot} \leq \frac{1}{2\tau_{max}}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\Delta f_{pilot}$ [Hz]: Espaciado entre pilotos en frecuencia
+    \item $\tau_{max}$ [s]: Retardo m�ximo del canal
+    \item Ancho de coherencia: $B_c \approx \frac{1}{\tau_{max}}$
+\end{itemize}
+
+\textbf{N�mero M�ximo de Subportadoras entre Pilotos:}
+\[
+N_{max} = \left\lfloor\frac{1}{2\tau_{max} \cdot \Delta f}\right\rfloor
+\]
+
+\vspace{-2mm}
+\subsection*{\small 4.6 Pilotos en Tiempo}
+\vspace{-2mm}
+
+\textbf{Criterio de Nyquist Temporal:}
+\[
+T_{pilot} \leq \frac{T_c}{2}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $T_{pilot}$ [s]: Per�odo de repetici�n de pilotos
+    \item $T_c$ [s]: Tiempo de coherencia del canal
+\end{itemize}
+
+\textbf{Tiempo de coherencia:}
+\[
+T_c \approx \frac{1}{f_D}
+\]
+donde $f_D$ [Hz] es el m�ximo Doppler shift.
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 5. CANAL Y ECUALIZACI�N}
+\vspace{-3mm}
+
+\subsection*{\small 5.1 Canal Discreto Equivalente}
+\vspace{-2mm}
+
+\textbf{Se�al Recibida:}
+\[
+y_n = \sum_{l=0}^{L-1} h_l a_{n-l} + b_n
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $y_n$: Muestra recibida en instante $n$
+    \item $h_l$: Coeficiente $l$ del canal discreto
+    \item $a_{n-l}$: S�mbolo transmitido en instante $n-l$
+    \item $L$: Longitud de memoria del canal
+    \item $b_n$: Ruido blanco gaussiano en instante $n$
+\end{itemize}
+
+\textbf{Funci�n de Transferencia:}
+\[
+H(z) = \sum_{l=0}^{L-1} h_l z^{-l}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $H(z)$: Transformada Z del canal
+    \item $z^{-l}$: Operador de retardo de $l$ per�odos
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 5.2 Convoluci�n}
+\vspace{-2mm}
+
+\textbf{Convoluci�n Temporal:}
+\[
+(f * g)(t) = \int_{-\infty}^{+\infty} f(\tau) g(t-\tau) d\tau
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $(f * g)(t)$: Convoluci�n de $f$ y $g$
+    \item $\tau$: Variable de integraci�n
+    \item $t$: Variable temporal
+\end{itemize}
+
+\textbf{Propiedades:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item Conmutativa: $f * g = g * f$
+    \item Asociativa: $(f * g) * h = f * (g * h)$
+    \item Distributiva: $f * (g + h) = f * g + f * h$
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 5.3 ISI (Interferencia Entre S�mbolos)}
+\vspace{-2mm}
+
+\textbf{Muestreo con ISI:}
+\[
+y_n = h_0 a_n + \underbrace{\sum_{l \neq 0} h_l a_{n-l}}_{\text{ISI}} + b_n
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $h_0 a_n$: Se�al �til (s�mbolo actual)
+    \item $\sum_{l \neq 0} h_l a_{n-l}$: ISI (s�mbolos pasados y futuros)
+    \item Pre-cursor ISI: $l < 0$ (s�mbolos futuros)
+    \item Post-cursor ISI: $l > 0$ (s�mbolos pasados)
+\end{itemize}
+
+\textbf{Delay Spread (�talement Temporel):}
+\[
+\tau_{spread} = \tau_{max} - \tau_{min}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\tau_{spread}$ [s]: Dispersi�n temporal del canal
+    \item $\tau_{max}$ [s]: Retardo m�ximo
+    \item $\tau_{min}$ [s]: Retardo m�nimo
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 5.4 Estimaci�n de Canal}
+\vspace{-2mm}
+
+\textbf{Intercorrelaci�n:}
+\[
+R_{ya}(u) = \sum_k y_k a^*(k-u)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $R_{ya}(u)$: Intercorrelaci�n se�al recibida con secuencia conocida
+    \item $y_k$: Se�al recibida en instante $k$
+    \item $a^*(k-u)$: Conjugado de s�mbolo conocido (training)
+    \item $u$: Desplazamiento temporal
+\end{itemize}
+
+\textbf{Relaci�n con el Canal:}
+\[
+R_{ya}(u) = \sum_{l=0}^{L-1} h_l R_{aa}(u-l) = h * R_{aa}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $R_{aa}(u)$: Autocorrelaci�n de la secuencia de entrenamiento
+    \item Ideal: $R_{aa}(u) = \delta(u)$ (impulso)
+    \item Si $R_{aa}(u) = \delta(u)$: $R_{ya}(u) = h_u$ (estimaci�n directa)
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 5.5 Ecualizador DFE}
+\vspace{-2mm}
+
+\textbf{Se�al Ecualizada:}
+\[
+z_n = g_f * x_n - g_b * \hat{a}_{n-1}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $z_n$: Se�al en punto de decisi�n
+    \item $g_f$: Filtro feedforward (pre-decisi�n)
+    \item $g_b$: Filtro feedback (post-decisi�n)
+    \item $x_n$: Se�al recibida
+    \item $\hat{a}_{n-1}$: S�mbolo detectado anterior
+\end{itemize}
+
+\textbf{Inconveniente:} Propagaci�n de errores (error bursts)
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 6. PROBABILIDAD DE ERROR}
+\vspace{-3mm}
+
+\subsection*{\small 5.1 Funci�n Q de Gauss}
+\vspace{-2mm}
+
+\textbf{Definici�n:}
+\[
+Q(x) = \frac{1}{\sqrt{2\pi}} \int_x^{+\infty} e^{-\frac{t^2}{2}} dt
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $Q(x)$: Probabilidad de cola de distribuci�n Gaussiana est�ndar
+    \item $x$: Umbral normalizado
+\end{itemize}
+
+\textbf{Valores t�picos:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $Q(0) = 0.5$
+    \item $Q(1) \approx 0.159$
+    \item $Q(2) \approx 0.023$
+    \item $Q(3) \approx 1.35 \times 10^{-3}$
+    \item $Q(4) \approx 3.17 \times 10^{-5}$
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 5.2 Modulaci�n Binaria (BPSK)}
+\vspace{-2mm}
+
+\textbf{Probabilidad de Error BPSK:}
+\[
+P_e = Q\left(\sqrt{\frac{2E_b}{N_0}}\right)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $P_e$: Probabilidad de error de bit
+    \item $E_b$ [J]: Energ�a por bit
+    \item $N_0$ [J/Hz]: Densidad espectral de potencia del ruido
+    \item $\frac{E_b}{N_0}$ [dB]: Relaci�n se�al-ruido por bit
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 5.3 Relaciones SNR}
+\vspace{-2mm}
+
+\textbf{Energ�a por Bit:}
+\[
+E_b = \frac{E_s}{\log_2(M)}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $E_b$ [J]: Energ�a por bit
+    \item $E_s$ [J]: Energ�a por s�mbolo
+    \item $M$: Orden de la modulaci�n
+\end{itemize}
+
+\textbf{Relaci�n entre SNRs:}
+\[
+\frac{E_b}{N_0} = \frac{E_s}{N_0 \cdot \log_2(M)} = \frac{\text{SNR}}{\log_2(M)}
+\]
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 7. CÓDIGOS CORRECTORES}
+\vspace{-3mm}
+
+\subsection*{\small 6.1 Par�metros B�sicos}
+\vspace{-2mm}
+
+\textbf{Rendimiento del C�digo:}
+\[
+R_c = \frac{k}{n}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $R_c$: Rendimiento del c�digo (code rate)
+    \item $k$: N�mero de bits de informaci�n
+    \item $n$: N�mero de bits codificados
+    \item $(n-k)$: Bits de redundancia (paridad)
+\end{itemize}
+
+\textbf{Ejemplos:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $R_c = 1/2$: Por cada bit de informaci�n, 2 bits codificados
+    \item $R_c = 2/3$: Por cada 2 bits informaci�n, 3 bits codificados
+    \item $R_c = 3/4$: Por cada 3 bits informaci�n, 4 bits codificados
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 6.2 C�digos Lineales de Bloque}
+\vspace{-2mm}
+
+\textbf{Matriz Generadora (C�digo Sistem�tico):}
+\[
+G = [I_k \mid P]
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $I_k$: Matriz identidad $k \times k$ (bits de informaci�n)
+    \item $P$: Matriz de paridad $k \times (n-k)$
+    \item Palabra c�digo: $\mathbf{c} = \mathbf{u} \cdot G$ donde $\mathbf{u}$ es informaci�n
+\end{itemize}
+
+\textbf{Matriz de Paridad:}
+\[
+H = [P^T \mid I_{n-k}]
+\]
+
+\textbf{Propiedad ortogonal:}
+\[
+\mathbf{c} \cdot H^T = 0 \quad \text{para toda palabra c�digo v�lida}
+\]
+
+\vspace{-2mm}
+\subsection*{\small 7.3 Distancia de Hamming}
+\vspace{-2mm}
+
+\textbf{Peso de Hamming:}
+\[
+w_H(\mathbf{v}) = \text{n�mero de elementos no nulos en } \mathbf{v}
+\]
+
+\textbf{Distancia de Hamming:}
+\[
+d_H(\mathbf{u}, \mathbf{v}) = w_H(\mathbf{u} + \mathbf{v})
+\]
+
+\textbf{Distancia M�nima del C�digo:}
+\[
+d_{min} = \min_{\mathbf{c}_i \neq \mathbf{c}_j} d_H(\mathbf{c}_i, \mathbf{c}_j) = \min_{\mathbf{c} \neq 0} w_H(\mathbf{c})
+\]
+
+\textbf{Capacidad de Detecci�n y Correcci�n:}
+\[
+t_d = d_{min} - 1 \quad \text{(errores detectables)}
+\]
+\[
+t_c = \left\lfloor \frac{d_{min} - 1}{2} \right\rfloor \quad \text{(errores corregibles)}
+\]
+
+\vspace{-2mm}
+\subsection*{\small 6.4 Decodificaci�n por S�ndrome}
+\vspace{-2mm}
+
+\textbf{S�ndrome de palabra recibida $\mathbf{r}$:}
+\[
+\mathbf{s} = \mathbf{r} \cdot H^T = (\mathbf{c} + \mathbf{e}) \cdot H^T = \mathbf{e} \cdot H^T
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\mathbf{s}$: Vector s�ndrome de tama�o $(n-k)$
+    \item $\mathbf{r}$: Palabra recibida
+    \item $\mathbf{c}$: Palabra c�digo transmitida
+    \item $\mathbf{e}$: Vector de error
+    \item Si $\mathbf{s} = 0$ entonces $\mathbf{r}$ es palabra c�digo v�lida
+\end{itemize}
+
+\textbf{Regla de Decodificaci�n:}
+\begin{enumerate}[leftmargin=*,itemsep=0pt]
+    \item Calcular s�ndrome $\mathbf{s} = \mathbf{r} \cdot H^T$
+    \item Buscar en tabla: $\mathbf{s} \rightarrow \hat{\mathbf{e}}$ (error de peso m�nimo)
+    \item Palabra decodificada: $\hat{\mathbf{c}} = \mathbf{r} + \hat{\mathbf{e}}$
+\end{enumerate}
+
+\textbf{N�mero de s�ndromes posibles:} $2^{n-k}$
+
+\vspace{-2mm}
+\subsection*{\small 6.5 Ejemplos de C�digos Lineales}
+\vspace{-2mm}
+
+\textbf{C�digo de Repetici�n (n, 1):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $k=1$ bit repetido $n$ veces (n impar)
+    \item $d_{min} = n$
+    \item Corrige $\lfloor (n-1)/2 \rfloor$ errores
+    \item Ejemplo: $(3,1)$ con $d_{min}=3$, corrige 1 error
+\end{itemize}
+
+\textbf{C�digo de Paridad Simple (n, n-1):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $k = n-1$ bits de informaci�n
+    \item 1 bit de paridad: suma m�dulo 2 de todos los bits
+    \item $H = [1, 1, \ldots, 1]$
+    \item $d_{min} = 2$ ? detecta 1 error, no corrige
+\end{itemize}
+
+\textbf{C�digo de Hamming (7, 4):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $n = 2^m - 1$, $k = 2^m - m - 1$ (aqu� $m=3$)
+    \item $d_{min} = 3$ ? detecta 2 errores, corrige 1
+    \item $R_c = 4/7 \approx 0.571$
+    \item Columnas de $H$: representaci�n binaria de 1 a $n$
+\end{itemize}
+
+\textbf{C�digo General (n, k):}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $2^k$ palabras c�digo posibles
+    \item $n-k$ bits de redundancia (paridad)
+    \item Ejemplos: $C(5,2)$, $C(6,3)$, $C(3,2)$
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 6.6 D�bito con C�digo Corrector}
+\vspace{-2mm}
+
+\textbf{D�bito Efectivo:}
+\[
+D_{b,efectivo} = D_b \times R_c = D_b \times \frac{k}{n}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $D_{b,efectivo}$ [bits/s]: Tasa de informaci�n �til
+    \item $D_b$ [bits/s]: D�bito total transmitido
+    \item Overhead: $(1 - R_c) \times 100\%$
+\end{itemize}
+
+\textbf{Ejemplo:} Para $C(7,4)$ con $D_b = 1000$ bits/s:
+\[
+D_{b,efectivo} = 1000 \times \frac{4}{7} \approx 571.4 \text{ bits/s}
+\]
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 8. CANAL MULTI-TRAYECTO}
+\vspace{-3mm}
+
+\subsection*{\small 8.1 Respuesta del Canal}
+\vspace{-2mm}
+
+\textbf{Canal con Ecos:}
+\[
+c(t) = \sum_{i=1}^{N_{paths}} \alpha_i \delta(t - \tau_i)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $c(t)$: Respuesta impulsional del canal
+    \item $N_{paths}$: N�mero de trayectos
+    \item $\alpha_i$: Ganancia del trayecto $i$
+    \item $\tau_i$ [s]: Retardo del trayecto $i$
+    \item $\delta(t)$: Delta de Dirac
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 8.2 Matched Filter}
+\vspace{-2mm}
+
+\textbf{Filtro Adaptado:}
+\[
+g_r(t) = h_e(-t)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $g_r(t)$: Filtro de recepci�n
+    \item $h_e(t)$: Filtro de emisi�n
+    \item Maximiza SNR en instante de muestreo
+\end{itemize}
+
+\textbf{Pulso Resultante:}
+\[
+r(t) = (h_e * g_r)(t)
+\]
+
+\textbf{Para pulso rectangular:}
+\[
+r(t) = \begin{cases}
+t & \text{si } 0 \leq t < T \\
+2T - t & \text{si } T \leq t < 2T \\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+Forma triangular con m�ximo en $t = T$.
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 9. DOPPLER Y MOVILIDAD}
+\vspace{-3mm}
+
+\subsection*{\small 9.1 Efecto Doppler}
+\vspace{-2mm}
+
+\textbf{M�ximo Doppler Shift:}
+\[
+f_D = \frac{v \cdot f_c}{c}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $f_D$ [Hz]: M�ximo desplazamiento Doppler
+    \item $v$ [m/s]: Velocidad relativa emisor-receptor
+    \item $f_c$ [Hz]: Frecuencia portadora
+    \item $c$ [m/s]: Velocidad de propagaci�n (luz: $3 \times 10^8$ m/s, sonido agua: 1500 m/s)
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 9.2 Tiempo de Coherencia}
+\vspace{-2mm}
+
+\textbf{Relaci�n con Doppler:}
+\[
+T_c \approx \frac{1}{f_D}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $T_c$ [s]: Tiempo de coherencia
+    \item Durante $T_c$, el canal permanece aproximadamente constante
+\end{itemize}
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 10. FÓRMULAS DE TRANSFORMACIÓN}
+\vspace{-3mm}
+
+\subsection*{\small 10.1 Decibeles}
+\vspace{-2mm}
+
+\textbf{Conversi�n a dB:}
+\[
+X_{dB} = 10 \log_{10}(X)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $X_{dB}$ [dB]: Valor en decibeles
+    \item $X$: Valor lineal (potencia o relaci�n de potencias)
+\end{itemize}
+
+\textbf{Valores comunes:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $X = 2$ �� $3$ dB
+    \item $X = 10$ �� $10$ dB
+    \item $X = 100$ �� $20$ dB
+    \item $X = 0.5$ �� $-3$ dB
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 10.2 Transformada de Fourier}
+\vspace{-2mm}
+
+\textbf{Par de Transformadas:}
+\[
+F(\omega) = \int_{-\infty}^{+\infty} f(t) e^{-j\omega t} dt
+\]
+\[
+f(t) = \frac{1}{2\pi} \int_{-\infty}^{+\infty} F(\omega) e^{j\omega t} d\omega
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $f(t)$: Se�al en dominio temporal
+    \item $F(\omega)$: Se�al en dominio frecuencial
+    \item $\omega = 2\pi f$ [rad/s]: Pulsaci�n angular
+    \item $j = \sqrt{-1}$: Unidad imaginaria
+\end{itemize}
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 11. DISTANCIA Y ENERG�A}
+\vspace{-3mm}
+
+\subsection*{\small 11.1 Distancia Euclidiana}
+\vspace{-2mm}
+
+\textbf{Distancia entre S�mbolos:}
+\[
+d_{ij}^2 = \|s_i - s_j\|^2 = E_i + E_j - 2\langle s_i, s_j \rangle
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $d_{ij}$: Distancia euclidiana entre s�mbolos $i$ y $j$
+    \item $s_i, s_j$: Vectores de s�mbolo en el espacio de se�ales
+    \item $E_i = \|s_i\|^2$: Energ�a del s�mbolo $i$
+    \item $\langle s_i, s_j \rangle$: Producto escalar (correlaci�n)
+\end{itemize}
+
+\textbf{Distancia M�nima:}
+\[
+d_{min} = \min_{i \neq j} d_{ij}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $d_{min}$: Distancia m�nima de la constelaci�n
+    \item Determina la resistencia al ruido
+    \item Mayor $d_{min}$ �� menor probabilidad de error
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 10.2 Energ�a Promedio}
+\vspace{-2mm}
+
+\textbf{Energ�a Media de Constelaci�n:}
+\[
+E_s = \frac{1}{M} \sum_{i=1}^{M} E_i = \frac{1}{M} \sum_{i=1}^{M} \|s_i\|^2
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $E_s$ [J]: Energ�a promedio por s�mbolo
+    \item $M$: N�mero de s�mbolos en la constelaci�n
+    \item Asume s�mbolos equiprobables
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 11.3 PAM (Modulaci�n de Amplitud de Pulsos)}
+\vspace{-2mm}
+
+\textbf{Energ�a M-PAM:}
+\[
+E_s = \frac{M^2 - 1}{3} \Delta^2
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $M$: Orden de la modulaci�n PAM
+    \item $\Delta$: Separaci�n entre s�mbolos adyacentes
+    \item Alfabeto: $\{\pm\Delta, \pm3\Delta, \ldots, \pm(M-1)\Delta\}$
+\end{itemize}
+
+\textbf{Distancia M�nima PAM:}
+\[
+d_{min} = 2\Delta = \sqrt{\frac{6E_s}{M^2-1}}
+\]
+
+\textbf{Relaci�n $\Delta$ y $E_s$ desde $d_{min}$:}
+\[
+\Delta = \frac{d_{min}}{2} \quad \Rightarrow \quad E_s = \frac{M^2-1}{12}d_{min}^2
+\]
+
+\textbf{Ejemplos espec�ficos:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item 4-PAM: $E_s = 5\Delta^2$, s�mbolos $\{-3\Delta, -\Delta, +\Delta, +3\Delta\}$
+    \item 8-PAM: $E_s = 21\Delta^2$, s�mbolos $\{\pm\Delta, \pm3\Delta, \pm5\Delta, \pm7\Delta\}$
+    \item 16-PAM: $E_s = 85\Delta^2$
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 11.4 QAM (Modulaci�n en Cuadratura)}
+\vspace{-2mm}
+
+\textbf{M-QAM como combinaci�n PAM:}
+\[
+E_{s,QAM} = 2 \times E_{s,PAM}
+\]
+
+para $\sqrt{M}$-PAM en cada componente (I y Q).
+
+\textbf{Ejemplo 16-QAM:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item 4-PAM en eje I: $\{-3\Delta, -\Delta, +\Delta, +3\Delta\}$
+    \item 4-PAM en eje Q: $\{-3\Delta, -\Delta, +\Delta, +3\Delta\}$
+    \item $E_s = 2 \times 5\Delta^2 = 10\Delta^2$
+    \item $d_{min} = 2\Delta$
+    \item 16 s�mbolos en cuadr�cula $4\times4$
+\end{itemize}
+
+\textbf{Probabilidad de Error S�mbolo (aprox):}
+\[
+P_{s,QAM} \approx 4Q\left(\sqrt{\frac{3E_s}{(M-1)N_0}}\right)
+\]
+
+para M-QAM cuadrada en canal AWGN.
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 12. RECEPTOR �PTIMO}
+\vspace{-3mm}
+
+\subsection*{\small 12.1 Criterio MAP}
+\vspace{-2mm}
+
+\textbf{Maximum A Posteriori:}
+\[
+\hat{s} = \arg\max_{s_j \in \mathcal{S}} P(s_j | r)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\hat{s}$: S�mbolo estimado
+    \item $r$: Se�al recibida
+    \item $P(s_j | r)$: Probabilidad a posteriori
+    \item Minimiza la probabilidad de error de s�mbolo
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small 12.2 Criterio ML}
+\vspace{-2mm}
+
+\textbf{Maximum Likelihood (AWGN):}
+\[
+\hat{s} = \arg\max_{s_j \in \mathcal{S}} \langle r, s_j \rangle - \frac{E_j}{2}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $\langle r, s_j \rangle$: Correlaci�n se�al recibida con s�mbolo $j$
+    \item $E_j$: Energ�a del s�mbolo $j$
+    \item V�lido para canal AWGN con s�mbolos equiprobables
+\end{itemize}
+
+\textbf{Equivalente (s�mbolos equiprobables):}
+\[
+\hat{s} = \arg\min_{s_j \in \mathcal{S}} \|r - s_j\|^2
+\]
+
+Minimiza la distancia euclidiana.
+
+\vspace{-2mm}
+\subsection*{\small 12.3 Filtro Adaptado (Matched Filter)}
+\vspace{-2mm}
+
+\textbf{Respuesta Impulsional:}
+\[
+h_{MF}(t) = s^*(-t)
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $h_{MF}(t)$: Respuesta del filtro adaptado
+    \item $s(t)$: Se�al a detectar
+    \item $s^*(t)$: Conjugado complejo de $s(t)$
+    \item Maximiza SNR en instante de muestreo
+\end{itemize}
+
+\textbf{Salida del Filtro Adaptado:}
+\[
+y(t) = (r * h_{MF})(t) = \int_{-\infty}^{+\infty} r(\tau) s^*(t-\tau) d\tau
+\]
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 13. DENSIDAD ESPECTRAL DE POTENCIA}
+\vspace{-3mm}
+
+\subsection*{\small 12.1 PSD de Se�al Modulada}
+\vspace{-2mm}
+
+\textbf{PSD General:}
+\[
+S_x(f) = \frac{1}{T_s} |H(f)|^2 \sum_{k,l} R_{aa}[k-l] e^{-j2\pi f(k-l)T_s}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $S_x(f)$ [W/Hz]: Densidad espectral de potencia
+    \item $H(f)$: Transformada de Fourier del pulso conformador
+    \item $T_s$ [s]: Per�odo s�mbolo
+    \item $R_{aa}[k]$: Autocorrelaci�n de los s�mbolos
+\end{itemize}
+
+\textbf{Caso s�mbolos no correlacionados:}
+\[
+S_x(f) = \frac{\sigma_a^2}{T_s} |H(f)|^2
+\]
+
+donde $\sigma_a^2$ es la varianza de los s�mbolos.
+
+\vspace{-2mm}
+\subsection*{\small 13.2 Potencia Media}
+\vspace{-2mm}
+
+\textbf{Potencia de Transmisi�n:}
+\[
+P_{avg} = \int_{-\infty}^{+\infty} S_x(f) df = \frac{E_s}{T_s}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $P_{avg}$ [W]: Potencia media transmitida
+    \item $E_s$ [J]: Energ�a promedio por s�mbolo
+    \item $T_s$ [s]: Duraci�n de s�mbolo
+\end{itemize}
+
+\vspace{-2mm}
+\section*{\color{sectioncolor}\normalsize 14. CRITERIO DE NYQUIST}
+\vspace{-3mm}
+
+\subsection*{\small 14.1 Criterio de Nyquist (ISI=0)}
+\vspace{-2mm}
+
+\textbf{Condici�n de No ISI:}
+\[
+\sum_{k=-\infty}^{+\infty} H\left(f - \frac{k}{T_s}\right) = T_s
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $H(f)$: Respuesta en frecuencia del pulso global
+    \item $T_s$ [s]: Per�odo s�mbolo
+    \item Garantiza ISI = 0 en instantes de muestreo
+\end{itemize}
+
+\textbf{Equivalente en tiempo:}
+\[
+h(nT_s) = \begin{cases}
+1 & n = 0 \\
+0 & n \neq 0
+\end{cases}
+\]
+
+\vspace{-2mm}
+\subsection*{\small 13.2 Ancho de Banda M�nimo}
+\vspace{-2mm}
+
+\textbf{Banda de Nyquist:}
+\[
+B_{Nyquist} = \frac{1}{2T_s} = \frac{D_s}{2}
+\]
+
+\textbf{Variables:}
+\begin{itemize}[leftmargin=*,itemsep=0pt]
+    \item $B_{Nyquist}$ [Hz]: Ancho de banda m�nimo te�rico
+    \item $D_s$ [bauds]: Rapidez de modulaci�n
+    \item Solo alcanzable con pulso sinc (no realizable)
+\end{itemize}
+
+\end{multicols}
+
+\newpage
+
+\section*{\color{sectioncolor}\Large TEOR�A PR�CTICA PARA EX�MENES}
+\vspace{-3mm}
+
+\begin{multicols}{2}
+\footnotesize
+
+\subsection*{\small A. OFDM - Conceptos Clave}
+\vspace{-2mm}
+
+\textbf{�Qu� es OFDM?}
+
+Orthogonal Frequency Division Multiplexing divide el canal en m�ltiples subcanales ortogonales, cada uno con una subportadora de frecuencia diferente.
+
+\textbf{Notaci�n est�ndar:}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item $T_{OFDM}$ o $T_u$: Tiempo \textbf{�til} (duraci�n IFFT)
+    \item $T_{CP}$: Duraci�n del prefijo c�clico
+    \item $T_{total}$: Tiempo total transmitido = $T_{OFDM} + T_{CP}$
+\end{itemize}
+
+\textbf{�Por qu� $T_{OFDM}$ es tiempo �til?}
+\[
+\boxed{\Delta f = \frac{1}{T_{OFDM}}} \quad \text{(ortogonalidad)}
+\]
+
+La ortogonalidad entre subportadoras \textbf{solo depende del tiempo �til}, no del CP. El CP se a�ade despu�s para combatir ISI.
+
+\textbf{C�lculo de d�bito:}
+\[
+\boxed{R_b = \frac{\text{Bits de informaci�n}}{T_{total}} = \frac{N_{data} \times \log_2(M) \times r_c}{T_{OFDM} + T_{CP}}}
+\]
+
+\textbf{�IMPORTANTE!} El d�bito se calcula con $T_{total}$, no solo $T_{OFDM}$.
+
+\textbf{Eficiencia del CP:}
+\[
+\eta_{CP} = \frac{T_{OFDM}}{T_{total}} = \frac{T_{OFDM}}{T_{OFDM} + T_{CP}}
+\]
+
+Overhead del CP: $1 - \eta_{CP} = \frac{T_{CP}}{T_{total}}$
+
+\vspace{-2mm}
+\subsection*{\small B. Pilotos en OFDM}
+\vspace{-2mm}
+
+\textbf{�Por qu� pilotos?}
+
+Los pilotos son s�mbolos conocidos que permiten estimar c�mo el canal afecta la se�al.
+
+\textbf{Criterio de Nyquist en frecuencia:}
+\[
+\boxed{\Delta f_{pilot} \leq \frac{1}{2\tau_{max}}}
+\]
+
+\textbf{Interpretaci�n:} Si el canal tiene ecos de duraci�n $\tau_{max}$, en frecuencia var�a con ancho $\approx 1/\tau_{max}$. Necesitamos muestrear con Nyquist.
+
+\textbf{Espaciamiento m�ximo entre pilotos:}
+\[
+N_{max} = \left\lfloor \frac{1}{2\tau_{max} \cdot \Delta f} \right\rfloor \text{ subportadoras}
+\]
+
+\textbf{Criterio de Nyquist en tiempo:}
+\[
+\boxed{T_{pilot} \leq \frac{T_{coh}}{2}}
+\]
+
+donde $T_{coh}$ es el tiempo de coherencia (tiempo que el canal permanece constante).
+
+\textbf{N�mero de s�mbolos entre pilotos:}
+\[
+N_{OFDM,max} = \left\lfloor \frac{T_{coh}}{2T_{OFDM}} \right\rfloor
+\]
+
+\textbf{Caso especial:} Si $T_{OFDM} = T_{coh}$, entonces necesitas pilotos en \textbf{todos} los s�mbolos (opci�n m�s cercana al criterio).
+
+\vspace{-2mm}
+\subsection*{\small C. Ecualizadores DFE}
+\vspace{-2mm}
+
+\textbf{Estructura DFE:}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item \textbf{Filtro Feedforward:} Procesa se�al recibida
+    \item \textbf{Filtro Feedback:} Usa decisiones pasadas para cancelar ISI
+\end{itemize}
+
+\textbf{Ventaja:} El feedback no amplifica ruido (usa decisiones binarias).
+
+\textbf{Desventaja:} \textbf{Propagaci�n de errores} - si una decisi�n es incorrecta, el error se propaga a s�mbolos futuros.
+
+\textbf{Soluciones a propagaci�n:}
+\begin{enumerate}[leftmargin=*,itemsep=1pt]
+    \item Secuencias de entrenamiento peri�dicas
+    \item C�digos correctores de errores
+    \item Interleaving para dispersar errores
+    \item Usar ecualizador ML (Viterbi) en su lugar
+\end{enumerate}
+
+\vspace{-2mm}
+\subsection*{\small D. Ecualizador ML (Viterbi)}
+\vspace{-2mm}
+
+\textbf{Principio:} Busca la secuencia m�s probable (no decide s�mbolo por s�mbolo).
+
+\textbf{Trellis:}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+    \item Estados: Memoria del canal ($S_n = a_{n-1}$)
+    \item Transiciones: S�mbolo actual ($a_n$)
+    \item M�trica: Distancia al recibido
+\end{itemize}
+
+\textbf{Para canal con 1 s�mbolo de memoria:}
+\[
+y_n = A a_n + A a_{n-1} + b_n
+\]
+
+2 estados posibles: $\{-1, +1\}$ (valor del s�mbolo anterior)
+
+\textbf{Ventajas:} �ptimo, no propaga errores
+
+\textbf{Desventajas:} Complejidad exponencial con memoria del canal
+
+\vspace{-2mm}
+\subsection*{\small E. C�digos Convolucionales}
+\vspace{-2mm}
+
+\textbf{Rendimiento:}
+\[
+r_c = \frac{k}{n} = \frac{\text{bits entrada}}{\text{bits salida}}
+\]
+
+Ejemplo: $r_c = 1/2$ significa que por cada bit de entrada se generan 2 bits de salida.
+
+\textbf{Registro de desplazamiento:}
+
+El codificador usa \textbf{memoria} (registros D) para generar bits codificados que dependen de bits actuales y pasados.
+
+\textbf{Matriz generadora:}
+
+Para $r_c = 1/2$ con 3 registros:
+\[
+G = \begin{pmatrix}
+g_1^{(1)} & g_1^{(2)} \\
+g_2^{(1)} & g_2^{(2)} \\
+\vdots & \vdots
+\end{pmatrix}
+\]
+
+donde $g_i^{(j)}$ indica si el registro $i$ contribuye a la salida $j$.
+
+\textbf{Ejemplo com�n:} $(7, 5)_8$ en octal
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item $7_8 = 111_2$: salida 1 usa bits $[b_k, b_{k-1}, b_{k-2}]$
+    \item $5_8 = 101_2$: salida 2 usa bits $[b_k, 0, b_{k-2}]$
+\end{itemize}
+
+\vspace{-2mm}
+\subsection*{\small F. Estimaci�n de Canal}
+\vspace{-2mm}
+
+\textbf{Intercorrelaci�n:}
+\[
+R_{ya}(u) = \sum_k y_k a^*(k-u)
+\]
+
+Relaciona se�al recibida con secuencia de entrenamiento.
+
+\textbf{Resultado fundamental:}
+\[
+\boxed{R_{ya} = h * R_{aa}}
+\]
+
+donde $h$ es la respuesta del canal y $R_{aa}$ es la autocorrelaci�n del entrenamiento.
+
+\textbf{Secuencia ideal:}
+
+Si $R_{aa}(u) = \delta(u)$ (funci�n Delta), entonces:
+\[
+\boxed{\hat{h}_u = R_{ya}(u)}
+\]
+
+�Obtenemos directamente los coeficientes del canal!
+
+\textbf{Soluci�n LS (Least Squares):}
+\[
+\hat{\mathbf{h}} = (\mathbf{A}^H \mathbf{A})^{-1} \mathbf{A}^H \mathbf{y}
+\]
+
+donde $\mathbf{A}$ es la matriz de Toeplitz con la secuencia de entrenamiento.
+
+\vspace{-2mm}
+\subsection*{\small G. Canal Multi-trayecto}
+\vspace{-2mm}
+
+\textbf{Modelo:}
+\[
+c(t) = \sum_{i=1}^{L} \alpha_i \delta(t - \tau_i)
+\]
+
+donde $\alpha_i$ son coeficientes y $\tau_i$ son retardos.
+
+\textbf{Canal discreto equivalente:}
+
+Despu�s de filtrado y muestreo:
+\[
+y_n = \sum_{l=0}^{L-1} h_l a_{n-l} + b_n
+\]
+
+\textbf{C�lculo de coeficientes:}
+
+Evaluar $(r * c)(t)$ en instantes de muestreo $t_0 + nT$:
+\[
+h_n = (r * c)(t_0 + nT)
+\]
+
+donde $r(t) = (h_e * g_r)(t)$ es la respuesta del sistema transmisor-receptor.
+
+\textbf{Para matched filter:}
+\[
+r(t) = \Lambda\left(\frac{t-T}{T}\right) \cdot T
+\]
+
+(funci�n triangular de ancho $2T$, m�ximo en $t=T$).
+
+\vspace{-2mm}
+\subsection*{\small H. Problemas de Sincronizaci�n}
+\vspace{-2mm}
+
+\textbf{Instante �ptimo de muestreo $t_0$:}
+
+Elegir $t_0$ para maximizar:
+\[
+\max_{n} |h_n| \quad \text{y minimizar ISI}
+\]
+
+T�picamente: $t_0$ = instante del m�ximo de $r(t)$.
+
+\textbf{Derivada para encontrar m�ximo:}
+\[
+\frac{dr(t)}{dt} = 0
+\]
+
+\vspace{-2mm}
+\subsection*{\small I. Matched Filter}
+\vspace{-2mm}
+
+\textbf{Definici�n:}
+\[
+g_r(t) = h_e^*(-t)
+\]
+
+\textbf{�Por qu�?} Maximiza SNR en el instante de muestreo.
+
+\textbf{Respuesta global:}
+\[
+r(t) = (h_e * g_r)(t) = h_e(t) * h_e^*(-t)
+\]
+
+Para pulso rectangular: Respuesta triangular
+
+\vspace{-2mm}
+\subsection*{\small J. Casos L�mite Importantes}
+\vspace{-2mm}
+
+\textbf{Si pregunta por pilotos y $T_{OFDM} \approx T_{coh}$:}
+
+La opci�n correcta es pilotos en \textbf{todos} los s�mbolos OFDM (caso l�mite aceptable).
+
+\textbf{Si $\tau_{max}$ es grande:}
+
+Necesitas m�s pilotos en frecuencia (menor espaciamiento).
+
+\textbf{Si canal var�a r�pido ($T_{coh}$ peque�o):}
+
+Necesitas m�s pilotos en tiempo (actualizar m�s seguido).
+
+\textbf{Probabilidad de error con ISI:}
+
+Incluso con ruido ? 0, si hay ISI la $P_e$ NO tiende a 0.
+
+Ejemplo: $y_n = Aa_n + Aa_{n-1}$
+
+Error cuando $a_n = -1, a_{n-1} = +1$: $y_n = 0$ ? decide incorrectamente.
+
+\vspace{-2mm}
+\subsection*{\small K. Tips para Examen}
+\vspace{-2mm}
+
+\textbf{1. Dibuja siempre:}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item Constelaciones (QPSK, 8-PSK)
+    \item Respuestas temporales (convoluciones)
+    \item Diagramas de bloques (DFE, codificadores)
+\end{itemize}
+
+\textbf{2. Verifica unidades:}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item Frecuencias en Hz
+    \item Tiempos en segundos (�cuidado con ms, �s!)
+    \item D�bitos en bits/s
+\end{itemize}
+
+\textbf{3. Casos especiales OFDM:}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item Sin pilotos: usar todas las subportadoras
+    \item Con pilotos: restar n�mero de pilotos
+    \item Siempre usar $T_{total}$ para d�bito
+\end{itemize}
+
+\textbf{4. C�digos correctores:}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item $r_c = 2/3$ significa: 64 bits codificados ? 42 bits info
+    \item Multiplica por $r_c$ para obtener bits �tiles
+\end{itemize}
+
+\textbf{5. Estimaci�n de canal:}
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+    \item Si piden "m�todo": correlaci�n cruzada
+    \item Si piden implementaci�n: matriz LS
+    \item Menciona siempre secuencia de entrenamiento
+\end{itemize}
+
+\end{multicols}
+
+\end{document}
+
+
+
+
+

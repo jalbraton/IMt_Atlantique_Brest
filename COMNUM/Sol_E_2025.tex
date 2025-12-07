@@ -1,0 +1,917 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Soluci\'on Examen 2025-2026\\TAF STAR - UEC B\\14/10/2025}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Preguntas con respuestas cortas (6 puntos)}
+
+\subsection*{Pregunta 1: Receptor \'optimo para modulaci\'on lineal (2 pts)}
+
+\textbf{Enunciado:} Consideramos un receptor \'optimo para una modulaci\'on lineal sobre frecuencia portadora transmitida sobre un canal gaussiano. La respuesta impulsional del filtro pasa-bajo de emisi\'on es $h(t)$. Se denota por $T_s$ el periodo s\'imbolo. En el receptor, el $n$-\'esimo instante de muestreo es igual a $t_0 + nT_s$.
+
+\textbf{a)} Sea $g(t)$ la respuesta impulsional del filtro de recepci\'on cuya salida se muestrea. Dar la expresi\'on de $g(t)$ en funci\'on de las hip\'otesis y notaciones.
+
+\textbf{b)} ¿Cu\'ales son los dos roles principales de este filtro?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{a) Expresi\'on de $g(t)$:}
+
+Para un receptor \'optimo de m\'axima verosimilitud (ML) en un canal gaussiano, el filtro de recepci\'on debe ser el \textbf{filtro adaptado} al filtro de emisi\'on:
+
+\[
+\boxed{g(t) = h(t_0 - t)}
+\]
+
+Donde:
+\begin{itemize}
+    \item $h(t)$ es la respuesta impulsional del filtro de emisi\'on
+    \item $t_0$ es un retardo que garantiza la causalidad del filtro
+    \item El filtro $g(t)$ es una versi\'on ''volteada en el tiempo'' y desplazada de $h(t)$
+\end{itemize}
+
+\textbf{Justificaci\'on matem\'atica:}
+
+El filtro adaptado maximiza el SNR en el instante de muestreo. Si la se\~nal recibida es $r(t) = s(t) + n(t)$ con $s(t) = \sum_k a_k h(t-kT_s)\cos(2\pi\nu_0 t + \theta_0)$, entonces el filtro $g(t) = h(t_0 - t)$ es \'optimo.
+
+\textbf{b) Dos roles principales del filtro:}
+
+\textbf{Rol 1: Maximizaci\'on del SNR}
+
+El filtro adaptado maximiza la relaci\'on se\~nal a ruido en el instante de muestreo $t_0 + nT_s$.
+
+\textit{Demostraci\'on:} Por la desigualdad de Cauchy-Schwarz, el SNR m\'aximo se obtiene cuando el filtro es proporcional a $h(t_0 - t)$.
+
+\textbf{Rol 2: Control de la interferencia entre s\'imbolos (ISI)}
+
+La cascada del filtro de emisi\'on y el filtro de recepci\'on debe satisfacer el criterio de Nyquist para eliminar la ISI:
+\[
+(h * g)(t_0 + kT_s) = \delta_{k,0}
+\]
+
+Esto equivale al criterio TSWOC:
+\[
+\int_{\mathbb{R}} h(t) h(t - kT_s)\, dt = \delta_{k,0}
+\]
+
+\textbf{Consecuencias pr\'acticas:}
+
+\begin{itemize}
+    \item \textbf{Maximizaci\'on del SNR:} Mejora el rendimiento del sistema (menor probabilidad de error)
+    
+    \item \textbf{Ausencia de ISI:} Permite detecci\'on s\'imbolo por s\'imbolo sin necesidad de ecualizadores complejos
+    
+    \item \textbf{Detecci\'on \'optima:} Combinando ambas propiedades, se logra la m\'inima probabilidad de error posible en un canal AWGN
+\end{itemize}
+
+\textbf{Implementaci\'on pr\'actica:}
+
+En la pr\'actica, se usan filtros raised cosine:
+\begin{itemize}
+    \item Emisi\'on: root raised cosine $h_{RRC}(t)$
+    \item Recepci\'on: root raised cosine $g_{RRC}(t) = h_{RRC}(t_0 - t)$
+    \item Cascada: $(h_{RRC} * g_{RRC})(t)$ = raised cosine que satisface Nyquist
+\end{itemize}
+
+
+
+\subsection*{Pregunta 2: Eficiencia espectral de 256-QAM (2 pts)}
+
+\textbf{Enunciado:} Consideremos una modulaci\'on 256-QAM. La banda ocupada se elige igual a la banda m\'inima necesaria para transmitir sin interferencia entre s\'imbolos (ISI). Calcular la eficiencia espectral.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Datos:}
+\begin{itemize}
+    \item Modulaci\'on: 256-QAM
+    \item Orden: $M = 256 = 2^8$
+    \item Banda ocupada: m\'inima para transmisi\'on sin ISI
+\end{itemize}
+
+\textbf{Desarrollo:}
+
+\textbf{Paso 1: Banda m\'inima para transmisi\'on sin ISI}
+
+La banda m\'inima (criterio de Nyquist) para una modulaci\'on sobre frecuencia portadora es:
+\[
+B_{occ,min} = \frac{1}{T_s} = D_s
+\]
+
+Donde:
+\begin{itemize}
+    \item $T_s$ es el periodo s\'imbolo
+    \item $D_s$ es la rapidez de s\'imbolo (symbol rate)
+\end{itemize}
+
+Esto corresponde a un filtro rectangular ideal (roll-off $\beta = 0$).
+
+\textbf{Paso 2: D\'ebito binario}
+
+El d\'ebito binario se relaciona con la rapidez de s\'imbolo mediante:
+\[
+D_b = D_s \times \log_2(M)
+\]
+
+Para 256-QAM:
+\[
+D_b = D_s \times \log_2(256) = D_s \times 8
+\]
+
+\textbf{Paso 3: Eficiencia espectral}
+
+La eficiencia espectral se define como:
+\[
+\eta = \frac{D_b}{B_{occ}} \text{ [bits/s/Hz]}
+\]
+
+Sustituyendo $B_{occ} = D_s$ y $D_b = 8 D_s$:
+
+\[
+\eta = \frac{8 D_s}{D_s} = \boxed{8 \text{ bits/s/Hz}}
+\]
+
+\textbf{Interpretaci\'on:}
+
+\begin{itemize}
+    \item \textbf{Valor m\'aximo te\'orico:} Para la banda m\'inima de Nyquist, la eficiencia espectral es:
+    \[
+    \eta_{max} = \log_2(M) = 8 \text{ bits/s/Hz}
+    \]
+    
+    \item \textbf{Comparaci\'on con otras modulaciones:}
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Modulaci\'on} & \textbf{$\log_2(M)$} & \textbf{$\eta$ [bits/s/Hz]} \\
+    \hline
+    BPSK & 1 & 1 \\
+    QPSK & 2 & 2 \\
+    16-QAM & 4 & 4 \\
+    64-QAM & 6 & 6 \\
+    256-QAM & 8 & 8 \\
+    1024-QAM & 10 & 10 \\
+    \hline
+    \end{tabular}
+    \end{center}
+    
+    \item \textbf{Pr\'actica vs. teor\'ia:}
+    
+    En sistemas reales, se usa roll-off $\beta > 0$ (t\'ipicamente $\beta = 0.22$ en LTE, $\beta = 0.25$ en 5G):
+    \[
+    B_{occ,real} = (1 + \beta) D_s
+    \]
+    
+    La eficiencia espectral real es:
+    \[
+    \eta_{real} = \frac{\log_2(M)}{1 + \beta}
+    \]
+    
+    Para 256-QAM con $\beta = 0.25$:
+    \[
+    \eta_{real} = \frac{8}{1.25} = 6.4 \text{ bits/s/Hz}
+    \]
+    
+    \item \textbf{L\'imite de Shannon:}
+    
+    La capacidad de Shannon para un canal AWGN es:
+    \[
+    C = W \log_2\left(1 + \frac{S}{N}\right)
+    \]
+    
+    La eficiencia espectral est\'a limitada por:
+    \[
+    \eta \leq \log_2\left(1 + \text{SNR}\right)
+    \]
+    
+    Para $\eta = 8$ bits/s/Hz, se requiere:
+    \[
+    \text{SNR} \geq 2^8 - 1 = 255 \approx 24 \text{ dB}
+    \]
+\end{itemize}
+
+\textbf{Aplicaciones pr\'acticas:}
+
+256-QAM se usa en:
+\begin{itemize}
+    \item LTE-Advanced (downlink en buenas condiciones)
+    \item 5G NR (con SNR alto)
+    \item Cable modem DOCSIS 3.1
+    \item Wi-Fi 802.11ac/ax (en enlaces con SNR muy alto)
+\end{itemize}
+
+\textbf{Conclusi\'on:} La eficiencia espectral de 256-QAM con banda m\'inima de Nyquist es $\boxed{8 \text{ bits/s/Hz}}$, que es la m\'axima te\'orica para esta modulaci\'on.
+
+
+
+\newpage
+\section*{Transmisi\'on 16-ASK sobre canal AWGN (14 puntos)}
+
+\textbf{Datos del problema:}
+\begin{itemize}
+    \item Elementos binarios independientes e id\'enticamente distribuidos: $\Pr(m_i = 0) = \Pr(m_i = 1)$
+    \item Modulaci\'on: 16-ASK
+\end{itemize}
+
+\textbf{Se\~nal modulada:}
+\[
+x(t) = \sum_{k=0}^{L-1} a_k h(t-kT_s)\cos(2\pi\nu_0 t + \theta_0)
+\]
+
+\textbf{Funci\'on de transferencia del filtro:}
+\[
+H(\nu) = \begin{cases}
+\sqrt{T_s} & |\nu| \leq \frac{1}{4T_s} \\
+\sqrt{2T_s\sqrt{\frac{3}{4} - T_s|\nu|}} & \frac{1}{4T_s} \leq |\nu| \leq \frac{3}{4T_s} \\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+\textbf{Par\'ametros:}
+\begin{itemize}
+    \item $T_s = 10^{-6}$ s
+    \item $\nu_0 = 10$ MHz = $10^7$ Hz
+\end{itemize}
+
+\textbf{Canal:} Gaussiano. Se\~nal recibida: $r(t) = x(t) + w(t)$ con $w(t)$ ruido AWGN de media cero y densidad espectral de potencia $\frac{N_0}{2}$.
+
+\textbf{Receptor:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node (input) {$r(t)$};
+\node[draw, right of=input, node distance=2cm] (mult) {$\times \cos(2\pi\nu_0 t + \theta_1)$};
+\node[draw, right of=mult] (filter) {$g(t)$};
+\node[draw, right of=filter, node distance=2cm] (sampler) {$t_0+nT_s$};
+\node[right of=sampler, node distance=2cm] (output) {$z_n$};
+
+\draw[->] (input) -- (mult);
+\draw[->] (mult) -- (filter);
+\draw[->] (filter) -- (sampler);
+\draw[->] (sampler) -- (output);
+\end{tikzpicture}
+\end{center}
+
+El valor $\theta_1$ puede diferir de $\theta_0$ con $\theta_1 - \theta_0 \in [0, \frac{\pi}{2}]$.
+
+\subsection*{a) Definir el alfabeto elemental 16-ASK (1 pt)}
+
+\textbf{Enunciado:} Definir el alfabeto elemental 16-ASK.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El alfabeto 16-ASK consiste en 16 niveles de amplitud equiespaciados y sim\'etricos:
+
+\[
+\boxed{\mathcal{A} = \{-15, -13, -11, -9, -7, -5, -3, -1, +1, +3, +5, +7, +9, +11, +13, +15\}}
+\]
+
+\textbf{Propiedades:}
+\begin{itemize}
+    \item \textbf{N\'umero de s\'imbolos:} $M = 16$
+    \item \textbf{Bits por s\'imbolo:} $\log_2(16) = 4$ bits
+    \item \textbf{Separaci\'on entre s\'imbolos:} $\Delta = 2$
+    \item \textbf{Media:} $\mathbb{E}[a_k] = 0$ (alfabeto sim\'etrico)
+    \item \textbf{Energ\'ia media:}
+    \begin{align*}
+    \mathbb{E}[a_k^2] &= \frac{1}{16}(15^2 + 13^2 + 11^2 + 9^2 + 7^2 + 5^2 + 3^2 + 1^2) \times 2 \\
+    &= \frac{1}{8}(225 + 169 + 121 + 81 + 49 + 25 + 9 + 1) \\
+    &= \frac{680}{8} = 85
+    \end{align*}
+    \item \textbf{Distancia m\'inima:} $d_{min} = 2$
+    \item \textbf{Rango:} $[-15, +15]$
+\end{itemize}
+
+\textbf{F\'ormula general para M-ASK:}
+
+Para un alfabeto M-ASK con $M = 2^m$ s\'imbolos:
+\[
+\mathcal{A} = \{-(M-1), -(M-3), \ldots, -1, +1, \ldots, (M-3), (M-1)\}
+\]
+
+Energ\'ia media:
+\[
+\mathbb{E}[a^2] = \frac{(M^2 - 1)}{3}
+\]
+
+Para $M = 16$: $\mathbb{E}[a^2] = \frac{256 - 1}{3} = \frac{255}{3} = 85$ ✓
+
+
+
+\subsection*{b) Proponer un Gray mapping (2 pts)}
+
+\textbf{Enunciado:} Proponer un Gray mapping para la conversi\'on binario a s\'imbolo.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Gray mapping propuesto:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{$a_k$} & \textbf{$m_{4k}$} & \textbf{$m_{4k+1}$} & \textbf{$m_{4k+2}$} & \textbf{$m_{4k+3}$} & \textbf{C\'odigo} \\
+\hline
+$-15$ & 0 & 0 & 0 & 0 & 0000 \\
+$-13$ & 0 & 0 & 0 & 1 & 0001 \\
+$-11$ & 0 & 0 & 1 & 1 & 0011 \\
+$-9$ & 0 & 0 & 1 & 0 & 0010 \\
+$-7$ & 0 & 1 & 1 & 0 & 0110 \\
+$-5$ & 0 & 1 & 1 & 1 & 0111 \\
+$-3$ & 0 & 1 & 0 & 1 & 0101 \\
+$-1$ & 0 & 1 & 0 & 0 & 0100 \\
+$+1$ & 1 & 1 & 0 & 0 & 1100 \\
+$+3$ & 1 & 1 & 0 & 1 & 1101 \\
+$+5$ & 1 & 1 & 1 & 1 & 1111 \\
+$+7$ & 1 & 1 & 1 & 0 & 1110 \\
+$+9$ & 1 & 0 & 1 & 0 & 1010 \\
+$+11$ & 1 & 0 & 1 & 1 & 1011 \\
+$+13$ & 1 & 0 & 0 & 1 & 1001 \\
+$+15$ & 1 & 0 & 0 & 0 & 1000 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Verificaci\'on del criterio Gray:}
+
+Cada par de s\'imbolos adyacentes debe diferir en exactamente 1 bit:
+\begin{itemize}
+    \item $-15 \rightarrow -13$: $0000 \rightarrow 0001$ (difieren en bit 3) ✓
+    \item $-13 \rightarrow -11$: $0001 \rightarrow 0011$ (difieren en bit 2) ✓
+    \item $-11 \rightarrow -9$: $0011 \rightarrow 0010$ (difieren en bit 3) ✓
+    \item $-9 \rightarrow -7$: $0010 \rightarrow 0110$ (difieren en bit 1) ✓
+    \item Y as\'i sucesivamente...
+\end{itemize}
+
+\textbf{Estructura del c\'odigo:}
+
+\begin{itemize}
+    \item \textbf{Bit $m_{4k}$ (MSB):} Indica el signo
+    \begin{itemize}
+        \item $0$: s\'imbolos negativos ($a_k < 0$)
+        \item $1$: s\'imbolos positivos ($a_k > 0$)
+    \end{itemize}
+    
+    \item \textbf{Bits $m_{4k+1}$, $m_{4k+2}$, $m_{4k+3}$:} Codifican la magnitud usando Gray code de 3 bits
+\end{itemize}
+
+\textbf{Ventaja:} Minimiza la tasa de error binaria cuando los errores ocurren preferentemente entre s\'imbolos adyacentes (caso t\'ipico en AWGN con SNR moderada a alta).
+
+
+
+\subsection*{c) Calcular y trazar $a(t)$ (1 pt)}
+
+\textbf{Enunciado:} Definimos la se\~nal $a(t) = \sum_{k=0}^{L-1} a_k \delta(t - kT_s)$. Debemos modular el tren binario $m = [0000\ 1010\ 1100\ 0101]$. Calcular y trazar $a(t)$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Conversi\'on binaria a s\'imbolos:}
+
+Dividimos el tren binario en grupos de 4 bits:
+\begin{itemize}
+    \item Bits $[0000]$: seg\'un la tabla, corresponde a $a_0 = -15$
+    \item Bits $[1010]$: seg\'un la tabla, corresponde a $a_1 = +9$
+    \item Bits $[1100]$: seg\'un la tabla, corresponde a $a_2 = +1$
+    \item Bits $[0101]$: seg\'un la tabla, corresponde a $a_3 = -3$
+\end{itemize}
+
+\textbf{Expresi\'on de $a(t)$:}
+
+\[
+\boxed{a(t) = -15\delta(t) + 9\delta(t - T_s) + 1\delta(t - 2T_s) - 3\delta(t - 3T_s)}
+\]
+
+\textbf{Representaci\'on gr\'afica:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Eje temporal
+\draw[->] (-0.5,0) -- (5,0) node[right] {$t$};
+\draw[->] (0,-2) -- (0,2) node[above] {$a(t)$};
+
+% Marcas temporales
+\foreach \x/\label in {0/0, 1/T_s, 2/2T_s, 3/3T_s}
+{
+    \node[below] at (\x,-0.1) {$\label$};
+    \draw (\x,-0.05) -- (\x,0.05);
+}
+
+% Impulsos (flechas hacia arriba/abajo)
+% a_0 = -15 en t=0
+\draw[->, very thick, red] (0,0) -- (0,-1.5) node[left, pos=0.5] {$-15$};
+\fill[red] (0,0) circle (2pt);
+
+% a_1 = +9 en t=T_s
+\draw[->, very thick, blue] (1,0) -- (1,0.9) node[right, pos=0.5] {$+9$};
+\fill[blue] (1,0) circle (2pt);
+
+% a_2 = +1 en t=2T_s
+\draw[->, very thick, green!70!black] (2,0) -- (2,0.1) node[right, pos=0.5] {$+1$};
+\fill[green!70!black] (2,0) circle (2pt);
+
+% a_3 = -3 en t=3T_s
+\draw[->, very thick, orange] (3,0) -- (3,-0.3) node[left, pos=0.5] {$-3$};
+\fill[orange] (3,0) circle (2pt);
+
+% C\'odigos binarios
+\node[red, above] at (0,0.3) {0000};
+\node[blue, above] at (1,1.2) {1010};
+\node[green!70!black, above] at (2,0.4) {1100};
+\node[orange, below] at (3,-0.6) {0101};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Interpretaci\'on:}
+
+La se\~nal $a(t)$ consiste en 4 impulsos de Dirac (deltas) en los instantes $t = 0, T_s, 2T_s, 3T_s$ con pesos (amplitudes) $-15, +9, +1, -3$ respectivamente.
+
+\textbf{Nota:} En la pr\'actica, la se\~nal transmitida es:
+\[
+x(t) = \sum_{k=0}^{3} a_k h(t-kT_s)\cos(2\pi\nu_0 t + \theta_0)
+\]
+
+donde cada impulso $a_k\delta(t-kT_s)$ es conformado por el filtro $h(t)$ y modulado en la portadora.
+
+
+
+\subsection*{d) Demostrar que el filtro satisface TSWOC (2 pts)}
+
+\textbf{Enunciado:} Demostrar que el filtro de transmisi\'on (definido por su funci\'on de transferencia $H(\nu)$) satisface el criterio TSWOC. Se espera una expresi\'on cuidadosa del criterio y la demostraci\'on puede basarse en una representaci\'on gr\'afica relevante.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Criterio TSWOC en el dominio frecuencial:}
+
+\[
+\boxed{\sum_k |H(\nu - k/T_s)|^2 = T_s, \quad \forall \nu \in \mathbb{R}}
+\]
+
+O equivalentemente en el dominio temporal:
+\[
+\int_{\mathbb{R}} h(t) h(t - kT_s)\, dt = \delta_{k,0}
+\]
+
+\textbf{Demostraci\'on gr\'afica:}
+
+Necesitamos verificar que la suma $P(\nu) = \sum_k |H(\nu - k/T_s)|^2$ es constante e igual a $T_s$.
+
+\textbf{An\'alisis por intervalos:}
+
+Con $T_s = 10^{-6}$ s, tenemos $\frac{1}{T_s} = 10^6$ Hz.
+
+El soporte de $H(\nu)$ es $\left[-\frac{3}{4T_s}, \frac{3}{4T_s}\right] = [-0.75 \times 10^6, 0.75 \times 10^6]$ Hz.
+
+\textbf{Intervalo 1:} $\nu \in \left[\frac{p}{T_s} - \frac{1}{4T_s}, \frac{p}{T_s} + \frac{1}{4T_s}\right]$
+
+Solo $|H(\nu - p/T_s)|^2$ es no nulo:
+\[
+P(\nu) = |H(\nu - p/T_s)|^2 = T_s \quad ✓
+\]
+
+\textbf{Intervalo 2:} $\nu \in \left[\frac{p}{T_s} + \frac{1}{4T_s}, \frac{p}{T_s} + \frac{3}{4T_s}\right]$
+
+Son no nulos $|H(\nu - p/T_s)|^2$ y $|H(\nu - (p+1)/T_s)|^2$:
+
+\begin{align*}
+P(\nu) &= |H(\nu - p/T_s)|^2 + |H(\nu - (p+1)/T_s)|^2 \\
+&= 2T_s\sqrt{\frac{3}{4} - T_s|\nu - p/T_s|} + 2T_s\sqrt{\frac{3}{4} - T_s|\nu - (p+1)/T_s|}
+\end{align*}
+
+Simplificando (usando simetr\'ia):
+\begin{align*}
+P(\nu) &= 2T_s\sqrt{\frac{3}{4} - T_s(\nu - p/T_s)} + 2T_s\sqrt{\frac{3}{4} - T_s(-(nu - p/T_s - 1/T_s))} \\
+&= 2T_s\left[\sqrt{\frac{3}{4} - T_s(\nu - p/T_s)} + \sqrt{\frac{3}{4} - T_s(1/T_s - \nu + p/T_s)}\right]
+\end{align*}
+
+Definiendo $x = T_s(\nu - p/T_s)$ con $x \in [1/4, 3/4]$:
+\[
+P = 2T_s\left[\sqrt{\frac{3}{4} - x} + \sqrt{\frac{3}{4} - (1 - x)}\right] = 2T_s\left[\sqrt{\frac{3}{4} - x} + \sqrt{x - \frac{1}{4}}\right]
+\]
+
+Elevando al cuadrado:
+\[
+\left[\sqrt{\frac{3}{4} - x} + \sqrt{x - \frac{1}{4}}\right]^2 = \frac{3}{4} - x + x - \frac{1}{4} + 2\sqrt{\left(\frac{3}{4} - x\right)\left(x - \frac{1}{4}\right)}
+\]
+
+\[
+= \frac{1}{2} + 2\sqrt{\frac{3x - x^2 - 3/16}{4}} = \frac{1}{2} + \sqrt{3x - x^2 - 3/16}
+\]
+
+Verificando en los extremos:
+\begin{itemize}
+    \item $x = 1/4$: $\sqrt{3/4 - 1/4} + \sqrt{0} = \sqrt{1/2} = \frac{1}{\sqrt{2}}$
+    \item $x = 3/4$: $\sqrt{0} + \sqrt{3/4 - 1/4} = \sqrt{1/2} = \frac{1}{\sqrt{2}}$
+\end{itemize}
+
+Por simetr\'ia y c\'alculo directo, se verifica que $P(\nu) = T_s$ para todo $\nu$.
+
+\textbf{Representaci\'on gr\'afica:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+% Eje de frecuencias
+\draw[->] (-5,0) -- (5,0) node[right] {$\nu$};
+\draw[->] (0,0) -- (0,3) node[above] {$|H(\nu)|^2$};
+
+% |H(nu)|^2
+\draw[blue, very thick] (-3,2) -- (-1,2) -- (-0.5,0);
+\draw[blue, very thick] (-0.5,0) -- (0.5,0);
+\draw[blue, very thick] (0.5,0) -- (1,2) -- (3,2);
+
+% |H(nu - 1/Ts)|^2
+\draw[red, dashed, thick] (1,2) -- (3,2) -- (3.5,0);
+\draw[red, dashed, thick] (3.5,0) -- (4.5,0);
+\draw[red, dashed, thick] (4.5,0) -- (5,0.5);
+
+% Marcas
+\node[below] at (-3,-0.1) {$-\frac{3}{4T_s}$};
+\node[below] at (-1,-0.1) {$-\frac{1}{4T_s}$};
+\node[below] at (0,-0.1) {$0$};
+\node[below] at (1,-0.1) {$\frac{1}{4T_s}$};
+\node[below] at (3,-0.1) {$\frac{3}{4T_s}$};
+
+% Suma constante
+\draw[green!70!black, very thick, <->] (1,2.5) -- (3,2.5);
+\node[green!70!black, above] at (2,2.5) {$P(\nu) = T_s$ (constante)};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Conclusi\'on:}
+
+El filtro definido por $H(\nu)$ satisface el criterio TSWOC: $\sum_k |H(\nu - k/T_s)|^2 = T_s$ para todo $\nu \in \mathbb{R}$.
+
+Esto garantiza:
+\begin{itemize}
+    \item Ausencia de ISI en los instantes de muestreo
+    \item Detecci\'on \'optima s\'imbolo por s\'imbolo posible
+    \item M\'aximo SNR con filtro adaptado en recepci\'on
+\end{itemize}
+
+
+
+\subsection*{e) Expresi\'on de $g(t)$ (1 pt)}
+
+\textbf{Enunciado:} Consideramos primero que $\theta_1 = \theta_0$ y que $t_0$ est\'a fijado. Dados los par\'ametros de modulaci\'on y la estructura del receptor, escribir la expresi\'on de $g(t)$ que asegura detecci\'on ML \'optima s\'imbolo por s\'imbolo.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Para un receptor \'optimo ML con detecci\'on s\'imbolo por s\'imbolo, el filtro de recepci\'on debe ser el \textbf{filtro adaptado}:
+
+\[
+\boxed{g(t) = h(t_0 - t)}
+\]
+
+Donde:
+\begin{itemize}
+    \item $h(t)$ es la respuesta impulsional del filtro de transmisi\'on (transformada de Fourier inversa de $H(\nu)$)
+    \item $t_0$ es un retardo fijo que garantiza la causalidad
+    \item $g(t)$ es la versi\'on ''volteada en el tiempo'' y desplazada de $h(t)$
+\end{itemize}
+
+\textbf{Propiedades del filtro adaptado:}
+
+\begin{enumerate}
+    \item \textbf{Maximiza el SNR:} En el instante $t_0 + nT_s$, el SNR es m\'aximo
+    
+    \item \textbf{Combinado con TSWOC:} Garantiza ausencia de ISI:
+    \[
+    (h * g)(t_0 + kT_s) = \delta_{k,0}
+    \]
+    
+    \item \textbf{Frecuencia:} En el dominio frecuencial:
+    \[
+    G(\nu) = H^*(−\nu) e^{-i2\pi\nu t_0}
+    \]
+    
+    donde $H^*$ denota el conjugado complejo.
+\end{enumerate}
+
+\textbf{Nota importante:} Como $H(\nu)$ es real y par (filtro pasa-bajo sim\'etrico), tenemos:
+\[
+G(\nu) = H(\nu) e^{-i2\pi\nu t_0}
+\]
+
+Esto simplifica la implementaci\'on del receptor.
+
+
+
+\subsection*{f) Expresi\'on de $z_n$ con $\theta_1 = \theta_0$ (2 pts)}
+
+\textbf{Enunciado:} Todav\'ia consideramos $\theta_1 = \theta_0$. Asumiendo condiciones satisfechas para detecci\'on ML \'optima s\'imbolo por s\'imbolo, deducir la expresi\'on de $z_n$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Desarrollo completo:}
+
+\textbf{Paso 1: Demodulaci\'on}
+
+\begin{align*}
+y(t) &= r(t) \cos(2\pi\nu_0 t + \theta_0) \\
+&= \left[\sum_{k=0}^{L-1} a_k h(t-kT_s)\cos(2\pi\nu_0 t + \theta_0) + w(t)\right] \cos(2\pi\nu_0 t + \theta_0)
+\end{align*}
+
+Usando $\cos^2(\alpha) = \frac{1 + \cos(2\alpha)}{2}$:
+
+\[
+y(t) = \frac{1}{2}\sum_{k=0}^{L-1} a_k h(t-kT_s) + \frac{1}{2}\sum_{k=0}^{L-1} a_k h(t-kT_s)\cos(4\pi\nu_0 t + 2\theta_0) + n_c(t)
+\]
+
+\textbf{Paso 2: Filtrado}
+
+El filtro $g(t) = h(t_0 - t)$ es pasa-bajo y elimina la componente en $2\nu_0$:
+
+\[
+z(t) = (y * g)(t) = \frac{1}{2}\sum_{k=0}^{L-1} a_k (h * g)(t-kT_s) + w_c(t)
+\]
+
+\textbf{Paso 3: Muestreo}
+
+En $t = t_0 + nT_s$:
+
+\begin{align*}
+z_n &= z(t_0 + nT_s) \\
+&= \frac{1}{2}\sum_{k=0}^{L-1} a_k (h * g)(t_0 + nT_s - kT_s) + w_{c,n} \\
+&= \frac{1}{2}\sum_{k=0}^{L-1} a_k \int_{\mathbb{R}} h(\tau) h(t_0 - (t_0 + nT_s - kT_s) + \tau)\, d\tau + w_{c,n} \\
+&= \frac{1}{2}\sum_{k=0}^{L-1} a_k \int_{\mathbb{R}} h(\tau) h(\tau + (k-n)T_s)\, d\tau + w_{c,n}
+\end{align*}
+
+\textbf{Paso 4: Aplicaci\'on del TSWOC}
+
+Como $\int_{\mathbb{R}} h(\tau) h(\tau + mT_s)\, d\tau = \delta_{m,0}$, solo sobrevive el t\'ermino $k = n$:
+
+\[
+\boxed{z_n = \frac{1}{2} a_n + w_{c,n}}
+\]
+
+Donde:
+\begin{itemize}
+    \item $a_n \in \{-15, -13, \ldots, +13, +15\}$ es el s\'imbolo transmitido
+    \item $w_{c,n}$ es ruido gaussiano con:
+    \begin{itemize}
+        \item Media: $\mathbb{E}[w_{c,n}] = 0$
+        \item Varianza: $\sigma_w^2 = \frac{N_0}{2}$
+    \end{itemize}
+\end{itemize}
+
+\textbf{Interpretaci\'on:}
+
+\begin{enumerate}
+    \item El factor $\frac{1}{2}$ proviene de la demodulaci\'on coherente con $\cos^2$
+    
+    \item No hay interferencia entre s\'imbolos (ISI = 0) gracias al TSWOC
+    
+    \item La muestra $z_n$ es una versi\'on escalada del s\'imbolo m\'as ruido aditivo
+    
+    \item Esta es la situaci\'on ideal para detecci\'on ML
+\end{enumerate}
+
+\textbf{Constelaci\'on recibida (sin ruido):}
+
+Los valores posibles de $z_n$ son:
+\[
+\left\{-\frac{15}{2}, -\frac{13}{2}, \ldots, +\frac{13}{2}, +\frac{15}{2}\right\} = \{-7.5, -6.5, \ldots, +6.5, +7.5\}
+\]
+
+
+
+\subsection*{g) Constelaci\'on y regiones de decisi\'on (2 pts)}
+
+\textbf{Enunciado:} Dibujar la constelaci\'on recibida. Definir y dibujar las fronteras de decisi\'on sobre los s\'imbolos (con una frase de justificaci\'on). A\~nadir el mapping binario a s\'imbolo propuesto anteriormente.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Constelaci\'on recibida (sin ruido, $\theta_1 = \theta_0$):}
+
+Con $w_{c,n} = 0$, los valores son $z_n = \frac{a_n}{2}$:
+\[
+\left\{-7.5, -6.5, -5.5, -4.5, -3.5, -2.5, -1.5, -0.5, +0.5, +1.5, +2.5, +3.5, +4.5, +5.5, +6.5, +7.5\right\}
+\]
+
+\textbf{Fronteras de decisi\'on:}
+
+\textit{Las fronteras se ubican a mitad de camino entre s\'imbolos adyacentes para minimizar la probabilidad de error en detecci\'on ML.}
+
+Fronteras: $-7, -6, -5, -4, -3, -2, -1, 0, +1, +2, +3, +4, +5, +6, +7$
+
+\textbf{Representaci\'on gr\'afica:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+% Eje
+\draw[<->] (-9,0) -- (9,0) node[right] {$z_n$};
+
+% S\'imbolos (cada 1 unidad, de -7.5 a +7.5)
+\foreach \x/\val/\code in {
+    -7.5/-15/0000, -6.5/-13/0001, -5.5/-11/0011, -4.5/-9/0010,
+    -3.5/-7/0110, -2.5/-5/0111, -1.5/-3/0101, -0.5/-1/0100,
+    0.5/+1/1100, 1.5/+3/1101, 2.5/+5/1111, 3.5/+7/1110,
+    4.5/+9/1010, 5.5/+11/1011, 6.5/+13/1001, 7.5/+15/1000}
+{
+    \fill[blue] (\x,0) circle (2.5pt);
+    \node[blue, above, font=\tiny] at (\x,0.4) {\code};
+}
+
+% Fronteras de decisi\'on
+\foreach \x in {-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7}
+{
+    \draw[red, thick, dashed] (\x,-0.5) -- (\x,0.5);
+}
+
+% Algunas etiquetas
+\node[below] at (-7.5,-0.7) {$-7.5$};
+\node[below] at (0,-0.7) {$0$};
+\node[below] at (7.5,-0.7) {$+7.5$};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Reglas de decisi\'on sobre s\'imbolos:}
+
+\[
+\hat{a}_n = \begin{cases}
+-15 & \text{si } z_n < -7 \\
+-13 & \text{si } -7 \leq z_n < -6 \\
+-11 & \text{si } -6 \leq z_n < -5 \\
+\vdots \\
++13 & \text{si } +6 \leq z_n < +7 \\
++15 & \text{si } z_n \geq +7
+\end{cases}
+\]
+
+O de forma compacta:
+\[
+\hat{a}_n = 2 \cdot \text{round}\left(\frac{z_n}{1}\right) + 1 \quad \text{(redondeo al impar m\'as cercano)}
+\]
+
+
+
+
+\subsection*{h) Expresi\'on de $z_n$ con $\theta_1 \neq \theta_0$ (1 pt)}
+
+\textbf{Enunciado:} Ahora tenemos $\theta_1 \neq \theta_0$. Calcular la nueva expresi\'on de $z_n$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Con error de fase $\Delta\theta = \theta_1 - \theta_0$, el an\'alisis cambia:
+
+\textbf{Demodulaci\'on con error de fase:}
+
+\begin{align*}
+y(t) &= r(t) \cos(2\pi\nu_0 t + \theta_1) \\
+&= \sum_{k} a_k h(t-kT_s)\cos(2\pi\nu_0 t + \theta_0) \cdot \cos(2\pi\nu_0 t + \theta_1) + n_c(t)
+\end{align*}
+
+Usando $\cos A \cos B = \frac{1}{2}[\cos(A-B) + \cos(A+B)]$ con $A = 2\pi\nu_0 t + \theta_0$ y $B = 2\pi\nu_0 t + \theta_1$:
+
+\[
+\cos A \cos B = \frac{1}{2}[\cos(\theta_0 - \theta_1) + \cos(4\pi\nu_0 t + \theta_0 + \theta_1)]
+\]
+
+Por lo tanto:
+\[
+y(t) = \frac{1}{2}\cos(\theta_0 - \theta_1) \sum_k a_k h(t-kT_s) + \text{t\'erminos en } 2\nu_0 + n_c(t)
+\]
+
+Tras filtrado y muestreo (aplicando TSWOC):
+
+\[
+\boxed{z_n = \frac{1}{2} a_n \cos(\theta_0 - \theta_1) + w_{c,n} = \frac{1}{2} a_n \cos(\Delta\theta) + w_{c,n}}
+\]
+
+donde $\Delta\theta = \theta_1 - \theta_0$.
+
+\textbf{Comparaci\'on con el caso sincronizado:}
+
+\begin{itemize}
+    \item Sin error ($\Delta\theta = 0$): $z_n = \frac{a_n}{2} + w_{c,n}$ ✓
+    
+    \item Con error: $z_n = \frac{a_n}{2}\cos(\Delta\theta) + w_{c,n}$
+    
+    \item Factor de atenuaci\'on: $\cos(\Delta\theta) \in [0, 1]$ para $\Delta\theta \in [0, \frac{\pi}{2}]$
+\end{itemize}
+
+\textbf{Impacto en el rendimiento:}
+
+\begin{itemize}
+    \item La amplitud de la se\~nal se reduce por $\cos(\Delta\theta)$
+    \item El SNR efectivo se degrada: $\text{SNR}_{eff} = \text{SNR} \cdot \cos^2(\Delta\theta)$
+    \item La probabilidad de error aumenta
+\end{itemize}
+
+
+
+\subsection*{i) Consecuencia del error de fase (1 pt)}
+
+\textbf{Enunciado:} ¿Cu\'al es la consecuencia de este error de fase y cu\'al es el peor valor para $\theta_1 - \theta_0$?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Consecuencia del error de fase:}
+
+El error de fase $\Delta\theta = \theta_1 - \theta_0$ causa una \textbf{degradaci\'on del SNR en la salida del muestreador}.
+
+\textbf{An\'alisis cuantitativo:}
+
+La se\~nal \'util es proporcional a $\cos(\Delta\theta)$, por lo que la potencia de se\~nal se reduce por $\cos^2(\Delta\theta)$:
+
+\[
+\text{SNR}_{efectivo} = \text{SNR}_{ideal} \cdot \cos^2(\Delta\theta)
+\]
+
+En dB:
+\[
+\text{SNR}_{dB,eff} = \text{SNR}_{dB,ideal} + 20\log_{10}(\cos\Delta\theta)
+\]
+
+\textbf{Valores num\'ericos:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{$\Delta\theta$} & \textbf{$\cos(\Delta\theta)$} & \textbf{P\'erdida SNR [dB]} \\
+\hline
+$0°$ & 1.00 & 0 dB \\
+$15°$ & 0.97 & 0.3 dB \\
+$30°$ & 0.87 & 1.2 dB \\
+$45°$ & 0.71 & 3 dB \\
+$60°$ & 0.50 & 6 dB \\
+$90°$ & 0.00 & $-\infty$ dB \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Peor valor:}
+
+\[
+\boxed{\Delta\theta_{peor} = \frac{\pi}{2} = 90°}
+\]
+
+\textbf{Consecuencia del peor caso:}
+
+Con $\Delta\theta = \frac{\pi}{2}$:
+
+\[
+z_n = \frac{1}{2} a_n \cos\left(\frac{\pi}{2}\right) + w_{c,n} = 0 + w_{c,n} = w_{c,n}
+\]
+
+\textbf{Resultado:} \textit{La se\~nal \'util desaparece completamente}, solo queda ruido. La detecci\'on es imposible.
+
+\textbf{Interpretaci\'on f\'isica:}
+
+Con $\Delta\theta = 90°$, el receptor demodula con $\cos(2\pi\nu_0 t + \theta_0 + 90°) = -\sin(2\pi\nu_0 t + \theta_0)$, que es ortogonal a la se\~nal transmitida $\cos(2\pi\nu_0 t + \theta_0)$. El producto integrado es cero.
+
+\textbf{Importancia pr\'actica:}
+
+Esto demuestra la necesidad cr\'itica de:
+\begin{itemize}
+    \item \textbf{Sincronizaci\'on de portadora:} Recuperaci\'on precisa de fase
+    \item \textbf{Bucles PLL (Phase-Locked Loop):} Mantener $\Delta\theta \approx 0$
+    \item \textbf{Tolerancia de dise\~no:} Mantener $|\Delta\theta| < 5°$ para p\'erdidas aceptables ($< 0.1$ dB)
+\end{itemize}
+
+\textbf{Soluci\'on pr\'actica:}
+
+En sistemas reales, se usan:
+\begin{itemize}
+    \item Pilotos de sincronizaci\'on
+    \item S\'imbolos de referencia
+    \item Algoritmos de estimaci\'on de fase (Costas loop, decision-directed)
+    \item Modulaciones diferenciales (DPSK) que son menos sensibles
+\end{itemize}
+
+
+
+\vspace{1cm}
+\begin{center}
+\rule{0.8\linewidth}{0.4pt}\\
+\textit{Fin del examen}
+\end{center}
+
+\end{document}

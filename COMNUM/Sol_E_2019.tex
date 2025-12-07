@@ -1,0 +1,428 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\usepackage{enumitem}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Soluci\'on Examen 2019-2020\\TAF ISC - UEC 2\\18/11/2019}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Ejercicio 1}
+
+Consideramos una transmisi\'on sobre frecuencia porteuse con se\~nal emitida:
+\[
+s(t) = \sum_{k\in\mathbb{Z}} a_k h(t-kT_s)\cos(2\pi\nu_0 t + \theta_0) - b_k h(t-kT_s)\sin(2\pi\nu_0 t + \theta_0)
+\]
+
+\subsection*{1.1 Preguntas de curso}
+
+\subsection*{Pregunta 1: Criterio TSWOC}
+
+\textbf{Enunciado:} Enunciar el criterio Time-Shifted-Waveform Orthogonality Criterion (TSWOC) en funci\'on de $h(t)$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El criterio TSWOC establece que:
+\[
+\boxed{\int_{\mathbb{R}} h(t) h(t - kT_s)\, dt = \delta_{k,0}}
+\]
+
+Donde:
+\begin{itemize}
+    \item $h(t)$ es la respuesta impulsional del filtro de conformaci\'on
+    \item $T_s$ es el periodo s\'imbolo
+    \item $\delta_{k,0}$ es la delta de Kronecker: vale 1 si $k=0$ y 0 en caso contrario
+\end{itemize}
+
+Esto significa que las versiones desplazadas del pulso deben ser ortogonales entre s\'i.
+
+
+
+\subsection*{Pregunta 2: Consecuencias del TSWOC}
+
+\textbf{Enunciado:} ¿Qu\'e garantiza este criterio para una transmisi\'on sobre un canal gaussiano bajo la hip\'otesis de un receptor \'optimo? (3 respuestas)
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El criterio TSWOC garantiza tres propiedades fundamentales:
+
+\begin{enumerate}
+    \item \textbf{Ausencia de interferencia entre s\'imbolos (ISI):} Los s\'imbolos transmitidos no interfieren entre s\'i en los instantes de muestreo.
+    
+    \item \textbf{Detecci\'on s\'imbolo por s\'imbolo \'optima:} Se puede tomar la decisi\'on sobre cada s\'imbolo de forma independiente.
+    
+    \item \textbf{Maximizaci\'on del SNR:} Se maximiza la relaci\'on se\~nal a ruido a la salida del filtro adaptado.
+\end{enumerate}
+
+
+
+\subsection*{1.2 C\'alculos de par\'ametros de la transmisi\'on}
+
+\textbf{Datos del problema:}
+\begin{itemize}
+    \item Modulaci\'on: MAQ-256 (256-QAM)
+    \item Rapidez de modulaci\'on: $D_s = 256$ kbauds = $256 \times 10^3$ s\'imbolos/s
+    \item Frecuencia portadora: $\nu_0 = 2$ GHz = $2 \times 10^9$ Hz
+    \item Filtro: Raised Cosine (cosinus sur\'elev\'e) con coeficiente de roll-off $\beta = \frac{3}{4}$
+\end{itemize}
+
+\subsection*{Pregunta 1: C\'alculo del d\'ebit binaire}
+
+\textbf{Enunciado:} Calcular el d\'ebito binario.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El d\'ebito binario se relaciona con la rapidez de modulaci\'on mediante:
+\[
+D_b = D_s \times \log_2(M)
+\]
+
+Donde $M$ es el orden de la modulaci\'on (n\'umero de s\'imbolos en el alfabeto).
+
+Para MAQ-256: $M = 256 = 2^8$
+
+Por lo tanto:
+\[
+D_b = 256 \times 10^3 \times 8 = \boxed{2.048 \text{ Mbps}}
+\]
+
+\textbf{Interpretaci\'on:} Cada s\'imbolo transporta 8 bits de informaci\'on.
+
+
+
+\subsection*{Pregunta 2: C\'alculo de la banda ocupada}
+
+\textbf{Enunciado:} Calcular la anchura de banda ocupada.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Para un filtro raised cosine con roll-off $\beta$, la banda ocupada es:
+\[
+B_{occ} = D_s \times (1 + \beta)
+\]
+
+Sustituyendo valores:
+\[
+B_{occ} = 256 \times 10^3 \times \left(1 + \frac{3}{4}\right) = 256 \times 10^3 \times 1.75
+\]
+\[
+B_{occ} = \boxed{448 \text{ kHz}}
+\]
+
+\textbf{Nota:} La banda m\'inima te\'orica ser\'ia $D_s = 256$ kHz, pero el exceso de banda $\beta$ la incrementa.
+
+
+
+\subsection*{Pregunta 3: C\'alculo del exceso de banda}
+
+\textbf{Enunciado:} Calcular el exceso de banda.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El exceso de banda se define como:
+\[
+\Delta B = B_{occ} - B_{min} = B_{occ} - D_s
+\]
+
+O equivalentemente:
+\[
+\Delta B = D_s \times \beta
+\]
+
+Sustituyendo:
+\[
+\Delta B = 256 \times 10^3 \times \frac{3}{4} = \boxed{192 \text{ kHz}}
+\]
+
+\textbf{Interpretaci\'on:} El filtro raised cosine utiliza un 75\% m\'as de banda que el m\'inimo te\'orico, pero a cambio proporciona mejor comportamiento en presencia de errores de sincronizaci\'on.
+
+
+
+\subsection*{Pregunta 4: C\'alculo de la eficiencia espectral}
+
+\textbf{Enunciado:} Calcular la eficacia espectral de la transmisi\'on.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+La eficiencia espectral se define como:
+\[
+\eta = \frac{D_b}{B_{occ}} \text{ [bits/s/Hz]}
+\]
+
+Sustituyendo los valores calculados:
+\[
+\eta = \frac{2.048 \times 10^6}{448 \times 10^3} = \frac{2048}{448} = \boxed{4.57 \text{ bits/s/Hz}}
+\]
+
+\textbf{An\'alisis:}
+\begin{itemize}
+    \item Valor te\'orico m\'aximo para esta modulaci\'on: $\frac{\log_2(M)}{1+\beta} = \frac{8}{1.75} = 4.57$ bits/s/Hz ✓
+    \item L\'imite de Shannon para canal ideal: $\eta_{Shannon} \approx 10-12$ bits/s/Hz (con SNR alto)
+    \item Valor pr\'actico: moderado, compromiso entre eficiencia y robustez
+\end{itemize}
+
+
+
+\newpage
+\section*{Problema 2}
+
+Consideramos un alfabeto de dos estados $\mathcal{Q} = \{q_1, q_2\}$ definido por:
+\begin{align*}
+q_1(t) &= Ah(t)\cos(2\pi\nu_0 t + \theta_0) \\
+q_2(t) &= A\cos(\Delta\theta)h(t)\cos(2\pi\nu_0 t + \theta_0) - A\sin(\Delta\theta)h(t)\sin(2\pi\nu_0 t + \theta_0)
+\end{align*}
+
+con $0 < \Delta\theta \leq \pi$.
+
+\textbf{Hip\'otesis:}
+\begin{itemize}
+    \item Banda estrecha: el ancho de banda de $h(t)$ es muy peque\~no comparado con $\nu_0$
+    \item Modulaci\'on de un bit $m_0$ con $\Pr(m_0 = 0) = \Pr(m_0 = 1) = \frac{1}{2}$
+    \item Canal AWGN: $r(t) = q(t) + n(t)$ con $n(t) \sim \mathcal{N}(0, \frac{N_0}{2})$
+\end{itemize}
+
+\subsection*{Pregunta 1: Aplicaci\'on del criterio MAP}
+
+\textbf{Enunciado:} Aplicar el criterio de detecci\'on MAP y dar la regla de decisi\'on.
+
+Criterio MAP:
+\[
+\hat{q} = \arg\max_{q_j \in \mathcal{Q}} \left\langle r(t), q_j(t) \right\rangle + N_0 \Pr(q = q_j) - \frac{E_j}{2}
+\]
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Paso 1:} Calcular las energ\'ias de los s\'imbolos.
+
+Asumiendo $\int_{\mathbb{R}} |h(t)|^2\, dt = 1$ (normalizaci\'on):
+
+\[
+E_1 = \int_{\mathbb{R}} |q_1(t)|^2\, dt = A^2 \int_{\mathbb{R}} h^2(t)\cos^2(2\pi\nu_0 t + \theta_0)\, dt \approx \frac{A^2}{2}
+\]
+
+Para $q_2(t)$, usando notaci\'on compleja:
+\[
+q_2(t) = A\cos(\Delta\theta)h(t)\cos(2\pi\nu_0 t + \theta_0) - A\sin(\Delta\theta)h(t)\sin(2\pi\nu_0 t + \theta_0)
+\]
+
+\[
+E_2 = A^2[\cos^2(\Delta\theta) + \sin^2(\Delta\theta)] \int_{\mathbb{R}} h^2(t) \cdot \frac{1}{2}\, dt = \frac{A^2}{2}
+\]
+
+Por lo tanto: $E_1 = E_2 = \frac{A^2}{2}$
+
+\textbf{Paso 2:} Como las probabilidades son iguales y las energ\'ias tambi\'en, el criterio se simplifica:
+\[
+\hat{q} = \arg\max_{q_j \in \{q_1, q_2\}} \left\langle r(t), q_j(t) \right\rangle
+\]
+
+\textbf{Paso 3:} Calcular los productos escalares con las se\~nales propuestas:
+
+Definimos:
+\begin{align*}
+z_c &= \left\langle r(t), Ah(t)\cos(2\pi\nu_0 t + \theta_0) \right\rangle \\
+z_s &= -\left\langle r(t), Ah(t)\sin(2\pi\nu_0 t + \theta_0) \right\rangle
+\end{align*}
+
+Entonces:
+\begin{align*}
+\left\langle r(t), q_1(t) \right\rangle &= z_c \\
+\left\langle r(t), q_2(t) \right\rangle &= z_c \cos(\Delta\theta) + z_s \sin(\Delta\theta)
+\end{align*}
+
+\textbf{Regla de decisi\'on:}
+\[
+\boxed{
+\begin{cases}
+\hat{m}_0 = 0 & \text{si } z_c > z_c \cos(\Delta\theta) + z_s \sin(\Delta\theta) \\
+\hat{m}_0 = 1 & \text{en caso contrario}
+\end{cases}
+}
+\]
+
+Simplificando:
+\[
+\boxed{
+\begin{cases}
+\hat{m}_0 = 0 & \text{si } z_c(1 - \cos(\Delta\theta)) > z_s \sin(\Delta\theta) \\
+\hat{m}_0 = 1 & \text{en caso contrario}
+\end{cases}
+}
+\]
+
+
+
+\subsection*{Pregunta 2: Estructura del receptor \'optimo}
+
+\textbf{Enunciado:} Representar la estructura del receptor \'optimo asociada a esta regla.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El receptor \'optimo consiste en:
+
+\begin{center}
+\begin{tabular}{c}
+\texttt{r(t)} \\
+$\downarrow$ \\
+\fbox{$\times \cos(2\pi\nu_0 t + \theta_0)$} $\rightarrow$ \fbox{Filtro $h(t_0 - t)$} $\rightarrow$ \fbox{Muestreo $t_0$} $\rightarrow z_c$ \\
+$\downarrow$ \\
+\fbox{$\times (-\sin(2\pi\nu_0 t + \theta_0))$} $\rightarrow$ \fbox{Filtro $h(t_0 - t)$} $\rightarrow$ \fbox{Muestreo $t_0$} $\rightarrow z_s$ \\
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\begin{center}
+$z_c, z_s$ $\rightarrow$ \fbox{Dispositivo de decisi\'on} $\rightarrow \hat{m}_0$
+\end{center}
+
+\textbf{Componentes:}
+\begin{itemize}
+    \item \textbf{Demodulador I (In-phase):} Multiplica por $\cos(2\pi\nu_0 t + \theta_0)$ para extraer componente en fase
+    \item \textbf{Demodulador Q (Quadrature):} Multiplica por $-\sin(2\pi\nu_0 t + \theta_0)$ para extraer componente en cuadratura
+    \item \textbf{Filtros adaptados:} $h(t_0 - t)$ maximizan el SNR
+    \item \textbf{Muestreadores:} En instante \'optimo $t_0$
+    \item \textbf{Decisor:} Aplica la regla $z_c(1-\cos\Delta\theta) \stackrel{?}{>} z_s\sin\Delta\theta$
+\end{itemize}
+
+
+
+\subsection*{Pregunta 3: Constelaci\'on recibida}
+
+\textbf{Enunciado:} Representar la constelaci\'on recibida para un valor arbitrario de $\Delta\theta$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+En el plano $(z_c, z_s)$, las se\~nales recibidas (sin ruido) son:
+
+Para $m_0 = 0$ (se transmite $q_1$):
+\[
+z_c = \frac{A^2}{2}, \quad z_s = 0
+\]
+
+Para $m_0 = 1$ (se transmite $q_2$):
+\[
+z_c = \frac{A^2}{2}\cos(\Delta\theta), \quad z_s = \frac{A^2}{2}\sin(\Delta\theta)
+\]
+
+\textbf{Representaci\'on gr\'afica:}
+
+\begin{center}
+\begin{tikzpicture}[scale=2]
+% Ejes
+\draw[->] (-0.5,0) -- (2,0) node[right] {$z_c$};
+\draw[->] (0,-0.3) -- (0,1.5) node[above] {$z_s$};
+
+% \'Angulo arbitrario Delta theta = 60 grados
+\def\angle{60}
+\def\amplitude{1.5}
+
+% Punto q1
+\fill[blue] (\amplitude,0) circle (2pt) node[below right] {$q_1$ ($m_0=0$)};
+
+% Punto q2
+\fill[red] ({\amplitude*cos(\angle)},{\amplitude*sin(\angle)}) circle (2pt) node[above right] {$q_2$ ($m_0=1$)};
+
+% L\'ineas auxiliares
+\draw[dashed, gray] (0,0) -- (\amplitude,0);
+\draw[dashed, gray] (0,0) -- ({\amplitude*cos(\angle)},{\amplitude*sin(\angle)});
+
+% \'Angulo
+\draw[<->, thick] (0.5,0) arc (0:\angle:0.5) node[midway, right] {$\Delta\theta$};
+
+% Frontera de decisi\'on
+\draw[thick, green!70!black] (0.8,-0.2) -- (1.2,1.2) node[pos=0.8, right] {Frontera};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Observaciones:}
+\begin{itemize}
+    \item Los dos s\'imbolos tienen la misma energ\'ia: $|q_1| = |q_2| = \frac{A^2}{2}$
+    \item Est\'an separados por un \'angulo $\Delta\theta$
+    \item La frontera de decisi\'on es la mediatriz del segmento que une ambos puntos
+\end{itemize}
+
+
+
+\subsection*{Pregunta 4: Valor \'optimo de $\Delta\theta$}
+
+\textbf{Enunciado:} Deducir el valor \'optimo de $\Delta\theta$ que minimiza la probabilidad de error binaria (justificaci\'on gr\'afica).
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{An\'alisis:}
+
+La probabilidad de error en un canal AWGN depende de la distancia euclidiana entre los dos s\'imbolos:
+
+\[
+d_{12}^2 = |q_1 - q_2|^2 = \int_{\mathbb{R}} [q_1(t) - q_2(t)]^2\, dt
+\]
+
+Desarrollando:
+\begin{align*}
+d_{12}^2 &= E_1 + E_2 - 2\langle q_1, q_2 \rangle \\
+&= \frac{A^2}{2} + \frac{A^2}{2} - 2 \cdot \frac{A^2}{2}\cos(\Delta\theta) \\
+&= A^2(1 - \cos(\Delta\theta))
+\end{align*}
+
+Para minimizar la probabilidad de error, debemos \textbf{maximizar} la distancia $d_{12}$.
+
+Como $d_{12}^2 = A^2(1 - \cos(\Delta\theta))$, esto se maximiza cuando $\cos(\Delta\theta)$ es m\'inimo.
+
+En el intervalo $(0, \pi]$, el coseno alcanza su m\'inimo en $\Delta\theta = \pi$:
+
+\[
+\boxed{\Delta\theta_{opt} = \pi}
+\]
+
+\textbf{Justificaci\'on gr\'afica:}
+
+Con $\Delta\theta = \pi$, los dos s\'imbolos son antipodales:
+\begin{itemize}
+    \item $q_1$: punto en $(+\frac{A^2}{2}, 0)$
+    \item $q_2$: punto en $(-\frac{A^2}{2}, 0)$
+\end{itemize}
+
+La distancia entre ellos es $d_{12} = A^2$, m\'axima posible.
+
+\textbf{Interpretaci\'on f\'isica:}
+
+$\Delta\theta = \pi$ corresponde a una modulaci\'on BPSK (Binary Phase Shift Keying), que es la modulaci\'on binaria \'optima para canal AWGN.
+
+\textbf{Probabilidad de error resultante:}
+\[
+P_e = Q\left(\sqrt{\frac{2E_b}{N_0}}\right) = Q\left(\sqrt{\frac{A^2}{N_0}}\right)
+\]
+
+donde $Q(\cdot)$ es la funci\'on Q de Gauss.
+
+
+
+\vspace{1cm}
+\begin{center}
+\rule{0.8\linewidth}{0.4pt}\\
+\textit{Fin del examen}
+\end{center}
+
+\end{document}

@@ -1,0 +1,850 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tikz}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Soluci\'on Examen 2024-2025\\TAF STAR - UEC B\\15/10/2024}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Preguntas con respuestas cortas (6 puntos)}
+
+\subsection*{Pregunta 1: Principios de dise\~no de constelaci\'on (2 pts)}
+
+\textbf{Enunciado:} Dar los dos principios clave para dise\~nar la constelaci\'on de transmisi\'on de un sistema de comunicaci\'on digital.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Los dos principios fundamentales para el dise\~no \'optimo de una constelaci\'on son:
+
+\textbf{1. Maximizar la distancia euclidiana m\'inima entre s\'imbolos adyacentes:}
+
+\[
+\boxed{d_{min} = \min_{i \neq j} |s_i - s_j|}
+\]
+
+\textbf{Justificaci\'on:} 
+
+La probabilidad de error en un canal AWGN depende exponencialmente de $d_{min}^2$:
+\[
+P_e \propto Q\left(\sqrt{\frac{d_{min}^2}{2N_0}}\right)
+\]
+
+Maximizar $d_{min}$ minimiza la probabilidad de error.
+
+\textbf{Restricci\'on:} Para una potencia media fija $P_{avg} = \mathbb{E}[|s|^2]$, maximizar $d_{min}$.
+
+\textbf{2. Minimizar el n\'umero de vecinos m\'as cercanos (dada la distancia m\'inima):}
+
+\[
+\boxed{N_{min} = \text{n\'umero de s\'imbolos a distancia } d_{min} \text{ de un s\'imbolo dado}}
+\]
+
+\textbf{Justificaci\'on:}
+
+La probabilidad de error es aproximadamente:
+\[
+P_e \approx N_{min} \cdot Q\left(\sqrt{\frac{d_{min}^2}{2N_0}}\right)
+\]
+
+Reducir $N_{min}$ reduce proporcionalmente la probabilidad de error.
+
+\textbf{Ejemplos de aplicaci\'on:}
+
+\begin{itemize}
+    \item \textbf{BPSK vs On-Off Keying:} BPSK tiene $d_{min}$ el doble que OOK para la misma energ\'ia $\to$ BPSK es \'optima
+    
+    \item \textbf{16-QAM vs 16-PSK:} Para la misma energ\'ia media:
+    \begin{itemize}
+        \item 16-QAM: mayor $d_{min}$, s\'imbolos interiores con 4 vecinos
+        \item 16-PSK: menor $d_{min}$, todos los s\'imbolos con 2 vecinos
+        \item Resultado: 16-QAM es superior (el efecto de $d_{min}$ domina)
+    \end{itemize}
+    
+    \item \textbf{Constelaciones hexagonales:} Reducen $N_{min}$ comparado con ret\'iculas cuadradas
+\end{itemize}
+
+\textbf{Orden de prioridad:} El primer principio (maximizar $d_{min}$) es m\'as importante que el segundo, debido al comportamiento exponencial de la funci\'on $Q$.
+
+
+
+\subsection*{Pregunta 2: Ancho de banda m\'inimo para transmisi\'on sin ISI (2 pts)}
+
+\textbf{Enunciado:} Consideremos una modulaci\'on 16-QAM. Asumimos que el periodo s\'imbolo es igual a $5 \times 10^{-3}$ segundos y que la frecuencia portadora es igual a 10000 Hertz. Calcular $W_m$ definido como el ancho de banda m\'inimo requerido que asegura transmisi\'on sin ISI.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Datos:}
+\begin{itemize}
+    \item Modulaci\'on: 16-QAM
+    \item Periodo s\'imbolo: $T = 5 \times 10^{-3}$ s = 5 ms
+    \item Frecuencia portadora: $\nu_0 = 10000$ Hz = 10 kHz
+    \item Orden de modulaci\'on: $M = 16$
+\end{itemize}
+
+\textbf{Desarrollo:}
+
+Para una modulaci\'on sobre frecuencia portadora (single-carrier modulation), el ancho de banda m\'inimo requerido para transmisi\'on sin ISI est\'a determinado por el \textbf{criterio de Nyquist}.
+
+\textbf{Banda base:}
+
+El ancho de banda m\'inimo en banda base (unilateral) es:
+\[
+W_{m,baseband} = \frac{1}{2T}
+\]
+
+Esto corresponde a un filtro rectangular en frecuencia con soporte $\left[-\frac{1}{2T}, \frac{1}{2T}\right]$.
+
+\textbf{Modulaci\'on sobre portadora:}
+
+Para una modulaci\'on sobre portadora, el espectro se traslada a $\pm\nu_0$, pero el ancho de banda ocupado total permanece igual al de banda base:
+
+\[
+\boxed{W_m = \frac{1}{T}}
+\]
+
+\textbf{C\'alculo num\'erico:}
+
+\[
+W_m = \frac{1}{5 \times 10^{-3}} = 0.2 \times 10^3 = \boxed{200 \text{ Hz}}
+\]
+
+\textbf{Explicaci\'on detallada:}
+
+\begin{enumerate}
+    \item El filtro de Nyquist ideal (rectangular) tiene banda $\left[-\frac{1}{2T}, \frac{1}{2T}\right]$ en banda base
+    
+    \item Su respuesta impulsional es $h(t) = \frac{\sin(\pi t/T)}{\pi t/T} = \text{sinc}(t/T)$
+    
+    \item Este pulso satisface:
+    \[
+    h(kT) = \begin{cases}
+    1 & k = 0 \\
+    0 & k \neq 0
+    \end{cases}
+    \]
+    
+    \item Garantiza ausencia de ISI con el m\'inimo ancho de banda posible
+    
+    \item Para la se\~nal modulada:
+    \[
+    s(t) = \sum_k a_k h(t-kT)\cos(2\pi\nu_0 t) - b_k h(t-kT)\sin(2\pi\nu_0 t)
+    \]
+    
+    El espectro se extiende de $\nu_0 - \frac{1}{2T}$ a $\nu_0 + \frac{1}{2T}$, con ancho total $W_m = \frac{1}{T}$
+\end{enumerate}
+
+\textbf{Observaciones importantes:}
+
+\begin{itemize}
+    \item El resultado $W_m = 200$ Hz es \textbf{independiente del orden de modulaci\'on} (16-QAM, QPSK, etc.)
+    
+    \item Solo depende del periodo s\'imbolo $T$, no del d\'ebito binario
+    
+    \item La frecuencia portadora $\nu_0 = 10$ kHz no afecta el ancho de banda ocupado, solo la posici\'on del espectro
+    
+    \item En la pr\'actica, se usan filtros con roll-off $\beta > 0$ (ej. raised cosine), que ocupan $W = (1+\beta)/T > W_m$, pero garantizan mejor comportamiento
+    
+    \item Relaci\'on con la rapidez de s\'imbolo:
+    \[
+    D_s = \frac{1}{T} = 200 \text{ sym/s} = W_m
+    \]
+    
+    Por tanto: $W_m = D_s$ (en Hz y bauds, respectivamente)
+\end{itemize}
+
+
+
+\subsection*{Pregunta 3: Elecci\'on de formato de modulaci\'on (2 pts)}
+
+\textbf{Enunciado:} Sea $W = 25000$ Hz la banda ocupada por un sistema de comunicaci\'on. La rapidez de s\'imbolo $D_s$ se impone y $D_s = 12500$ sym/s. El ratio $\frac{E_b}{N_0}$ tambi\'en se impone. Las restricciones de dise\~no del sistema son una probabilidad de error binaria m\'inima a la salida del receptor y una eficiencia espectral m\'inima de 2 bits/s/Hz.
+
+Los formatos de modulaci\'on posibles son 8-PSK, 16-PSK, 16-QAM, 64-QAM y 256-QAM. ¿Cu\'al elegir\'ia para satisfacer las restricciones y por qu\'e?
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Datos:}
+\begin{itemize}
+    \item Banda ocupada: $W = 25000$ Hz
+    \item Rapidez de s\'imbolo: $D_s = 12500$ sym/s
+    \item Ratio $\frac{E_b}{N_0}$ fijo
+    \item Restricci\'on: $\eta \geq 2$ bits/s/Hz
+    \item Objetivo: Minimizar $P_b$ (probabilidad de error binaria)
+\end{itemize}
+
+\textbf{An\'alisis:}
+
+\textbf{Paso 1: Restricci\'on de eficiencia espectral}
+
+La eficiencia espectral se define como:
+\[
+\eta = \frac{D_b}{W} = \frac{\log_2(M) \cdot D_s}{W}
+\]
+
+La restricci\'on $\eta \geq 2$ implica:
+\[
+\log_2(M) \geq \frac{2W}{D_s} = \frac{2 \times 25000}{12500} = 4
+\]
+
+Por lo tanto:
+\[
+M \geq 2^4 = 16
+\]
+
+\textbf{Candidatos que cumplen la restricci\'on:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Modulaci\'on} & \textbf{$\log_2(M)$} & \textbf{¿Cumple $\eta \geq 2$?} \\
+\hline
+8-PSK & 3 & ✗ No ($\eta = 1.5$ bits/s/Hz) \\
+16-PSK & 4 & ✓ S\'i ($\eta = 2$ bits/s/Hz) \\
+16-QAM & 4 & ✓ S\'i ($\eta = 2$ bits/s/Hz) \\
+64-QAM & 6 & ✓ S\'i ($\eta = 3$ bits/s/Hz) \\
+256-QAM & 8 & ✓ S\'i ($\eta = 4$ bits/s/Hz) \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Paso 2: An\'alisis de probabilidad de error}
+
+Para un ratio $\frac{E_b}{N_0}$ fijo y diferentes valores de $M$:
+
+\textbf{Comportamiento general:}
+\begin{itemize}
+    \item Para $M$ fijo: QAM es m\'as eficiente en potencia que PSK (mayor $d_{min}$ para la misma energ\'ia media)
+    
+    \item Cuando $M$ aumenta: $P_b$ aumenta (m\'as s\'imbolos $\to$ menor distancia entre ellos)
+\end{itemize}
+
+\textbf{Comparaci\'on cualitativa (de mejor a peor rendimiento):}
+
+\begin{enumerate}
+    \item \textbf{16-QAM:} Mejor compromiso
+    \begin{itemize}
+        \item $M$ m\'inimo que satisface la restricci\'on
+        \item Geometr\'ia QAM (superior a PSK)
+        \item Menor $P_b$ para $\frac{E_b}{N_0}$ fijo
+    \end{itemize}
+    
+    \item \textbf{16-PSK:} Rendimiento inferior a 16-QAM
+    \begin{itemize}
+        \item Mismo $M$ que 16-QAM
+        \item Geometr\'ia PSK (inferior a QAM)
+        \item Mayor $P_b$ que 16-QAM
+    \end{itemize}
+    
+    \item \textbf{64-QAM:} Peor rendimiento
+    \begin{itemize}
+        \item $M$ mayor $\to$ menor $d_{min}$
+        \item $P_b$ significativamente mayor
+    \end{itemize}
+    
+    \item \textbf{256-QAM:} Mucho peor rendimiento
+    \begin{itemize}
+        \item $M$ muy grande $\to$ $d_{min}$ muy peque\~no
+        \item $P_b$ muy alta
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Paso 3: Decisi\'on}
+
+\[
+\boxed{\text{Modulaci\'on elegida: 16-QAM}}
+\]
+
+\textbf{Justificaci\'on:}
+
+\begin{enumerate}
+    \item \textbf{Cumple la restricci\'on de eficiencia:}
+    \[
+    \eta = \frac{4 \times 12500}{25000} = 2 \text{ bits/s/Hz} \quad ✓
+    \]
+    
+    \item \textbf{Minimiza el orden de modulaci\'on:}
+    
+    Es el $M$ m\'as peque\~no que satisface $\eta \geq 2$, por tanto tiene la mayor distancia m\'inima entre s\'imbolos para la energ\'ia disponible.
+    
+    \item \textbf{QAM es superior a PSK:}
+    
+    Para el mismo orden $M = 16$, la constelaci\'on 16-QAM tiene mejor geometr\'ia que 16-PSK:
+    \begin{itemize}
+        \item Mayor $d_{min}$ para la misma energ\'ia media
+        \item Menor probabilidad de error
+    \end{itemize}
+    
+    \item \textbf{Compromiso \'optimo:}
+    
+    No usar m\'as bits por s\'imbolo de los necesarios, ya que aumentar $M$ degrada el rendimiento.
+\end{enumerate}
+
+\textbf{Comparaci\'on cuantitativa aproximada:}
+
+Para SNR moderado, las probabilidades de error relativas son aproximadamente:
+\begin{itemize}
+    \item 16-QAM: $P_b \approx P_0$ (referencia)
+    \item 16-PSK: $P_b \approx 2 P_0$ (el doble)
+    \item 64-QAM: $P_b \approx 10 P_0$ (10 veces mayor)
+    \item 256-QAM: $P_b \approx 100 P_0$ (100 veces mayor)
+\end{itemize}
+
+\textbf{Conclusi\'on:} \boxed{\text{16-QAM es la elecci\'on \'optima}}
+
+
+
+\newpage
+\section*{Transmisi\'on 8-PAM sobre canal AWGN (14 puntos)}
+
+\textbf{Datos del problema:}
+\begin{itemize}
+    \item Elementos binarios independientes e id\'enticamente distribuidos: $\Pr(m_i = 0) = \Pr(m_i = 1)$
+    \item Modulaci\'on: 8-PAM (Pulse Amplitude Modulation)
+\end{itemize}
+
+\textbf{Se\~nal modulada:}
+\[
+x(t) = \sum_{k=0}^{L-1} a_k h(t-kT)
+\]
+
+con
+\[
+h(t) = \frac{1}{\sqrt{T}} \chi_{[0;T]}(t) = \begin{cases}
+\frac{1}{\sqrt{T}} & 0 \leq t \leq T \\
+0 & \text{en otro caso}
+\end{cases}
+\]
+
+donde $\chi_E$ es la funci\'on indicadora del conjunto $E$.
+
+\textbf{Canal:} Gaussiano. Se\~nal recibida: $r(t) = x(t) + w(t)$ con $w(t)$ ruido AWGN de media cero y densidad espectral de potencia $\frac{N_0}{2}$.
+
+\textbf{Receptor:} Filtro con respuesta impulsional $g(t)$ seguido de un muestreador temporal. Sea $z(t)$ la salida del filtro de recepci\'on y $z_\ell$ la $\ell$-\'esima salida del muestreador.
+
+\subsection*{a) Definir el alfabeto elemental 8-PAM (2 pts)}
+
+\textbf{Enunciado:} Definir el alfabeto elemental 8-PAM.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+El alfabeto 8-PAM (Pulse Amplitude Modulation) consiste en 8 niveles de amplitud equiespaciados y sim\'etricos:
+
+\[
+\boxed{\mathcal{A} = \{-7, -5, -3, -1, +1, +3, +5, +7\}}
+\]
+
+\textbf{Propiedades:}
+\begin{itemize}
+    \item \textbf{N\'umero de s\'imbolos:} $M = 8$
+    \item \textbf{Bits por s\'imbolo:} $\log_2(8) = 3$ bits
+    \item \textbf{Separaci\'on entre s\'imbolos:} $\Delta = 2$
+    \item \textbf{Media:} $\mathbb{E}[a_k] = 0$ (sim\'etrico)
+    \item \textbf{Energ\'ia media:}
+    \[
+    \mathbb{E}[a_k^2] = \frac{1}{8}(49 + 25 + 9 + 1 + 1 + 9 + 25 + 49) = \frac{168}{8} = 21
+    \]
+    \item \textbf{Distancia m\'inima:} $d_{min} = 2$
+\end{itemize}
+
+\textbf{Nota:} PAM es una modulaci\'on en banda base (sin portadora), a diferencia de ASK que modula una portadora.
+
+
+
+\subsection*{b) Proponer un Gray mapping (2 pts)}
+
+\textbf{Enunciado:} Proponer un Gray mapping para la conversi\'on binario a s\'imbolo.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Gray mapping propuesto:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{S\'imbolo $a_k$} & \textbf{$m_{3k}$} & \textbf{$m_{3k+1}$} & \textbf{$m_{3k+2}$} & \textbf{C\'odigo completo} \\
+\hline
+$-7$ & 0 & 0 & 0 & 000 \\
+$-5$ & 0 & 0 & 1 & 001 \\
+$-3$ & 0 & 1 & 1 & 011 \\
+$-1$ & 0 & 1 & 0 & 010 \\
+$+1$ & 1 & 1 & 0 & 110 \\
+$+3$ & 1 & 1 & 1 & 111 \\
+$+5$ & 1 & 0 & 1 & 101 \\
+$+7$ & 1 & 0 & 0 & 100 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Verificaci\'on del criterio Gray:}
+
+S\'imbolos adyacentes deben diferir en exactamente 1 bit:
+\begin{itemize}
+    \item $-7 \rightarrow -5$: $000 \rightarrow 001$ (difieren en bit 2) ✓
+    \item $-5 \rightarrow -3$: $001 \rightarrow 011$ (difieren en bit 1) ✓
+    \item $-3 \rightarrow -1$: $011 \rightarrow 010$ (difieren en bit 2) ✓
+    \item $-1 \rightarrow +1$: $010 \rightarrow 110$ (difieren en bit 0) ✓
+    \item $+1 \rightarrow +3$: $110 \rightarrow 111$ (difieren en bit 2) ✓
+    \item $+3 \rightarrow +5$: $111 \rightarrow 101$ (difieren en bit 1) ✓
+    \item $+5 \rightarrow +7$: $101 \rightarrow 100$ (difieren en bit 2) ✓
+\end{itemize}
+
+\textbf{Interpretaci\'on de cada bit:}
+
+\begin{itemize}
+    \item \textbf{$m_{3k}$ (MSB):} Indica el signo del s\'imbolo
+    \begin{itemize}
+        \item $m_{3k} = 0 \Rightarrow a_k < 0$ (s\'imbolos negativos)
+        \item $m_{3k} = 1 \Rightarrow a_k > 0$ (s\'imbolos positivos)
+    \end{itemize}
+    
+    \item \textbf{$m_{3k+1}$:} Indica la magnitud (peque\~na/grande)
+    \begin{itemize}
+        \item $m_{3k+1} = 1 \Rightarrow |a_k| \in \{1, 3\}$ (magnitud peque\~na)
+        \item $m_{3k+1} = 0 \Rightarrow |a_k| \in \{5, 7\}$ (magnitud grande)
+    \end{itemize}
+    
+    \item \textbf{$m_{3k+2}$ (LSB):} Refina dentro de cada par
+\end{itemize}
+
+\textbf{Ventaja:} Este mapping minimiza la tasa de error binaria cuando los errores ocurren entre s\'imbolos adyacentes (los m\'as probables en AWGN).
+
+
+
+\subsection*{d) Demostrar que $h(t)$ satisface TSWOC (3 pts)}
+
+\textbf{Enunciado:} Demostrar que el filtro de transmisi\'on (definido por $h(t) = \frac{1}{\sqrt{T}}\chi_{[0;T]}(t)$) satisface el criterio TSWOC. Se espera una expresi\'on cuidadosa del criterio y la demostraci\'on puede basarse en una representaci\'on gr\'afica relevante.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Criterio TSWOC (Time-Shifted Waveform Orthogonality Criterion):}
+
+\[
+\boxed{\int_{\mathbb{R}} h(t) h(t - kT)\, dt = \delta_{k,0}}
+\]
+
+donde $\delta_{k,0}$ es la delta de Kronecker:
+\[
+\delta_{k,0} = \begin{cases}
+1 & \text{si } k = 0 \\
+0 & \text{si } k \neq 0
+\end{cases}
+\]
+
+\textbf{Demostraci\'on:}
+
+Calculamos la integral para los diferentes valores de $k$:
+
+\textbf{Caso 1: $k = 0$}
+
+\begin{align*}
+\int_{\mathbb{R}} h(t) h(t)\, dt &= \int_{\mathbb{R}} |h(t)|^2\, dt \\
+&= \int_0^T \left(\frac{1}{\sqrt{T}}\right)^2\, dt \\
+&= \frac{1}{T} \int_0^T dt \\
+&= \frac{1}{T} \cdot T \\
+&= 1 \quad ✓
+\end{align*}
+
+\textbf{Caso 2: $k \neq 0$}
+
+Necesitamos calcular:
+\[
+\int_{\mathbb{R}} h(t) h(t - kT)\, dt = \int_{\mathbb{R}} \frac{1}{\sqrt{T}}\chi_{[0;T]}(t) \cdot \frac{1}{\sqrt{T}}\chi_{[kT;(k+1)T]}(t)\, dt
+\]
+
+El producto $\chi_{[0;T]}(t) \cdot \chi_{[kT;(k+1)T]}(t)$ solo es no nulo donde ambos intervalos se superponen.
+
+\textbf{An\'alisis de intersecci\'on:}
+\begin{itemize}
+    \item $h(t)$ tiene soporte en $[0, T]$
+    \item $h(t - kT)$ tiene soporte en $[kT, (k+1)T]$
+\end{itemize}
+
+Para $k \geq 1$: $[0, T] \cap [kT, (k+1)T] = \emptyset$ (intervalos disjuntos)
+
+Para $k \leq -1$: $[0, T] \cap [kT, (k+1)T] = \emptyset$ (intervalos disjuntos)
+
+Por lo tanto:
+\[
+\int_{\mathbb{R}} h(t) h(t - kT)\, dt = \frac{1}{T} \int_{\emptyset} dt = 0 \quad ✓
+\]
+
+\textbf{Representaci\'on gr\'afica:}
+
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+% Eje temporal
+\draw[->] (-1,0) -- (5,0) node[right] {$t$};
+\draw[->] (0,-0.5) -- (0,2.5) node[above] {$h(t)$};
+
+% h(t)
+\draw[blue, very thick] (0,0) -- (0,2) -- (2,2) -- (2,0);
+\node[blue, above] at (1,2) {$h(t)$};
+\node[below] at (0,-0.1) {$0$};
+\node[below] at (2,-0.1) {$T$};
+
+% h(t - T) (k=1)
+\draw[red, dashed, thick] (2,0) -- (2,1.5) -- (4,1.5) -- (4,0);
+\node[red, above] at (3,1.5) {$h(t-T)$};
+\node[below] at (4,-0.1) {$2T$};
+
+% Indicaci\'on de no solapamiento
+\draw[<->, thick, green!70!black] (0,-0.3) -- (2,-0.3);
+\node[green!70!black, below] at (1,-0.3) {Soporte de $h(t)$};
+
+\draw[<->, thick, orange!70!black] (2,-0.6) -- (4,-0.6);
+\node[orange!70!black, below] at (3,-0.6) {Soporte de $h(t-T)$};
+
+\node at (2.5, 2.3) {\textbf{No hay solapamiento} $\to$ Integral = 0};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Conclusi\'on:}
+
+\[
+\boxed{\int_{\mathbb{R}} h(t) h(t - kT)\, dt = \begin{cases}
+1 & k = 0 \\
+0 & k \neq 0
+\end{cases} = \delta_{k,0}}
+\]
+
+Por lo tanto, \textbf{el filtro rectangular $h(t) = \frac{1}{\sqrt{T}}\chi_{[0;T]}(t)$ satisface el criterio TSWOC}.
+
+\textbf{Interpretaci\'on f\'isica:}
+
+Este resultado significa que pulsos rectangulares sucesivos son ortogonales entre s\'i cuando est\'an desplazados por m\'ultiplos enteros del periodo $T$. Esta propiedad garantiza:
+\begin{itemize}
+    \item Ausencia de interferencia entre s\'imbolos (ISI)
+    \item Detecci\'on \'optima s\'imbolo por s\'imbolo
+    \item M\'aximo SNR en el receptor con filtro adaptado
+\end{itemize}
+
+
+
+\subsection*{e) Expresi\'on de $g(t)$ para detecci\'on ML \'optima (1 pt)}
+
+\textbf{Enunciado:} Consideramos primero que $t_0$ est\'a fijado. Dados los par\'ametros de modulaci\'on, las hip\'otesis y la estructura del receptor, escribir la expresi\'on de $g(t)$ que asegura detecci\'on ML \'optima s\'imbolo por s\'imbolo.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Para un receptor \'optimo de m\'axima verosimilitud (ML) que garantice detecci\'on s\'imbolo por s\'imbolo, el filtro de recepci\'on debe ser el \textbf{filtro adaptado} al filtro de transmisi\'on:
+
+\[
+\boxed{g(t) = h(t_0 - t)}
+\]
+
+Sustituyendo la expresi\'on de $h(t)$:
+
+\[
+h(t_0 - t) = \frac{1}{\sqrt{T}} \chi_{[0;T]}(t_0 - t)
+\]
+
+Para que $(t_0 - t) \in [0, T]$, necesitamos $t \in [t_0 - T, t_0]$.
+
+Por lo tanto:
+
+\[
+\boxed{g(t) = \frac{1}{\sqrt{T}} \chi_{[t_0-T; t_0]}(t) = \begin{cases}
+\frac{1}{\sqrt{T}} & t_0 - T \leq t \leq t_0 \\
+0 & \text{en otro caso}
+\end{cases}}
+\]
+
+\textbf{Interpretaci\'on:}
+
+\begin{itemize}
+    \item $g(t)$ es una versi\'on ''volteada'' y desplazada de $h(t)$
+    \item Si $h(t)$ es un pulso rectangular en $[0, T]$, entonces $g(t)$ es un pulso rectangular en $[t_0-T, t_0]$
+    \item $t_0$ debe ser al menos $T$ para garantizar causalidad: $t_0 \geq T$
+\end{itemize}
+
+\textbf{Elecci\'on t\'ipica:} $t_0 = T$, lo que da:
+\[
+g(t) = \frac{1}{\sqrt{T}} \chi_{[0;T]}(t) = h(t)
+\]
+
+En este caso especial, el filtro de recepci\'on es id\'entico al filtro de transmisi\'on (el pulso rectangular es sim\'etrico).
+
+\textbf{Propiedades del filtro adaptado:}
+
+\begin{enumerate}
+    \item \textbf{Maximiza el SNR:} En el instante de muestreo $t_0$, el SNR es m\'aximo
+    
+    \item \textbf{Combinado con TSWOC:} Garantiza ausencia de ISI
+    
+    \item \textbf{Implementaci\'on:} $(h * g)(t) = (h * h)(t_0 - t)$ es la autocorrelaci\'on de $h$
+\end{enumerate}
+
+
+
+\subsection*{f) Expresi\'on de $z_\ell$ (2 pts)}
+
+\textbf{Enunciado:} Asumiendo condiciones satisfechas para detecci\'on ML \'optima s\'imbolo por s\'imbolo, deducir la expresi\'on de $z_\ell$.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Desarrollo:}
+
+La salida del filtro de recepci\'on es:
+\[
+z(t) = (r * g)(t) = \int_{\mathbb{R}} r(\tau) g(t - \tau)\, d\tau
+\]
+
+Sustituyendo $r(t) = x(t) + w(t)$ y $x(t) = \sum_{k=0}^{L-1} a_k h(t-kT)$:
+
+\begin{align*}
+z(t) &= \int_{\mathbb{R}} \left[\sum_{k=0}^{L-1} a_k h(\tau-kT) + w(\tau)\right] g(t-\tau)\, d\tau \\
+&= \sum_{k=0}^{L-1} a_k \int_{\mathbb{R}} h(\tau-kT) g(t-\tau)\, d\tau + \int_{\mathbb{R}} w(\tau) g(t-\tau)\, d\tau \\
+&= \sum_{k=0}^{L-1} a_k (h * g)(t-kT) + (w * g)(t)
+\end{align*}
+
+Con el cambio de variable $\tau' = \tau - kT$:
+\[
+(h * g)(t-kT) = \int_{\mathbb{R}} h(\tau') g(t - kT - \tau')\, d\tau' = \int_{\mathbb{R}} h(\tau') g((t-kT) - \tau')\, d\tau'
+\]
+
+Como $g(t) = h(t_0 - t)$:
+\[
+(h * g)(t-kT) = \int_{\mathbb{R}} h(\tau') h(t_0 - (t - kT) + \tau')\, d\tau' = \int_{\mathbb{R}} h(\tau') h(\tau' + t_0 - t + kT)\, d\tau'
+\]
+
+\textbf{Muestreo en $t = t_0 + \ell T$:}
+
+\begin{align*}
+z_\ell &= z(t_0 + \ell T) \\
+&= \sum_{k=0}^{L-1} a_k \int_{\mathbb{R}} h(\tau) h(\tau + t_0 - (t_0 + \ell T) + kT)\, d\tau + w_\ell \\
+&= \sum_{k=0}^{L-1} a_k \int_{\mathbb{R}} h(\tau) h(\tau + (k - \ell)T)\, d\tau + w_\ell
+\end{align*}
+
+donde $w_\ell = (w * g)(t_0 + \ell T)$ es el ruido filtrado y muestreado.
+
+\textbf{Aplicaci\'on del TSWOC:}
+
+Como demostramos que $\int_{\mathbb{R}} h(\tau) h(\tau + mT)\, d\tau = \delta_{m,0}$, solo el t\'ermino con $k = \ell$ sobrevive:
+
+\[
+z_\ell = a_\ell \int_{\mathbb{R}} |h(\tau)|^2\, d\tau + w_\ell = a_\ell \cdot 1 + w_\ell
+\]
+
+Por lo tanto:
+
+\[
+\boxed{z_\ell = a_\ell + w_\ell}
+\]
+
+Donde:
+\begin{itemize}
+    \item $a_\ell \in \{-7, -5, -3, -1, +1, +3, +5, +7\}$ es el s\'imbolo transmitido
+    \item $w_\ell$ es una variable aleatoria gaussiana con:
+    \begin{itemize}
+        \item Media: $\mathbb{E}[w_\ell] = 0$
+        \item Varianza: $\sigma_w^2 = \frac{N_0}{2}$
+    \end{itemize}
+\end{itemize}
+
+\textbf{Interpretaci\'on:}
+
+La muestra $z_\ell$ es simplemente el s\'imbolo transmitido $a_\ell$ m\'as ruido aditivo gaussiano. No hay interferencia de otros s\'imbolos (ISI = 0) gracias al TSWOC.
+
+Esta es la situaci\'on ideal para detecci\'on, permitiendo decisi\'on s\'imbolo por s\'imbolo con probabilidad de error m\'inima.
+
+
+
+\subsection*{g) Constelaci\'on recibida y regiones de decisi\'on (2 pts)}
+
+\textbf{Enunciado:} Dibujar la constelaci\'on recibida. Definir y dibujar las fronteras de decisi\'on sobre los s\'imbolos (con una frase de justificaci\'on). A\~nadir el mapping binario a s\'imbolo propuesto previamente.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+\textbf{Constelaci\'on recibida (sin ruido):}
+
+Con ruido cero ($w_\ell = 0$), la constelaci\'on recibida es simplemente:
+\[
+\{-7, -5, -3, -1, +1, +3, +5, +7\}
+\]
+
+\textbf{Definici\'on de fronteras de decisi\'on:}
+
+Las fronteras de decisi\'on se ubican \textbf{a mitad de camino entre s\'imbolos adyacentes} para minimizar la probabilidad de error (criterio ML).
+
+Fronteras: $-6, -4, -2, 0, +2, +4, +6$
+
+\textbf{Representaci\'on gr\'afica:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+% Eje
+\draw[<->] (-8.5,0) -- (8.5,0) node[right] {$z_\ell$};
+
+% S\'imbolos
+\foreach \x/\label in {-7/000, -5/001, -3/011, -1/010, 1/110, 3/111, 5/101, 7/100}
+{
+    \fill[blue] (\x,0) circle (4pt);
+    \node[blue, above] at (\x,0.5) {\textbf{\label}};
+    \node[below] at (\x,-0.3) {$\x$};
+}
+
+% Fronteras de decisi\'on
+\foreach \x in {-6, -4, -2, 0, 2, 4, 6}
+{
+    \draw[red, thick, dashed] (\x,-1) -- (\x,1);
+    \node[red, below] at (\x,-1.2) {$\x$};
+}
+
+% Regiones de decisi\'on
+\node[green!70!black] at (-7,-1.8) {Regi\'on 000};
+\node[green!70!black] at (-5,-1.8) {001};
+\node[green!70!black] at (-3,-1.8) {011};
+\node[green!70!black] at (-1,-1.8) {010};
+\node[green!70!black] at (1,-1.8) {110};
+\node[green!70!black] at (3,-1.8) {111};
+\node[green!70!black] at (5,-1.8) {101};
+\node[green!70!black] at (7,-1.8) {100};
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Justificaci\'on de las fronteras:}
+
+\textit{Las fronteras de decisi\'on se colocan en los puntos equidistantes entre s\'imbolos adyacentes para minimizar la probabilidad de error en un canal AWGN. Cualquier valor recibido $z_\ell$ se asigna al s\'imbolo m\'as cercano.}
+
+\textbf{Reglas de decisi\'on:}
+
+\[
+\hat{a}_\ell = \begin{cases}
+-7 & \text{si } z_\ell < -6 \\
+-5 & \text{si } -6 \leq z_\ell < -4 \\
+-3 & \text{si } -4 \leq z_\ell < -2 \\
+-1 & \text{si } -2 \leq z_\ell < 0 \\
++1 & \text{si } 0 \leq z_\ell < 2 \\
++3 & \text{si } 2 \leq z_\ell < 4 \\
++5 & \text{si } 4 \leq z_\ell < 6 \\
++7 & \text{si } z_\ell \geq 6
+\end{cases}
+\]
+
+\textbf{Reglas de decisi\'on binarias:}
+
+Basadas en el Gray mapping propuesto:
+
+\textbf{Bit $\hat{m}_{3\ell}$ (MSB - Signo):}
+\[
+\boxed{\hat{m}_{3\ell} = \begin{cases}
+0 & \text{si } z_\ell < 0 \\
+1 & \text{si } z_\ell \geq 0
+\end{cases}}
+\]
+
+\textbf{Bit $\hat{m}_{3\ell+1}$ (Magnitud):}
+\[
+\boxed{\hat{m}_{3\ell+1} = \begin{cases}
+1 & \text{si } |z_\ell| < 4 \\
+0 & \text{si } |z_\ell| \geq 4
+\end{cases}}
+\]
+
+\textbf{Bit $\hat{m}_{3\ell+2}$ (LSB - Refinamiento):}
+\[
+\boxed{\hat{m}_{3\ell+2} = \begin{cases}
+1 & \text{si } 2 < |z_\ell| < 6 \\
+0 & \text{si } |z_\ell| < 2 \text{ o } |z_\ell| > 6
+\end{cases}}
+\]
+
+
+
+\subsection*{h) Bonus: Reglas de decisi\'on binarias (1 pt)}
+
+\textbf{Enunciado:} Deducir del esquema las reglas de decisi\'on binarias.
+
+\vspace{0.3cm}
+\textbf{Soluci\'on:}
+
+Ya desarrolladas en el apartado anterior. Resumen:
+
+\textbf{Implementaci\'on pr\'actica:}
+
+\begin{enumerate}
+    \item \textbf{Para $\hat{m}_{3\ell}$:} Comparador simple
+    \[
+    \hat{m}_{3\ell} = \text{signo}(z_\ell) = \begin{cases}
+    0 & z_\ell < 0 \\
+    1 & z_\ell \geq 0
+    \end{cases}
+    \]
+    
+    \item \textbf{Para $\hat{m}_{3\ell+1}$:} Comparador de magnitud
+    \[
+    \hat{m}_{3\ell+1} = \begin{cases}
+    1 & |z_\ell| < 4 \\
+    0 & |z_\ell| \geq 4
+    \end{cases}
+    \]
+    
+    \item \textbf{Para $\hat{m}_{3\ell+2}$:} Dos comparadores
+    \[
+    \hat{m}_{3\ell+2} = \mathbb{1}_{2 < |z_\ell| < 6} = \begin{cases}
+    1 & 2 < |z_\ell| < 6 \\
+    0 & \text{en otro caso}
+    \end{cases}
+    \]
+\end{enumerate}
+
+\textbf{Circuito decisor:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2cm]
+\node (input) {$z_\ell$};
+\node[draw, right of=input] (abs) {$|z_\ell|$};
+\node[draw, above right of=abs] (comp1) {$< 0?$};
+\node[draw, right of=abs] (comp2) {$< 4?$};
+\node[draw, below right of=abs] (comp3) {$2 < \cdot < 6?$};
+
+\draw[->] (input) -- (abs);
+\draw[->] (input) |- (comp1);
+\draw[->] (abs) -- (comp2);
+\draw[->] (abs) -- (comp3);
+
+\node[right of=comp1] (out1) {$\hat{m}_{3\ell}$};
+\node[right of=comp2] (out2) {$\hat{m}_{3\ell+1}$};
+\node[right of=comp3] (out3) {$\hat{m}_{3\ell+2}$};
+
+\draw[->] (comp1) -- (out1);
+\draw[->] (comp2) -- (out2);
+\draw[->] (comp3) -- (out3);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Ventaja del Gray mapping:}
+
+Los errores m\'as probables (confusi\'on con s\'imbolo adyacente) causan solo 1 bit err\'oneo, minimizando la tasa de error binaria.
+
+
+
+\vspace{1cm}
+\begin{center}
+\rule{0.8\linewidth}{0.4pt}\\
+\textit{Fin del examen}
+\end{center}
+
+\end{document}
