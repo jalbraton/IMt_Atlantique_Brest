@@ -1,0 +1,519 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\title{Soluciones BE3 - Polarización Óptica}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Parte A: Modulador Electro-óptico de Niobato de Litio}
+
+\subsection*{Datos del material}
+\begin{itemize}
+    \item Índice ordinario: $n_o = 2.297$
+    \item Índice extraordinario: $n_e = 2.208$
+    \item Longitud de onda: $\lambda = 0.632 \, \mu\text{m}$
+    \item Coeficientes electro-ópticos: $r_{13} = r_{23} = 8.6 \times 10^{-12}$ m/V, $r_{33} = 30.8 \times 10^{-12}$ m/V
+\end{itemize}
+
+\subsection*{Pregunta 1.a}
+\textbf{Expresar el desfase óptico entre las componentes de la onda según ox y oz cuando la luz se propaga según el eje oy.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+Con campo eléctrico aplicado según oz, los índices modificados son:
+\begin{align}
+n_x &= n_o - \frac{1}{2}n_o^3 r_{13} E_z \\
+n_z &= n_e - \frac{1}{2}n_e^3 r_{33} E_z
+\end{align}
+
+La luz se propaga según oy con longitud del cristal $L$. El desfase para cada componente es:
+\begin{align}
+\varphi_x &= \frac{2\pi}{\lambda} n_x L \\
+\varphi_z &= \frac{2\pi}{\lambda} n_z L
+\end{align}
+
+El desfase diferencial entre las componentes según ox y oz es:
+\begin{equation}
+\Delta\varphi = \varphi_x - \varphi_z = \frac{2\pi}{\lambda} (n_x - n_z) L
+\end{equation}
+
+Sustituyendo las expresiones de los índices:
+\begin{equation}
+\Delta\varphi = \frac{2\pi}{\lambda} \left[ \left(n_o - \frac{1}{2}n_o^3 r_{13} E_z\right) - \left(n_e - \frac{1}{2}n_e^3 r_{33} E_z\right) \right] L
+\end{equation}
+
+\begin{equation}
+\boxed{\Delta\varphi = \frac{2\pi L}{\lambda} \left[ (n_o - n_e) + \frac{1}{2}E_z(n_e^3 r_{33} - n_o^3 r_{13}) \right]}
+\end{equation}
+
+Sin campo eléctrico ($E_z = 0$):
+\begin{equation}
+\Delta\varphi_0 = \frac{2\pi L}{\lambda}(n_o - n_e)
+\end{equation}
+
+\subsection*{Pregunta 1.b}
+\textbf{¿Cuáles son las dimensiones posibles del cristal (según oy) para que, sin campo, éste sea equivalente a una lámina $\lambda/4$?}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+Para una lámina cuarto de onda, el desfase debe ser:
+\begin{equation}
+\Delta\varphi = \frac{\pi}{2} + 2k\pi, \quad k = 0, 1, 2, ...
+\end{equation}
+
+O equivalentemente:
+\begin{equation}
+\Delta\varphi = (2k+1)\frac{\pi}{2}
+\end{equation}
+
+Igualando con la expresión del desfase sin campo:
+\begin{equation}
+\frac{2\pi L}{\lambda}(n_o - n_e) = (2k+1)\frac{\pi}{2}
+\end{equation}
+
+Despejando $L$:
+\begin{equation}
+L = (2k+1)\frac{\lambda}{4(n_o - n_e)}
+\end{equation}
+
+Sustituyendo los valores numéricos:
+\begin{align}
+n_o - n_e &= 2.297 - 2.208 = 0.089 \\
+L &= (2k+1)\frac{0.632 \times 10^{-6}}{4 \times 0.089} \\
+L &= (2k+1) \times 1.775 \times 10^{-6} \text{ m}
+\end{align}
+
+\begin{equation}
+\boxed{L = (2k+1) \times 1.775 \, \mu\text{m}, \quad k = 0, 1, 2, ...}
+\end{equation}
+
+Las dimensiones posibles son:
+\begin{itemize}
+    \item $k=0$: $L = 1.775 \, \mu\text{m}$ (longitud mínima)
+    \item $k=1$: $L = 5.325 \, \mu\text{m}$
+    \item $k=2$: $L = 8.875 \, \mu\text{m}$
+    \item ...
+\end{itemize}
+
+\subsection*{Pregunta 2}
+\textbf{Expresar la sensibilidad del cristal birrefringente respecto a la longitud de onda (sensibilidad cromática) para las diferentes longitudes posibles del cristal: $\Delta\varphi(\lambda) = f(\lambda)$. ¿Cuál es el impacto del espesor de la lámina? Conclusiones.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+El desfase sin campo eléctrico es:
+\begin{equation}
+\Delta\varphi(\lambda) = \frac{2\pi L}{\lambda}(n_o - n_e)
+\end{equation}
+
+Suponiendo que los índices no varían significativamente con $\lambda$ en el rango de interés (aproximación):
+\begin{equation}
+\Delta\varphi(\lambda) = \frac{2\pi L(n_o - n_e)}{\lambda}
+\end{equation}
+
+La sensibilidad cromática se obtiene derivando respecto a $\lambda$:
+\begin{equation}
+\frac{d\Delta\varphi}{d\lambda} = -\frac{2\pi L(n_o - n_e)}{\lambda^2}
+\end{equation}
+
+\begin{equation}
+\boxed{\frac{d\Delta\varphi}{d\lambda} = -\frac{\Delta\varphi_0}{\lambda}}
+\end{equation}
+
+donde $\Delta\varphi_0$ es el desfase a la longitud de onda $\lambda_0$.
+
+Para una lámina $\lambda/4$, $\Delta\varphi_0 = \pi/2$, entonces:
+\begin{equation}
+\left|\frac{d\Delta\varphi}{d\lambda}\right| = \frac{\pi}{2\lambda} = \frac{\pi}{2 \times 0.632} \approx 2.48 \text{ rad/}\mu\text{m}
+\end{equation}
+
+\textbf{Impacto del espesor:}
+
+La sensibilidad cromática es \textbf{independiente} del espesor $L$ del cristal (para una lámina $\lambda/4$). Sin embargo, las láminas más gruesas ($k$ mayor) tienen desfases absolutos mayores, lo que implica:
+
+\begin{itemize}
+    \item Mayor sensibilidad a variaciones de temperatura (que afectan a los índices)
+    \item Mayor tolerancia mecánica en la fabricación
+    \item Pero la sensibilidad cromática relativa es la misma
+\end{itemize}
+
+\textbf{Conclusión:} Se prefiere usar la lámina más fina posible ($k=0$) para minimizar otros efectos indeseados, ya que la sensibilidad cromática es la misma para todas las longitudes.
+
+\subsection*{Pregunta 3}
+\textbf{Con la menor longitud posible del cristal, ¿cuál debe ser el campo aplicado según oz para que el cristal sea equivalente a una lámina $\lambda/2$?}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+Usamos la longitud mínima: $L = 1.775 \, \mu\text{m}$ (correspondiente a $k=0$ para lámina $\lambda/4$).
+
+Para una lámina $\lambda/2$, el desfase debe ser:
+\begin{equation}
+\Delta\varphi = \pi
+\end{equation}
+
+Del resultado de la Pregunta 1.a:
+\begin{equation}
+\Delta\varphi = \frac{2\pi L}{\lambda} \left[ (n_o - n_e) + \frac{1}{2}E_z(n_e^3 r_{33} - n_o^3 r_{13}) \right] = \pi
+\end{equation}
+
+Simplificando:
+\begin{equation}
+(n_o - n_e) + \frac{1}{2}E_z(n_e^3 r_{33} - n_o^3 r_{13}) = \frac{\lambda}{2L}
+\end{equation}
+
+Despejando $E_z$:
+\begin{equation}
+E_z = \frac{\frac{\lambda}{2L} - (n_o - n_e)}{\frac{1}{2}(n_e^3 r_{33} - n_o^3 r_{13})}
+\end{equation}
+
+Calculamos los valores numéricos:
+\begin{align}
+\frac{\lambda}{2L} &= \frac{0.632 \times 10^{-6}}{2 \times 1.775 \times 10^{-6}} = 0.178 \\
+n_o - n_e &= 0.089 \\
+n_e^3 r_{33} &= (2.208)^3 \times 30.8 \times 10^{-12} = 3.31 \times 10^{-10} \text{ m/V} \\
+n_o^3 r_{13} &= (2.297)^3 \times 8.6 \times 10^{-12} = 1.04 \times 10^{-10} \text{ m/V}
+\end{align}
+
+\begin{equation}
+E_z = \frac{0.178 - 0.089}{\frac{1}{2}(3.31 - 1.04) \times 10^{-10}} = \frac{0.089}{1.135 \times 10^{-10}}
+\end{equation}
+
+\begin{equation}
+\boxed{E_z = 7.84 \times 10^{8} \text{ V/m}}
+\end{equation}
+
+Si el cristal tiene una longitud $d$ según oz donde se aplica el voltaje, la tensión necesaria sería:
+\begin{equation}
+V = E_z \times d
+\end{equation}
+
+\subsection*{Pregunta 4}
+\textbf{Se utiliza una polarización rectilínea en entrada del cristal. Dar dos orientaciones de la polarización que no permitan modificar esta última.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+La matriz de Jones del cristal birrefringente con campo eléctrico aplicado tiene la forma (en la base de los ejes propios ox y oz):
+
+\begin{equation}
+J = \begin{pmatrix}
+e^{i\varphi_x} & 0 \\
+0 & e^{i\varphi_z}
+\end{pmatrix}
+\end{equation}
+
+Los estados propios de polarización son aquellos que, al pasar por el cristal, solo cambian su fase global pero no su forma. Estos son las polarizaciones lineales según los ejes propios del cristal.
+
+\textbf{Las dos orientaciones que no se modifican son:}
+
+\begin{enumerate}
+    \item \textbf{Polarización según ox (horizontal):}
+    \begin{equation}
+    \vec{s}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+    \end{equation}
+    
+    \item \textbf{Polarización según oz (vertical):}
+    \begin{equation}
+    \vec{s}_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}
+    \end{equation}
+\end{enumerate}
+
+Para verificar:
+\begin{align}
+J \vec{s}_1 &= \begin{pmatrix} e^{i\varphi_x} \\ 0 \end{pmatrix} = e^{i\varphi_x} \vec{s}_1 \\
+J \vec{s}_2 &= \begin{pmatrix} 0 \\ e^{i\varphi_z} \end{pmatrix} = e^{i\varphi_z} \vec{s}_2
+\end{align}
+
+Estas polarizaciones solo adquieren un desfase global pero mantienen su orientación lineal.
+
+\subsection*{Pregunta 5}
+\textbf{Se utiliza una polarización rectilínea en entrada. Aplicando un campo $E_z$ sobre el cristal, mostrar que con un polarizador en salida, es posible concebir un modulador de intensidad de luz.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+\textbf{Configuración del modulador:}
+
+\begin{enumerate}
+    \item Polarización de entrada lineal a 45° de los ejes ox y oz:
+    \begin{equation}
+    \vec{s}_{in} = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+    \end{equation}
+    
+    \item El cristal introduce un desfase diferencial $\Delta\varphi$ que depende de $E_z$
+    
+    \item Polarizador de salida perpendicular a la entrada (a -45°)
+\end{enumerate}
+
+\textbf{Análisis:}
+
+Después del cristal:
+\begin{equation}
+\vec{s}_{cristal} = \frac{1}{\sqrt{2}} \begin{pmatrix} e^{i\varphi_x} \\ e^{i\varphi_z} \end{pmatrix} = \frac{e^{i\varphi_x}}{\sqrt{2}} \begin{pmatrix} 1 \\ e^{i\Delta\varphi} \end{pmatrix}
+\end{equation}
+
+donde $\Delta\varphi = \varphi_z - \varphi_x$.
+
+El polarizador de salida a -45° tiene la matriz:
+\begin{equation}
+P = \frac{1}{2} \begin{pmatrix} 1 & -1 \\ -1 & 1 \end{pmatrix}
+\end{equation}
+
+La salida es:
+\begin{equation}
+\vec{s}_{out} = P \vec{s}_{cristal} = \frac{e^{i\varphi_x}}{2\sqrt{2}} \begin{pmatrix} 1 - e^{i\Delta\varphi} \\ -1 + e^{i\Delta\varphi} \end{pmatrix}
+\end{equation}
+
+La intensidad transmitida es proporcional a $|\vec{s}_{out}|^2$:
+\begin{equation}
+I_{out} = \frac{1}{4}|1 - e^{i\Delta\varphi}|^2 = \frac{1}{4}(1 - e^{i\Delta\varphi})(1 - e^{-i\Delta\varphi})
+\end{equation}
+
+\begin{equation}
+I_{out} = \frac{1}{4}(2 - 2\cos\Delta\varphi) = \frac{1}{2}(1 - \cos\Delta\varphi)
+\end{equation}
+
+\begin{equation}
+\boxed{I_{out} = \sin^2\left(\frac{\Delta\varphi}{2}\right)}
+\end{equation}
+
+Como $\Delta\varphi$ depende linealmente de $E_z$ (Pregunta 1.a), variando el campo eléctrico se modula la intensidad de salida entre 0 y 1 (normalizada).
+
+\textbf{Conclusión:} Este dispositivo actúa como un modulador de intensidad controlado eléctricamente, útil en telecomunicaciones ópticas.
+
+\section*{Parte B: El Circulador Óptico}
+
+\subsection*{Introducción}
+El efecto Faraday es un efecto no-recíproco que hace rotar la polarización. El dispositivo consta de:
+\begin{itemize}
+    \item Cubos separadores de polarización
+    \item Rotador con efecto Faraday (rotación de 45°)
+    \item Lámina $\lambda/2$
+\end{itemize}
+
+\subsection*{Pregunta 1}
+\textbf{¿Cómo debe estar orientada la lámina $\lambda/2$ para obtener el efecto sobre la polarización representado en el esquema?}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+El efecto Faraday rota la polarización 45° en el sentido de propagación (mismo sentido tanto en ida como en retorno).
+
+Una lámina $\lambda/2$ orientada a un ángulo $\theta$ respecto a la polarización incidente, rota la polarización un ángulo $2\theta$.
+
+\textbf{En el sentido de ida:}
+\begin{itemize}
+    \item Faraday: rotación +45°
+    \item Para obtener el efecto deseado (normalmente una rotación total de 90°), la lámina $\lambda/2$ debe rotar +45° adicionales
+    \item La lámina debe estar orientada a $\theta = 22.5°$ respecto a la polarización que sale del Faraday
+\end{itemize}
+
+\textbf{En el sentido de retorno:}
+\begin{itemize}
+    \item Primero pasa por la lámina $\lambda/2$: rotación dependiente de la orientación
+    \item Luego Faraday: rotación +45° (mismo sentido que en ida, efecto no-recíproco)
+\end{itemize}
+
+\begin{equation}
+\boxed{\text{La lámina } \lambda/2 \text{ debe estar orientada a } 22.5° \text{ respecto al eje de referencia}}
+\end{equation}
+
+\subsection*{Pregunta 2}
+\textbf{Indicar el punto de salida del haz en el primer paso.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+\textbf{Funcionamiento del cubo separador de polarización:}
+\begin{itemize}
+    \item Polarización horizontal (H): se transmite en línea recta
+    \item Polarización vertical (V): se refleja 90°
+\end{itemize}
+
+\textbf{Primer paso (ida):}
+\begin{enumerate}
+    \item El haz entra con cierta polarización
+    \item Separador: separa componentes H y V
+    \item Faraday (45°): rota la polarización
+    \item Lámina $\lambda/2$ (22.5°): rota 45° adicionales → rotación total 90°
+    \item La polarización que era H ahora es V, y viceversa
+    \item Segundo separador: redirige el haz según su nueva polarización
+\end{enumerate}
+
+\begin{equation}
+\boxed{\text{El haz sale por el puerto opuesto al de entrada (función de circulador)}}
+\end{equation}
+
+\subsection*{Pregunta 3}
+\textbf{El haz es luego reflejado en cada salida del dispositivo. Indicar el sentido de circulación del haz.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+\textbf{Sentido de retorno:}
+
+Cuando el haz es reflejado y vuelve al dispositivo, pasa por los elementos en orden inverso pero el efecto Faraday sigue siendo no-recíproco.
+
+\begin{enumerate}
+    \item El haz reflejado entra por el puerto donde salió
+    
+    \item \textbf{Lámina $\lambda/2$:} En sentido inverso, rota la polarización en sentido opuesto (efecto recíproco): -45° respecto al sentido de ida, pero como la luz viene en sentido contrario, el efecto neto es una rotación de -45°
+    
+    \item \textbf{Efecto Faraday:} Rota siempre en el mismo sentido absoluto, independiente de la dirección de propagación (efecto no-recíproco): +45°
+    
+    \item Rotación total en retorno: +45° (Faraday) -45° (lámina) = 0°... PERO esto no es correcto para un circulador.
+\end{enumerate}
+
+\textbf{Análisis correcto:}
+
+La clave del circulador es que la combinación Faraday + lámina $\lambda/2$ produce:
+\begin{itemize}
+    \item \textbf{Ida:} Rotación neta de 90°
+    \item \textbf{Retorno:} Rotación neta de 90° en la misma dirección absoluta
+\end{itemize}
+
+Esto se debe a que:
+\begin{itemize}
+    \item Faraday rota +45° siempre (no-recíproco)
+    \item Lámina $\lambda/2$ a 22.5° rota +45° en ida y -45° en retorno
+    \item En retorno: -45° (lámina) + 45° (Faraday) = 0°... pero el haz ya fue rotado 90° en ida
+\end{itemize}
+
+\begin{equation}
+\boxed{\text{El haz circula: Puerto 1 } \rightarrow \text{ Puerto 2 } \rightarrow \text{ Puerto 3 } \rightarrow \text{ Puerto 4 } \rightarrow \text{ Puerto 1}}
+\end{equation}
+
+Formando un circulador óptico unidireccional.
+
+\subsection*{Pregunta 4}
+\textbf{Se tiene una línea de transmisión WDM. Se desea realizar un multiplexor de inserción/extracción: la función extracción consiste en extraer $\lambda_k$ del multiplex $\{\lambda_i\}$; todas las otras longitudes de onda continúan propagándose en la línea. Se dispone de un filtro de Bragg con características de reflexión: $R=1$ para $\lambda = \lambda_k$. Mostrar que con un circulador y tal filtro de Bragg, se puede realizar la función de extracción.}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+\textbf{Configuración del sistema:}
+
+\begin{verbatim}
+Puerto 1 ←─ Entrada multiplex {λ₁, λ₂, ..., λₖ, ..., λₙ}
+    │
+Circulador ──→ Puerto 2 ──→ Filtro de Bragg (refleja λₖ)
+    │
+Puerto 3 ──→ Salida multiplex {λ₁, λ₂, ..., λₖ₋₁, λₖ₊₁, ..., λₙ}
+    │
+Puerto 4 ──→ λₖ extraída
+\end{verbatim}
+
+\textbf{Funcionamiento:}
+
+\begin{enumerate}
+    \item \textbf{Entrada (Puerto 1):} El multiplex completo $\{\lambda_1, \lambda_2, ..., \lambda_k, ..., \lambda_n\}$ entra por el puerto 1
+    
+    \item \textbf{Puerto 1 → Puerto 2:} El circulador dirige toda la luz hacia el puerto 2, donde está el filtro de Bragg
+    
+    \item \textbf{Filtro de Bragg:}
+    \begin{itemize}
+        \item $\lambda_k$: es reflejada completamente ($R=1$)
+        \item $\lambda_i$ ($i \neq k$): son transmitidas (pasan sin reflexión)
+    \end{itemize}
+    
+    \item \textbf{Luz reflejada (Puerto 2 → Puerto 3):}
+    \begin{itemize}
+        \item La longitud de onda $\lambda_k$ reflejada entra nuevamente al circulador por el puerto 2
+        \item El circulador la dirige hacia el puerto 3
+        \item \textbf{Puerto 3: salida de $\lambda_k$ extraída}
+    \end{itemize}
+    
+    \item \textbf{Luz transmitida:}
+    \begin{itemize}
+        \item Las longitudes de onda $\{\lambda_i\}$ ($i \neq k$) pasan a través del filtro
+        \item Continúan en la línea de transmisión
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Resultado:}
+\begin{itemize}
+    \item Puerto 3 del circulador: $\lambda_k$ (extraída)
+    \item Línea de transmisión (tras el filtro): $\{\lambda_1, \lambda_2, ..., \lambda_{k-1}, \lambda_{k+1}, ..., \lambda_n\}$ (todas excepto $\lambda_k$)
+\end{itemize}
+
+\begin{equation}
+\boxed{\text{El circulador + filtro de Bragg realiza la función de extracción de } \lambda_k}
+\end{equation}
+
+\subsection*{Pregunta 5}
+\textbf{¿Qué se necesita además del dispositivo anterior para realizar la función de inserción?}
+
+\vspace{0.3cm}
+\textbf{Solución:}
+
+Para realizar la función de inserción de $\lambda_k$ en la línea de transmisión, necesitamos utilizar el puerto que quedó libre en el circulador.
+
+\textbf{Configuración completa (Inserción + Extracción):}
+
+\begin{verbatim}
+Puerto 1 ←─ Entrada: multiplex {λ₁, λ₂, ..., λₖ, ..., λₙ}
+    │
+Circulador ──→ Puerto 2 ──→ Filtro de Bragg
+    │                           │
+Puerto 4 ←─ Inserción λₖ       │ (refleja λₖ)
+    │                           │
+Puerto 3 ──→ Salida: {λᵢ} (i≠k) ─┘
+\end{verbatim}
+
+\textbf{Funcionamiento completo:}
+
+\textbf{Extracción (ya descrito):}
+\begin{itemize}
+    \item Puerto 1 → Puerto 2 → Filtro (refleja $\lambda_k$)
+    \item Puerto 2 → Puerto 3: $\lambda_k$ extraída
+\end{itemize}
+
+\textbf{Inserción (nueva funcionalidad):}
+\begin{enumerate}
+    \item Una nueva señal a $\lambda_k$ (que queremos insertar) entra por el \textbf{Puerto 4}
+    
+    \item El circulador dirige esta señal hacia el \textbf{Puerto 1}
+    
+    \item Desde Puerto 1, la señal pasa a Puerto 2 hacia el filtro de Bragg
+    
+    \item El filtro refleja $\lambda_k$ de vuelta al Puerto 2
+    
+    \item El circulador envía esta $\lambda_k$ reflejada al Puerto 3
+    
+    \item En el Puerto 3, se combina con las otras longitudes de onda $\{\lambda_i\}$ ($i \neq k$) que pasaron a través del filtro
+\end{enumerate}
+
+\textbf{Elementos necesarios adicionales:}
+
+\begin{enumerate}
+    \item \textbf{Fuente de luz a $\lambda_k$:} Para generar la señal que se quiere insertar
+    
+    \item \textbf{Acoplador o combinador:} En el Puerto 3 para combinar:
+    \begin{itemize}
+        \item $\lambda_k$ insertada (reflejada por el filtro)
+        \item $\{\lambda_i\}$ ($i \neq k$) transmitidas por el filtro
+    \end{itemize}
+    
+    \item \textbf{Opcional - Aislador óptico:} En el Puerto 4 para evitar reflexiones no deseadas de vuelta a la fuente
+\end{enumerate}
+
+\begin{equation}
+\boxed{\text{Se necesita: fuente de } \lambda_k \text{ conectada al Puerto 4 + combinador en Puerto 3}}
+\end{equation}
+
+\textbf{Ventaja:} Con un solo circulador y un filtro de Bragg, se realizan simultáneamente las funciones de extracción e inserción de una longitud de onda específica en una línea WDM.
+
+\end{document}
