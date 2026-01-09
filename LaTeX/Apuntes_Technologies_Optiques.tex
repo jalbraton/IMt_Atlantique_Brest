@@ -1,0 +1,2869 @@
+% Apuntes de Technologies Optiques - IMT Atlantique
+\documentclass[11pt,a4paper]{article}
+
+% Paquetes
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{listings}
+
+\geometry{a4paper, margin=2cm}
+
+% Configuración de headers
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Technologies Optiques}
+\lhead{IMT Atlantique}
+\cfoot{\thepage}
+
+% Definiciones de cajas
+\newtcolorbox{definicion}{colback=blue!5!white,colframe=blue!75!black,title=Definición}
+\newtcolorbox{importante}{colback=red!5!white,colframe=red!75!black,title=Importante}
+\newtcolorbox{nota}{colback=green!5!white,colframe=green!75!black,title=Nota}
+
+\title{\textbf{Apuntes de Technologies Optiques}\\
+\large UE-E-TOPT - IMT Atlantique}
+\author{Basado en material del curso 2025-2026}
+\date{Enero 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section{Fibras Ópticas: Teoría y Aplicaciones}
+%=============================================================================
+
+\subsection{Fundamentos Físicos de la Propagación Guiada}
+
+\subsubsection{Naturaleza de las Fibras como Guías de Onda}
+
+Las fibras ópticas constituyen estructuras guía de onda dieléctricas cilíndricas que permiten la propagación confinada de radiación electromagnética en el espectro visible e infrarrojo cercano. El principio fundamental que gobierna el confinamiento óptico es el fenómeno de \textbf{reflexión total interna} (RTI) en la interfaz núcleo-revestimiento, consecuencia directa de la discontinuidad en el índice de refracción ($n_1 > n_2$).
+
+\textbf{Ecuación de Fresnel para la reflexión:}
+
+Para un ángulo de incidencia $\theta_i$ en la interfaz dieléctrica, la reflectancia en polarización TE (transversal eléctrico) viene dada por:
+\begin{equation}
+    R_{TE} = \left|\frac{n_1\cos\theta_i - n_2\cos\theta_t}{n_1\cos\theta_i + n_2\cos\theta_t}\right|^2
+\end{equation}
+
+Cuando $\theta_i > \theta_c = \arcsin(n_2/n_1)$, el ángulo de transmisión $\theta_t$ se vuelve complejo, resultando en $R = 1$ (reflexión total) con una onda evanescente en el medio de menor índice.
+
+\textbf{Penetración de la onda evanescente:}
+
+El campo electromagnético decae exponencialmente en el revestimiento con longitud característica:
+\begin{equation}
+    \delta_p = \frac{\lambda}{2\pi\sqrt{n_1^2\sin^2\theta - n_2^2}} \approx \frac{\lambda}{2\pi NA}
+\end{equation}
+
+Esta penetración evanescente ($\delta_p \sim 0.1-1$ $\mu$m) es crítica para:
+\begin{itemize}
+    \item Pérdidas por microcurvatura (coupling a modos radiados)
+    \item Acoplamiento entre guías adyacentes (acopladores direccionales)
+    \item Sensibilidad a perturbaciones del revestimiento
+\end{itemize}
+
+\begin{importante}
+\textbf{Condición de confinamiento rigurosa:}
+
+Para propagación guiada estable en fibras monomodo:
+\begin{equation}
+    \beta > k_0 n_2 \quad \text{y} \quad \beta < k_0 n_1
+\end{equation}
+
+donde $\beta$ es la constante de propagación axial del modo guiado. Fuera de este rango, los modos son radiados o evanescentes.
+\end{importante}
+
+\subsubsection{Evolución Tecnológica}
+
+\begin{importante}
+\textbf{Hitos críticos:}
+\begin{itemize}
+    \item \textbf{1966}: Kao-Hockham proponen atenuación $<$ \SI{20}{\dB\per\km} como viable para telecomunicaciones
+    \item \textbf{1970}: Corning alcanza \SI{17}{\dB\per\km} @ \SI{633}{\nm}
+    \item \textbf{Actualidad}: \SI{0.15}{\dB\per\km} @ \SI{1.55}{\um} (límite fundamental: scattering Rayleigh)
+\end{itemize}
+\end{importante}
+
+\subsubsection{Generaciones de Sistemas de Transmisión}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{clcc}
+\hline
+\textbf{Gen.} & \textbf{Tecnología clave} & \textbf{Bit-rate} & \textbf{Distancia} \\
+\hline
+1G & Multimodo @ 850 nm & 45 Mbit/s & 10 km \\
+2G & Monomodo @ 1.3 $\mu$m & 1.7 Gbit/s & 50 km \\
+3G & EDFA + WDM + DCF & 10 Gbit/s & 100 km \\
+4G & Coherente + DSP & 100 Gbit/s & 1000+ km \\
+5G & SDM + super-canales & > 1 Tbit/s & Transoceánico \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{importante}
+Capacidad record: 319 Tbit/s sobre 3000 km (2021). Crecimiento exponencial sostenido durante 5 décadas.
+\end{importante}
+
+\subsection{Ventanas de Transmisión en Sílice}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccl}
+\hline
+\textbf{Ventana} & \textbf{$\lambda$ [nm]} & \textbf{$\alpha$ [dB/km]} & \textbf{D [ps/nm·km]} & \textbf{Aplicación} \\
+\hline
+O-band & 850 & 2-3 & --- & LAN, multimodo \\
+E-band & 1310 & 0.35 & $\sim$0 & Metro, GPON \\
+C-band & 1530-1565 & 0.20 & 16-18 & DWDM long-haul \\
+L-band & 1565-1625 & 0.22 & 18-20 & DWDM extended \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Limitaciones físicas:}
+\begin{itemize}
+    \item \textbf{Atenuación}: Scattering Rayleigh ($\propto \lambda^{-4}$) + absorción OH$^-$ @ 1.38 $\mu$m
+    \item \textbf{Dispersión cromática}: $D(\lambda) = D_0 + S_0(\lambda - \lambda_0)$, con $\lambda_0 \approx$ 1.31 $\mu$m
+    \item \textbf{Banda C}: Óptima para EDFA (Er$^{3+}$ @ 1.53-1.56 $\mu$m)
+\end{itemize}
+
+\subsection{Análisis Óptico-Geométrico}
+
+\subsubsection{Fibra Step-Index: Criterios de Confinamiento}
+
+\textbf{Reflexión total interna:}
+\begin{equation}
+    \theta_1 > \theta_c = \arcsin\left(\frac{n_2}{n_1}\right)
+\end{equation}
+
+\textbf{Apertura numérica (NA):}
+\begin{equation}
+    NA = n_0\sin\theta_{\text{max}} = \sqrt{n_1^2 - n_2^2} \approx n_1\sqrt{2\Delta}
+\end{equation}
+
+con el contraste de índice:
+\begin{equation}
+    \Delta = \frac{n_1 - n_2}{n_1} \quad \text{(típicamente 0.003-0.01 para SMF)}
+\end{equation}
+
+\textbf{Parámetros de diseño:}
+\begin{itemize}
+    \item NA elevada: mayor acoplamiento, mayor dispersión modal
+    \item $\Delta$ bajo: menor pérdidas por macrocurvaturas, fabricación crítica
+    \item SMF-28: $\Delta \approx 0.36\%$, NA $= 0.14$
+\end{itemize}
+
+\subsubsection{Dispersión Intermodal}
+
+\textbf{Step-index MMF:}
+
+Ensanchamiento temporal entre modo fundamental y modo de orden superior:
+\begin{equation}
+    \Delta \tau = \frac{L n_1 \Delta}{c} \approx \frac{L(NA)^2}{2cn_1}
+\end{equation}
+
+Limitación del bandwidth-distance product:
+\begin{equation}
+    B \cdot L \leq \frac{0.44c}{n_1\Delta} \quad \text{(típicamente } \sim 20 \text{ MHz·km)}
+\end{equation}
+
+\subsubsection{Fibras Graded-Index (GRIN)}
+
+Perfil parabólico optimizado:
+\begin{equation}
+    n(r) = \begin{cases}
+    n_1\sqrt{1 - 2\Delta(r/a)^\alpha} & r \leq a \\
+    n_2 & r > a
+    \end{cases}
+\end{equation}
+
+Para $\alpha_{\text{opt}} \approx 2 - \frac{12\Delta}{5}$:
+\begin{equation}
+    B \cdot L \sim 1-10 \text{ GHz·km} \quad \text{(mejora } \times 100-500\text{)}
+\end{equation}
+
+\textbf{OM3/OM4:} Optimizadas para VCSELs @ 850 nm, BW $>$ 2 GHz·km
+
+\subsection{Teoría Electromagnética de Modos en Fibras}
+
+\subsubsection{Ecuaciones de Maxwell y Derivación de Modos Guiados}
+
+\textbf{Formulación vectorial en medios dieléctricos no magnéticos:}
+
+Para fibras ópticas (sin fuentes libres, $\vec{J} = 0$, $\rho_v = 0$, $\mu_r = 1$):
+
+\begin{align}
+    \nabla \times \vec{E} &= -\mu_0\frac{\partial \vec{H}}{\partial t} \label{eq:faraday}\\
+    \nabla \times \vec{H} &= \epsilon_0 n^2(\vec{r})\frac{\partial \vec{E}}{\partial t} + \vec{P}_{NL} \label{eq:ampere}\\
+    \nabla \cdot [n^2(\vec{r})\vec{E}] &= 0 \label{eq:gauss_E}\\
+    \nabla \cdot \vec{H} &= 0 \label{eq:gauss_H}
+\end{align}
+
+donde $n(\vec{r}) = n(r)$ presenta simetría cilíndrica en fibras convencionales.
+
+\textbf{Ecuación de onda vectorial de Helmholtz:}
+
+Aplicando $\nabla \times$ a (\ref{eq:faraday}) y usando (\ref{eq:ampere}):
+\begin{equation}
+    \nabla \times \nabla \times \vec{E} + k_0^2 n^2(\vec{r})\vec{E} = -\mu_0 \frac{\partial^2 \vec{P}_{NL}}{\partial t^2}
+\end{equation}
+
+Usando la identidad vectorial $\nabla \times \nabla \times \vec{E} = \nabla(\nabla \cdot \vec{E}) - \nabla^2\vec{E}$ y (\ref{eq:gauss_E}):
+\begin{equation}
+    \nabla^2\vec{E} + k_0^2 n^2(\vec{r})\vec{E} = \mu_0 \frac{\partial^2 \vec{P}_{NL}}{\partial t^2}
+\end{equation}
+
+\textbf{Separación en coordenadas cilíndricas:}
+
+Para un modo guiado propagante en dirección $\hat{z}$ con dependencia temporal armónica:
+\begin{equation}
+    \vec{E}(r,\phi,z,t) = \vec{e}(r,\phi)e^{i(\beta z - \omega t)}
+\end{equation}
+
+donde $\beta$ es la constante de propagación axial del modo.
+
+\textbf{Componentes transversales y longitudinales:}
+
+Dividiendo el campo en componentes:
+\begin{align}
+    \vec{E} &= \vec{E}_t(r,\phi) + E_z(r,\phi)\hat{z}\\
+    \vec{H} &= \vec{H}_t(r,\phi) + H_z(r,\phi)\hat{z}
+\end{align}
+
+Las componentes transversales pueden expresarse en función de $E_z$ y $H_z$:
+\begin{align}
+    \vec{E}_t &= \frac{i}{k_t^2}[\beta\nabla_t E_z + \omega\mu_0\hat{z} \times \nabla_t H_z] \label{eq:Et}\\
+    \vec{H}_t &= \frac{i}{k_t^2}[\beta\nabla_t H_z - \omega\epsilon_0 n^2\hat{z} \times \nabla_t E_z] \label{eq:Ht}
+\end{align}
+
+con $k_t^2 = k_0^2 n^2 - \beta^2$ (número de onda transversal).
+
+\subsubsection{Modos Linealmente Polarizados (LP) - Aproximación Escalar}
+
+\textbf{Condiciones de aplicabilidad:}
+
+Cuando el contraste de índice es pequeño ($\Delta \ll 1$), la aproximación de guía débilmente guiante es válida. En este régimen:
+\begin{equation}
+    \Delta = \frac{n_1 - n_2}{n_1} \lesssim 0.01 \quad \Rightarrow \quad n_1 \approx n_2 \equiv \bar{n}
+\end{equation}
+
+Bajo esta aproximación, las componentes $E_z$ y $H_z$ son despreciables ($E_z, H_z \ll E_t, H_t$), y los modos son casi-transversales.
+
+\textbf{Ecuación escalar de Helmholtz:}
+
+Para una componente de campo (p.ej., $E_x$ o $E_y$):
+\begin{equation}
+    \nabla_t^2 \psi + [k_0^2 n^2(r) - \beta^2]\psi = 0
+\end{equation}
+
+En coordenadas cilíndricas $(r, \phi)$ con separación de variables $\psi(r,\phi) = R(r)\Phi(\phi)$:
+\begin{align}
+    \Phi(\phi) &= \cos(\ell\phi) \quad \text{o} \quad \sin(\ell\phi), \quad \ell = 0, 1, 2, \ldots\\
+    \frac{d^2R}{dr^2} + \frac{1}{r}\frac{dR}{dr} + \left[k_0^2n^2(r) - \beta^2 - \frac{\ell^2}{r^2}\right]R &= 0
+\end{align}
+
+\textbf{Solución para fibra step-index:}
+
+Definiendo:
+\begin{align}
+    U^2 &= (k_0^2 n_1^2 - \beta^2)a^2 = (ka)^2 - (\beta a)^2 \quad \text{(núcleo)}\\
+    W^2 &= (\beta^2 - k_0^2 n_2^2)a^2 = (\beta a)^2 - (k_2a)^2 \quad \text{(revestimiento)}
+\end{align}
+
+con la relación fundamental:
+\begin{equation}
+    U^2 + W^2 = (k_0 a)^2(n_1^2 - n_2^2) \approx 2(k_0 a)^2 n_1^2\Delta = V^2
+\end{equation}
+
+donde $V$ es el \textbf{parámetro V o frecuencia normalizada}.
+
+La distribución radial del campo en cada región es:
+\begin{equation}
+    R_{\ell m}(r) = \begin{cases}
+    A J_{\ell}(Ur/a) & r \leq a \text{ (núcleo)}\\
+    B K_{\ell}(Wr/a) & r > a \text{ (revestimiento)}
+    \end{cases}
+\end{equation}
+
+donde $J_{\ell}$ y $K_{\ell}$ son funciones de Bessel ordinarias y modificadas, respectivamente.
+
+\textbf{Ecuación de dispersión modal - Ecuación característica:}
+
+Las condiciones de frontera (continuidad de $E_t$ y $H_t$ en $r = a$) conducen a la ecuación de dispersión:
+\begin{equation}
+    \frac{J_{\ell}'(U)}{UJ_{\ell}(U)} + \frac{K_{\ell}'(W)}{WK_{\ell}(W)} = 0
+\end{equation}
+
+Usando las propiedades de las funciones de Bessel:
+\begin{equation}
+    \frac{J_{\ell+1}(U)}{J_{\ell}(U)} = \frac{K_{\ell+1}(W)}{K_{\ell}(W)} \cdot \frac{U}{W}
+\end{equation}
+
+Esta ecuación trascendente relaciona $U$ y $W$ (y por tanto $\beta$) con $V$ para cada modo LP$_{\ell m}$.
+
+\begin{importante}
+\textbf{Condición de cut-off (frecuencia de corte):}
+
+Un modo deja de estar guiado cuando $\beta \to k_0 n_2$, es decir, $W \to 0$. En este límite:
+\begin{equation}
+    V_c = U_c \quad \text{con} \quad J_{\ell-1}(U_c) = 0
+\end{equation}
+
+Frecuencias de corte para los primeros modos LP:
+\begin{itemize}
+    \item LP$_{01}$: $V_c = 0$ (no tiene corte, siempre guiado)
+    \item LP$_{11}$: $V_c = 2.405$ (primera raíz de $J_0$)
+    \item LP$_{02}$: $V_c = 3.832$
+    \item LP$_{21}$: $V_c = 3.832$
+\end{itemize}
+
+\textbf{Condición de fibra monomodo:}
+\begin{equation}
+    V = \frac{2\pi a}{\lambda}\sqrt{n_1^2 - n_2^2} < 2.405
+\end{equation}
+\end{importante}
+
+\subsubsection{Propagación de Pulsos: Dispersión Cromática}
+
+\textbf{Expansión de Taylor de la constante de propagación:}
+
+Para señales de banda limitada centradas en $\omega_0$:
+\begin{equation}
+    \beta(\omega) = \beta_0 + \beta_1(\omega - \omega_0) + \frac{\beta_2}{2}(\omega - \omega_0)^2 + \frac{\beta_3}{6}(\omega - \omega_0)^3 + \cdots
+\end{equation}
+
+donde los coeficientes de dispersión son:
+\begin{align}
+    \beta_m = \left.\frac{d^m\beta}{d\omega^m}\right|_{\omega_0}, \quad m = 0, 1, 2, 3, \ldots
+\end{align}
+
+\textbf{Interpretación física:}
+\begin{itemize}
+    \item $\beta_0$: Constante de fase (desfase acumulado)
+    \item $\beta_1 = 1/v_g$: Inversa de la velocidad de grupo, determina el retardo temporal
+    \item $\beta_2$: GVD (Group Velocity Dispersion), responsable del ensanchamiento de pulsos
+    \item $\beta_3$: TOD (Third Order Dispersion), importante para pulsos ultracortos
+\end{itemize}
+
+\textbf{Velocidad de grupo:}
+\begin{equation}
+    v_g = \frac{d\omega}{d\beta} = \frac{c}{n_g}, \quad n_g = n - \lambda\frac{dn}{d\lambda}
+\end{equation}
+
+Para fibras de sílice, $n_g \approx 1.46-1.48$ (ligeramente mayor que $n \approx 1.45$).
+
+\textbf{Parámetro de dispersión $D$ (unidades ingenieriles):}
+
+Relación con GVD:
+\begin{equation}
+    D = -\frac{2\pi c}{\lambda^2}\beta_2 = -\frac{\lambda}{c}\frac{d^2n_{eff}}{d\lambda^2} \quad \text{[ps/(nm}·\text{km)]}
+\end{equation}
+
+\textbf{Aproximación lineal (Válida cerca de $\lambda_0$):}
+\begin{equation}
+    D(\lambda) \approx D_0 + S_0(\lambda - \lambda_0)
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $D_0 = D(\lambda_0)$: Dispersión a la longitud de onda de referencia
+    \item $S_0 = dD/d\lambda|_{\lambda_0}$: Pendiente de dispersión (slope), típicamente 0.055-0.092 ps/(nm$^2$·km)
+    \item $\lambda_0$: Longitud de onda de dispersión cero (ZDW), típicamente 1310 nm para SMF
+\end{itemize}
+
+\textbf{Ensanchamiento de pulso gaussiano:}
+
+Para un pulso gaussiano inicial de ancho $T_0$ (FWHM):
+\begin{equation}
+    T(L) = T_0\sqrt{1 + \left(\frac{L}{L_D}\right)^2}, \quad L_D = \frac{T_0^2}{|\beta_2|}
+\end{equation}
+
+donde $L_D$ es la \textbf{longitud de dispersión}.
+
+\textbf{Limitación del bit-rate por dispersión:}
+
+Criterio empírico para sistemas NRZ:
+\begin{equation}
+    B^2 \cdot L \lesssim \frac{10^5}{|D\Delta\lambda|} \quad \text{[Gbit/s]$^2$·km}
+\end{equation}
+
+Ejemplo: Para SMF-28 ($D = 17$ ps/(nm·km)) @ 1550 nm con $\Delta\lambda = 0.1$ nm:
+\begin{equation}
+    B \cdot L \lesssim 760 \text{ Gbit/s}·\text{km} \quad \Rightarrow \quad L_{\text{max}}(10\text{G}) \approx 76 \text{ km}
+\end{equation}
+
+\textbf{Interpretación física:}
+\begin{itemize}
+    \item \textbf{Atenuación lineal}: Pérdidas por scattering Rayleigh ($\propto \lambda^{-4}$) + absorción infrarroja + absorción UV
+    \item \textbf{Dispersión cromática}: Ensanchamiento temporal de pulsos debido a la dependencia frecuencial de $\beta$
+    \item \textbf{Término no lineal}: Modulación de fase inducida por intensidad (efecto Kerr óptico)
+\end{itemize}
+
+\subsection{Efectos No Lineales en Fibras Ópticas}
+
+\subsubsection{Origen Físico: Susceptibilidad de Tercer Orden}
+
+La polarización inducida en un medio dieléctrico se expande en serie de potencias del campo eléctrico:
+\begin{equation}
+    \vec{P} = \epsilon_0[\chi^{(1)}\vec{E} + \chi^{(2)}\vec{E}\vec{E} + \chi^{(3)}\vec{E}\vec{E}\vec{E} + \cdots]
+\end{equation}
+
+En sílice (material centrosimétrico), $\chi^{(2)} = 0$. El término no lineal dominante es:
+\begin{equation}
+    P_{NL} = \epsilon_0 \chi^{(3)}|E|^2E
+\end{equation}
+
+\textbf{\u00cdndice de refracción no lineal:}
+
+La susceptibilidad de tercer orden modifica el índice de refracción:
+\begin{equation}
+    n(I) = n_0 + n_2 I = n_0 + \frac{n_2}{A_{eff}}P
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $n_0$: Índice de refracción lineal ($\approx 1.45$ para sílice)
+    \item $n_2$: Coeficiente no lineal Kerr ($\approx 2.6 \times 10^{-20}$ m$^2$/W para sílice)
+    \item $I = |E|^2/(2\eta_0)$: Intensidad óptica
+    \item $A_{eff}$: Áarea efectiva del modo
+\end{itemize}
+
+\textbf{Coeficiente no lineal de la fibra:}
+\begin{equation}
+    \gamma = \frac{n_2\omega_0}{cA_{eff}} = \frac{2\pi n_2}{\lambda A_{eff}} \quad \text{[W}^{-1}\text{m}^{-1}\text{]}
+\end{equation}
+
+Valores típicos:
+\begin{itemize}
+    \item SMF-28 @ 1550 nm: $\gamma \approx 1.3$ W$^{-1}$km$^{-1}$ ($A_{eff} \approx 80$ $\mu$m$^2$)
+    \item NZDSF: $\gamma \approx 2$ W$^{-1}$km$^{-1}$ ($A_{eff} \approx 50$ $\mu$m$^2$)
+    \item PCF altamente no lineal: $\gamma > 10$ W$^{-1}$km$^{-1}$ ($A_{eff} < 10$ $\mu$m$^2$)
+\end{itemize}
+
+\subsubsection{Auto-Modulación de Fase (SPM)}
+
+\textbf{Desfase no lineal acumulado:}
+
+La variación de índice induce un desfase proporcional a la intensidad:
+\begin{equation}
+    \phi_{NL}(t,L) = \gamma P(t)L_{eff}, \quad L_{eff} = \frac{1 - e^{-\alpha L}}{\alpha}
+\end{equation}
+
+\textbf{Chirp no lineal:}
+
+La modulación temporal de fase genera un chirp de frecuencia:
+\begin{equation}
+    \delta\omega(t) = -\frac{d\phi_{NL}}{dt} = -\gamma L_{eff}\frac{dP(t)}{dt}
+\end{equation}
+
+\textbf{Consecuencias:}
+\begin{itemize}
+    \item Ensanchamiento espectral asimétrico
+    \item Interacción con dispersión cromática: compresión ($\beta_2 < 0$) o ensanchamiento ($\beta_2 > 0$) de pulsos
+    \item Formación de solitones ópticos (balance SPM-GVD)
+\end{itemize}
+
+\begin{importante}
+\textbf{Longitud no lineal:}
+\begin{equation}
+    L_{NL} = \frac{1}{\gamma P_0}
+\end{equation}
+
+Esta longitud caracteriza la escala sobre la cual los efectos no lineales son significativos.
+
+\textbf{Compromiso dispersión-no linealidad:}
+
+En sistemas de transmisión, se requiere:
+\begin{equation}
+    L_D \sim L_{NL} \quad \Rightarrow \quad N^2 = \frac{L_D}{L_{NL}} = \frac{\gamma P_0 T_0^2}{|\beta_2|} \sim 1
+\end{equation}
+
+donde $N$ es el \textbf{orden del soliton}.
+\end{importante}
+
+\subsubsection{Mezclado de Cuatro Ondas (FWM)}
+
+\textbf{Proceso paramétrico:}
+
+Tres ondas a frecuencias $\omega_i$, $\omega_j$, $\omega_k$ generan una cuarta onda:
+\begin{equation}
+    \omega_{ijk} = \omega_i + \omega_j - \omega_k
+\end{equation}
+
+con conservación del momento:
+\begin{equation}
+    \Delta\beta = \beta(\omega_i) + \beta(\omega_j) - \beta(\omega_k) - \beta(\omega_{ijk})
+\end{equation}
+
+\textbf{Eficiencia de FWM:}
+\begin{equation}
+    \eta_{FWM} = \frac{(\gamma P)^2}{\alpha^2 + (\Delta\beta)^2}\left[1 + \frac{4e^{-\alpha L}\sin^2(\Delta\beta L/2)}{(1 - e^{-\alpha L})^2}\right]
+\end{equation}
+
+Máxima eficiencia cuando $\Delta\beta \approx 0$ (phase-matching).
+
+\textbf{Condición de phase-matching:}
+
+Para canales DWDM espaciados $\Delta f$:
+\begin{equation}
+    \Delta\beta \approx \beta_2(2\pi\Delta f)^2 + \beta_4\frac{(2\pi\Delta f)^4}{12}
+\end{equation}
+
+FWM es crítico cerca de $\lambda_0$ donde $\beta_2 \approx 0$ (ZDW).
+
+\textbf{Mitigación de FWM:}
+\begin{itemize}
+    \item Uso de NZDSF ($D \neq 0$ en banda C)
+    \item Espaciado no uniforme de canales
+    \item Control de potencia por canal
+    \item Dither de dispersión (variación $D$ a lo largo de la fibra)
+\end{itemize}
+
+\subsubsection{Scattering Raman Estimulado (SRS)}
+
+\textbf{Ganancia Raman:}
+
+Una onda de bombeo a $\omega_p$ amplifica una onda Stokes a $\omega_s < \omega_p$:
+\begin{equation}
+    \Delta\nu = \nu_p - \nu_s \approx 13 \text{ THz (pico)} \quad (\lambda_s - \lambda_p \approx 100 \text{ nm @ 1550 nm)}
+\end{equation}
+
+Ecuaciones acopladas:
+\begin{align}
+    \frac{dP_p}{dz} &= -\alpha P_p - \frac{\omega_p}{\omega_s}g_R P_p P_s\\
+    \frac{dP_s}{dz} &= -\alpha P_s + g_R P_p P_s
+\end{align}
+
+donde $g_R \approx 1 \times 10^{-13}$ m/W (coeficiente de ganancia Raman pico en sílice).
+
+\textbf{Umbral de SRS:}
+\begin{equation}
+    P_{th,SRS} \approx \frac{16 A_{eff}}{g_R L_{eff}} \approx 500-600 \text{ mW (típico)}
+\end{equation}
+
+\textbf{Aplicaciones:}
+\begin{itemize}
+    \item Amplificadores Raman distribuidos (compensación de pérdidas \textit{in-situ})
+    \item Mejora de OSNR en enlaces ultra-largos
+    \item Extensión de bandas S y L
+\end{itemize}
+
+\textbf{Crosstalk por SRS en WDM:}
+
+Canales de menor longitud de onda (mayor frecuencia) transfieren potencia a canales de mayor $\lambda$:
+\begin{equation}
+    \Delta P_s \approx g_R P_p P_s L_{eff} \quad \text{(ganancia Raman)}
+\end{equation}
+
+Este efecto limita la potencia total inyectable en sistemas DWDM densos.
+
+\subsubsection{Scattering Brillouin Estimulado (SBS)}
+
+\textbf{Mecanismo:}
+
+Interacción con ondas acústicas en el medio:
+\begin{itemize}
+    \item Onda óptica crea compresión/rarefacción (electrostricción)
+    \item Onda acústica actúa como red de Bragg móvil
+    \item Reflexión hacia atrás (backscattering) con desplazamiento Doppler
+\end{itemize}
+
+\textbf{Desplazamiento de frecuencia Brillouin:}
+\begin{equation}
+    \nu_B = \frac{2nV_a}{\lambda} \approx 11 \text{ GHz @ 1550 nm}
+\end{equation}
+
+donde $V_a \approx 5.96$ km/s es la velocidad del sonido en sílice.
+
+\textbf{Ancho de banda Brillouin:}
+\begin{equation}
+    \Delta\nu_B \approx \frac{1}{2\pi\tau_a} \approx 20-50 \text{ MHz}
+\end{equation}
+
+con $\tau_a \sim$ 10 ns (tiempo de decaimiento fonónico).
+
+\textbf{Umbral de SBS (mucho menor que SRS):}
+\begin{equation}
+    P_{th,SBS} \approx \frac{21 A_{eff}}{g_B L_{eff}} \approx 1-5 \text{ mW (CW)}
+\end{equation}
+
+donde $g_B \approx 5 \times 10^{-11}$ m/W (ganancia Brillouin pico).
+
+\textbf{Supresión de SBS:}
+\begin{itemize}
+    \item Modulación de fase del láser (dithering)
+    \item Ensanchamiento espectral de la fuente
+    \item Variación de temperatura/tensión a lo largo de la fibra
+    \item Modulación de amplitud (reduce potencia CW efectiva)
+\end{itemize}
+
+\begin{nota}
+\textbf{Comparación SRS vs. SBS:}
+
+\begin{tabular}{lcc}
+\hline
+\textbf{Parámetro} & \textbf{SRS} & \textbf{SBS} \\
+\hline
+Desplazamiento frecuencia & $\sim$13 THz & $\sim$11 GHz \\
+Ancho de banda & $\sim$6 THz & 20-50 MHz \\
+Ganancia pico & $g_R \sim 10^{-13}$ m/W & $g_B \sim 5\times10^{-11}$ m/W \\
+Umbral típico & 500-600 mW & 1-5 mW \\
+Dirección & Forward & Backward \\
+Aplicación & Amplificación & Sensores, láseres \\
+\hline
+\end{tabular}
+\end{nota}
+
+%=============================================================================
+\section{Interferometría Óptica: Fundamentos y Aplicaciones}
+%=============================================================================
+
+\subsection{Teoría de Coherencia Óptica}
+
+\subsubsection{Funciones de Correlación y Coherencia}
+
+\textbf{Grado complejo de coherencia mutua:}
+
+Para dos puntos espaciotemporales $(\vec{r}_1, t_1)$ y $(\vec{r}_2, t_2)$, la función de correlación del campo es:
+\begin{equation}
+    \Gamma_{12}(\tau) = \langle E^*(\vec{r}_1, t)E(\vec{r}_2, t+\tau)\rangle
+\end{equation}
+
+donde $\langle \cdot \rangle$ denota promedio temporal (o ensemble para fuentes estocásticas).
+
+\textbf{Grado de coherencia normalizado:}
+\begin{equation}
+    \gamma_{12}(\tau) = \frac{\Gamma_{12}(\tau)}{\sqrt{I_1 I_2}} = |\gamma_{12}(\tau)|e^{i\phi_{12}(\tau)}
+\end{equation}
+
+con $|\gamma_{12}| \in [0, 1]$ y las intensidades $I_i = \langle|E_i|^2\rangle$.
+
+\begin{definicion}
+\textbf{Clasificación de coherencia:}
+\begin{itemize}
+    \item \textbf{Coherente:} $|\gamma_{12}| = 1$ para todo $\tau$ (fuente monocromática ideal)
+    \item \textbf{Parcialmente coherente:} $0 < |\gamma_{12}| < 1$ (fuentes reales)
+    \item \textbf{Incoherente:} $|\gamma_{12}| = 0$ para $\tau \neq 0$ (luz térmica, LED)
+\end{itemize}
+\end{definicion}
+
+\textbf{Teorema de Wiener-Khinchin:}
+
+La densidad espectral de potencia es la transformada de Fourier de la función de autocorrelación:
+\begin{equation}
+    S(\nu) = \int_{-\infty}^{\infty} \Gamma(\tau)e^{-2\pi i\nu\tau}d\tau
+\end{equation}
+
+Recíprocamente:
+\begin{equation}
+    \Gamma(\tau) = \int_{-\infty}^{\infty} S(\nu)e^{2\pi i\nu\tau}d\nu
+\end{equation}
+
+\subsubsection{Coherencia Temporal}
+
+\textbf{Tiempo de coherencia:}
+
+Tiempo característico sobre el cual la fase permanece correlacionada:
+\begin{equation}
+    \tau_c = \int_0^\infty |\gamma(\tau)|^2 d\tau \approx \frac{1}{\Delta\nu}
+\end{equation}
+
+para una fuente con ancho espectral $\Delta\nu$ (FWHM).
+
+\textbf{Longitud de coherencia:}
+\begin{equation}
+    L_c = c\tau_c \approx \frac{c}{\Delta\nu} = \frac{\lambda_0^2}{\Delta\lambda}
+\end{equation}
+
+\textbf{Ejemplos numéricos:}
+\begin{itemize}
+    \item LED ($\Delta\lambda \sim 30$ nm @ 850 nm): $L_c \approx 24$ $\mu$m
+    \item Láser FP multimodo ($\Delta\lambda \sim 2$ nm): $L_c \approx 360$ $\mu$m
+    \item Láser DFB ($\Delta\nu \sim 10$ MHz): $L_c \approx 30$ m
+    \item Láser estabilizado ($\Delta\nu \sim 1$ kHz): $L_c \approx 300$ km
+\end{itemize}
+
+\subsubsection{Coherencia Espacial}
+
+\textbf{Teorema de Van Cittert-Zernike:}
+
+Para una fuente incoherente extendida de distribución de intensidad $I_s(\vec{r}_s)$, el grado complejo de coherencia mutua en dos puntos $P_1$ y $P_2$ del plano de observación es:
+\begin{equation}
+    \gamma_{12} = \frac{\int I_s(\vec{r}_s)\exp[ik(r_2 - r_1)]d^2\vec{r}_s}{\int I_s(\vec{r}_s)d^2\vec{r}_s}
+\end{equation}
+
+Para una fuente circular uniforme de diámetro $D$ a distancia $z$:
+\begin{equation}
+    |\gamma_{12}| = \left|\frac{2J_1(\pi D\rho/\lambda z)}{\pi D\rho/\lambda z}\right|
+\end{equation}
+
+donde $\rho = |\vec{r}_2 - \vec{r}_1|$ y $J_1$ es la función de Bessel de primer orden.
+
+\textbf{Área de coherencia:}
+\begin{equation}
+    A_c \sim \left(\frac{\lambda z}{D}\right)^2
+\end{equation}
+
+Para el Sol ($D \sim 0.5°$, $\lambda = 550$ nm): $A_c \sim 10$ $\mu$m$^2$ en la Tierra.
+
+\subsection{Visibilidad de Franjas y Contraste}
+
+\textbf{Interferencia de dos ondas parcialmente coherentes:}
+
+La intensidad en un punto donde interfieren dos ondas con desfase $\Delta\phi$:
+\begin{equation}
+    I(\Delta\phi) = I_1 + I_2 + 2\sqrt{I_1 I_2}|\gamma_{12}|\cos(\Delta\phi + \arg\gamma_{12})
+\end{equation}
+
+\textbf{Visibilidad de franjas (contraste de Michelson):}
+\begin{equation}
+    \mathcal{V} = \frac{I_{\max} - I_{\min}}{I_{\max} + I_{\min}} = \frac{2\sqrt{I_1 I_2}}{I_1 + I_2}|\gamma_{12}|
+\end{equation}
+
+Para intensidades iguales ($I_1 = I_2$):
+\begin{equation}
+    \mathcal{V} = |\gamma_{12}|
+\end{equation}
+
+La visibilidad proporciona una medida directa del grado de coherencia.
+
+\begin{importante}
+\textbf{Ley de reducción de visibilidad:}
+
+Cuando múltiples efectos degradan la coherencia (ancho espectral, extensión espacial, inestabilidades):
+\begin{equation}
+    \mathcal{V}_{\text{total}} = \mathcal{V}_{\text{temp}} \cdot \mathcal{V}_{\text{esp}} \cdot \mathcal{V}_{\text{pol}} \cdot \mathcal{V}_{\text{mec}}
+\end{equation}
+
+Cada factor $\in [0, 1]$ representa una contribución independiente.
+\end{importante}
+
+\subsection{Interferómetro de Young}
+
+Dos ondas interfieren en el punto "o":
+\begin{align}
+    E_1 &= A e^{i(\omega t - \phi_1)}\\
+    E_2 &= A e^{i(\omega t - \phi_2)}
+\end{align}
+
+Diferencia de fase:
+\begin{equation}
+    \Delta\phi = |\phi_1(O) - \phi_2(O)| = k|SM_1O - SM_2O|
+\end{equation}
+
+Patrón de interferencia en el plano $x=0$:
+\begin{equation}
+    I \propto \cos^2(k_0 \sin\theta \cdot z)
+\end{equation}
+
+\subsection{Tipos de Interferómetros}
+
+\subsubsection{Clasificación General}
+
+\textbf{1. Interferómetros de 2 ondas:}
+\begin{itemize}
+    \item \textbf{Mach-Zehnder}: 
+    \begin{itemize}
+        \item División de amplitud por separadoras
+        \item Dos brazos independientes
+        \item Aplicaciones: moduladores, conmutadores, metrología
+        \item Salidas complementarias (suma = constante)
+    \end{itemize}
+    
+    \item \textbf{Michelson}:
+    \begin{itemize}
+        \item División de amplitud con espejos
+        \item Configuración de reflexión
+        \item Aplicaciones: metrología de longitud, caracterización espectral
+        \item Alta sensibilidad a variaciones de camino óptico
+    \end{itemize}
+\end{itemize}
+
+\textbf{2. Interferómetros de ondas múltiples:}
+\begin{itemize}
+    \item \textbf{Fabry-Pérot}:
+    \begin{itemize}
+        \item Reflexiones múltiples entre dos espejos
+        \item Alta finesse espectral
+        \item Aplicaciones: filtros ópticos, análisis espectral, láseres
+        \item Transmisión periódica en frecuencia
+    \end{itemize}
+\end{itemize}
+
+\begin{nota}
+\textbf{Aplicaciones en metrología:}
+\begin{itemize}
+    \item Medida de desplazamientos: variando $L$ con $\lambda$ constante
+    \item Filtrado en frecuencia: $L$ constante, $\lambda$ variable
+    \item Detección de irregularidades: distorsión de franjas de interferencia
+\end{itemize}
+\end{nota}
+
+\subsection{Interferómetro Mach-Zehnder: Análisis Avanzado}
+
+\subsubsection{Formalismo Matricial de Jones}
+
+\textbf{Beam splitter (separador de haz) 50/50:}
+
+La matriz de scattering para un BS ideal con fase de $\pi/2$ en reflexión:
+\begin{equation}
+    \mathbf{BS} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & i \\ i & 1 \end{pmatrix}
+\end{equation}
+
+Para BS con ratio arbitrario $t:r$ (transmisión:reflexión):
+\begin{equation}
+    \mathbf{BS}_\rho = \begin{pmatrix} t & ir \\ ir & t \end{pmatrix}, \quad t^2 + r^2 = 1
+\end{equation}
+
+\textbf{Desfasador (phase shifter):}
+\begin{equation}
+    \mathbf{\Phi}(\phi) = \begin{pmatrix} e^{i\phi} & 0 \\ 0 & 1 \end{pmatrix}
+\end{equation}
+
+\textbf{Matriz de transferencia MZI completo:}
+
+Cascada: BS1 $\to$ Phase shift $\to$ BS2
+\begin{equation}
+    \mathbf{MZI} = \mathbf{BS}_2 \cdot \mathbf{\Phi}(\Delta\phi) \cdot \mathbf{BS}_1
+\end{equation}
+
+Para BS 50/50 simétricos:
+\begin{equation}
+    \mathbf{MZI} = \begin{pmatrix} \cos(\Delta\phi/2) & -i\sin(\Delta\phi/2) \\ -i\sin(\Delta\phi/2) & \cos(\Delta\phi/2) \end{pmatrix}
+\end{equation}
+
+\textbf{Transmisión e intensidades:}
+\begin{align}
+    T_{\text{port A}} &= |MZI_{11}|^2 = \cos^2\left(\frac{\Delta\phi}{2}\right) \\
+    T_{\text{port B}} &= |MZI_{21}|^2 = \sin^2\left(\frac{\Delta\phi}{2}\right)
+\end{align}
+
+Verificando conservación de energía: $T_A + T_B = 1$.
+
+\subsubsection{Sensibilidad y Resolución Metrológica}
+
+\textbf{Sensibilidad de fase:}
+
+Derivada de la transmisión respecto al desfase:
+\begin{equation}
+    S_\phi = \left|\frac{dT}{d\phi}\right|_{\text{max}} = \frac{1}{2}
+\end{equation}
+
+alcanzada en los puntos de cuadratura ($\Delta\phi = \pi/2 + n\pi$).
+
+\textbf{Mínima variación de fase detectable (shot noise limit):}
+
+Para un fotocorriente promedio $I_{ph}$ y bandwidth de detección $B$:
+\begin{equation}
+    \delta\phi_{\text{min}} = \sqrt{\frac{2eB}{I_{ph}}} = \sqrt{\frac{2h\nu B}{\eta P_{\text{opt}}}}
+\end{equation}
+
+Para $P_{\text{opt}} = 1$ mW, $\eta = 0.8$, $B = 1$ Hz @ 1550 nm:
+\begin{equation}
+    \delta\phi_{\text{min}} \approx 7 \times 10^{-9} \text{ rad} = 0.4 \text{ nrad}
+\end{equation}
+
+Equivalente a una variación de camino óptico:
+\begin{equation}
+    \delta L = \frac{\lambda}{2\pi}\delta\phi \approx 0.2 \text{ pm}
+\end{equation}
+
+\textbf{Standard Quantum Limit (SQL):}
+
+El límite fundamental de sensibilidad en interferometría está dado por el ruido de fotones:
+\begin{equation}
+    \Delta\phi_{\text{SQL}} = \frac{1}{\sqrt{N}}
+\end{equation}
+
+donde $N$ es el número de fotones detectados.
+
+\begin{importante}
+\textbf{Sensores interferométricos de ultra-precisión:}
+
+\begin{tabular}{lcc}
+\hline
+\textbf{Aplicación} & \textbf{$\delta L$ típico} & \textbf{Técnica} \\
+\hline
+LIGO (ondas gravitacionales) & $10^{-19}$ m & Michelson + cavidades FP \\
+Giróscopo de fibra & $10^{-12}$ rad/s & Sagnac + fibra PM \\
+Sensor acústico submarino & $10^{-9}$ strain & MZI en fibra \\
+Microscopía de fuerza atómica & $10^{-12}$ m & Michelson + lock-in \\
+\hline
+\end{tabular}
+\end{importante}
+
+\subsubsection{MZI en Tecnología de Guías Integradas}
+
+\textbf{Implementación en LiNbO$_3$:}
+
+El desfase diferencial se controla mediante efecto electro-óptico:
+\begin{equation}
+    \Delta\phi = \frac{2\pi}{\lambda}\Delta n_{\text{eo}}(V) L_{\text{int}} = \frac{\pi V}{V_\pi}
+\end{equation}
+
+con tensión de semi-onda:
+\begin{equation}
+    V_\pi = \frac{\lambda d}{n_e^3 r_{33} \Gamma L_{\text{int}}}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $d$: separación de electrodos (típicamente 10-20 $\mu$m)
+    \item $r_{33} = 30.8$ pm/V (coeficiente Pockels LiNbO$_3$)
+    \item $\Gamma$: factor de solapamiento modo-campo ($\sim$ 0.5-0.7)
+    \item $L_{\text{int}}$: longitud de interacción (típicamente 2-5 cm)
+\end{itemize}
+
+Valores típicos: $V_\pi \sim$ 3-6 V @ 1550 nm.
+
+\textbf{Bandwidth electro-óptico:}
+
+Limitado por:
+\begin{itemize}
+    \item \textbf{Velocity mismatch}: $\Delta v = |v_{\text{RF}} - v_{\text{opt}}|$
+    \item \textbf{Capacidad electrodo}: $RC$ time constant
+    \item \textbf{Atenuación RF}: pérdidas en electrodo viajero
+\end{itemize}
+
+Frecuencia de corte 3-dB:
+\begin{equation}
+    f_{3dB} \approx \frac{1.4c}{L_{\text{int}}|n_{\text{RF}} - n_{\text{opt}}|}
+\end{equation}
+
+MZM comerciales: $f_{3dB} > 40$ GHz (con electrodos de onda viajera optimizados).
+
+\subsection{Resonador Fabry-Pérot: Teoría de Cavidades Ópticas}
+
+\subsubsection{Derivación de la Función de Transferencia}
+
+\textbf{Configuración:} Dos espejos plano-paralelos separados por distancia $L$, con:
+\begin{itemize}
+    \item Reflectividades en amplitud: $r_1$, $r_2$ (reflectancia en potencia: $R_i = |r_i|^2$)
+    \item Transmisividades en amplitud: $t_1$, $t_2$ (transmitancia: $T_i = |t_i|^2$)
+    \item Pérdidas internas (absorción + scattering): coeficiente $\alpha_i$
+\end{itemize}
+
+\textbf{Suma de reflexiones múltiples:}
+
+El campo transmitido es la suma coherente de todas las trayectorias:
+\begin{equation}
+    E_t = t_1t_2e^{i\delta/2}E_0\sum_{m=0}^{\infty}(r_1r_2e^{-\alpha_iL}e^{i\delta})^m
+\end{equation}
+
+con desfase de ida-y-vuelta:
+\begin{equation}
+    \delta = \frac{4\pi nL}{\lambda} = 2kL
+\end{equation}
+
+Sumando la serie geométrica:
+\begin{equation}
+    E_t = \frac{t_1t_2e^{i\delta/2}}{1 - r_1r_2e^{-\alpha_iL}e^{i\delta}}E_0
+\end{equation}
+
+\textbf{Transmitancia en intensidad (Función de Airy):}
+
+Para espejos idénticos ($R_1 = R_2 = R$, $T_1 = T_2 = T$) y bajas pérdidas ($\alpha_iL \ll 1$):
+\begin{equation}
+    T_{FP}(\delta) = \frac{|E_t|^2}{|E_0|^2} = \frac{T^2}{(1-R)^2 + 4R\sin^2(\delta/2)} = \frac{T_{\text{max}}}{1 + \mathcal{F}\sin^2(\delta/2)}
+\end{equation}
+
+donde:
+\begin{align}
+    T_{\text{max}} &= \frac{T^2}{(1-R)^2} \quad \text{(transmisión pico)}\\
+    \mathcal{F} &= \frac{4R}{(1-R)^2} \quad \text{(coeficiente de finesse)}
+\end{align}
+
+Para espejos de alta reflectividad ($R \to 1$):
+\begin{equation}
+    \mathcal{F} \approx \frac{4R}{(1-R)^2} \gg 1
+\end{equation}
+
+\textbf{Forma alternativa (denominador simple):}
+\begin{equation}
+    T_{FP} = \frac{1}{1 + \mathcal{F}\sin^2(\delta/2)}
+\end{equation}
+
+asumiendo $T_{\text{max}} \approx 1$ (pérdidas despreciables, $T + R \approx 1$).
+
+\subsubsection{Parámetros Espectrales de la Cavidad FP}
+
+\textbf{Resonancias longitudinales:}
+
+Condición de resonancia constructiva:
+\begin{equation}
+    \delta_m = 2m\pi, \quad m = 1, 2, 3, \ldots \quad \Rightarrow \quad \lambda_m = \frac{2nL}{m}
+\end{equation}
+
+o en frecuencias:
+\begin{equation}
+    \nu_m = m\frac{c}{2nL} = m \cdot \nu_{FSR}
+\end{equation}
+
+\textbf{Free Spectral Range (FSR):}
+
+Espaciado entre modos longitudinales adyacentes:
+\begin{align}
+    \Delta\nu_{FSR} &= \nu_{m+1} - \nu_m = \frac{c}{2nL} \quad \text{[Hz]}\\
+    \Delta\lambda_{FSR} &= \frac{\lambda^2}{2nL} \quad \text{[nm, para } \lambda \gg \Delta\lambda\text{]}
+\end{align}
+
+\textbf{Ancho de línea (FWHM):}
+
+Ancho espectral a media altura de un pico de resonancia.
+
+Para $R$ elevado, aproximando $\sin^2(\delta/2) \approx (\delta/2)^2$ cerca de resonancia:
+\begin{equation}
+    \Delta\nu_{FWHM} = \frac{c(1-R)}{2\pi nL\sqrt{R}} = \frac{\Delta\nu_{FSR}}{\mathcal{F}_{\text{spec}}}
+\end{equation}
+
+o en longitudes de onda:
+\begin{equation}
+    \Delta\lambda_{FWHM} = \frac{\lambda^2(1-R)}{2\pi nL\sqrt{R}}
+\end{equation}
+
+\textbf{Finesse espectral (Figure of Merit):}
+\begin{equation}
+    \mathcal{F}_{\text{spec}} = \frac{\Delta\nu_{FSR}}{\Delta\nu_{FWHM}} = \frac{\pi\sqrt{\mathcal{F}}}{2} = \frac{\pi\sqrt{R}}{1-R}
+\end{equation}
+
+Para $R \to 1$:
+\begin{equation}
+    \mathcal{F}_{\text{spec}} \approx \frac{\pi}{1-R}
+\end{equation}
+
+\textbf{Ejemplos numéricos:}
+\begin{itemize}
+    \item $R = 0.3$ (láser FP semiconductor): $\mathcal{F}_{\text{spec}} \approx 1.7$
+    \item $R = 0.9$: $\mathcal{F}_{\text{spec}} \approx 30$
+    \item $R = 0.99$: $\mathcal{F}_{\text{spec}} \approx 310$
+    \item $R = 0.9999$ (cavidad ultra-alta finesse): $\mathcal{F}_{\text{spec}} > 30000$
+\end{itemize}
+
+\subsubsection{Factor de Calidad y Tiempo de Vida de Fotón}
+
+\textbf{Factor Q:}
+
+Relación entre la frecuencia de resonancia y el ancho de línea:
+\begin{equation}
+    Q = \frac{\nu_m}{\Delta\nu_{FWHM}} = \frac{2\pi nL\sqrt{R}}{\lambda(1-R)} = \mathcal{F}_{\text{spec}} \cdot m
+\end{equation}
+
+donde $m = 2nL/\lambda$ es el número de modo longitudinal.
+
+\textbf{Tiempo de vida del fotón en la cavidad:}
+
+Tiempo promedio que un fotón permanece confinado:
+\begin{equation}
+    \tau_p = \frac{Q}{2\pi\nu_m} = \frac{nL}{c}\frac{\sqrt{R}}{1-R}
+\end{equation}
+
+Para $L = 1$ mm, $R = 0.99$:
+\begin{equation}
+    \tau_p \approx 480 \text{ ps}
+\end{equation}
+
+\textbf{Número de rebotes (round-trips):}
+\begin{equation}
+    N_{\text{rt}} = \frac{\tau_p}{2nL/c} = \frac{\sqrt{R}}{1-R} \approx \frac{1}{2(1-R)} \quad \text{(para } R \to 1\text{)}
+\end{equation}
+
+Ejemplo: $R = 0.99 \Rightarrow N_{\text{rt}} \approx 50$ rebotes.
+
+\begin{importante}
+\textbf{Intensidad intracavidad (resonancia):}
+
+En resonancia, la intensidad dentro de la cavidad es:
+\begin{equation}
+    I_{\text{cav}} = \frac{T}{(1-R)^2}I_{\text{in}} \approx \frac{I_{\text{in}}}{(1-R)^2}
+\end{equation}
+
+Para $R = 0.99$: $I_{\text{cav}} \sim 10^4 \times I_{\text{in}}$ (amplificación × 10000!).
+
+Este enhancement es fundamental para:
+\begin{itemize}
+    \item Láseres (reduce el umbral de oscilación)
+    \item Espectroscopia de cavidad (CRDS, cavity ring-down spectroscopy)
+    \item Óptica no lineal resonante (generación de frecuencia, OPO)
+\end{itemize}
+\end{importante}
+
+\subsubsection{Aplicaciones de Cavidades Fabry-Pérot}
+
+\textbf{1. Filtros ópticos de alta resolución:}
+
+\begin{itemize}
+    \item \textbf{Étalon FP}: Filtro pasivo con FSR fijo
+    \item \textbf{FP sintonizable}: Control de $L$ mediante piezoelectric tuning
+    \item \textbf{Aplicación WDM/DWDM}: Demultiplexación de canales (limitado por FSR)
+\end{itemize}
+
+\textbf{Especificaciones típicas (filtro telecom):}
+\begin{itemize}
+    \item $L \sim 1$ cm, $R \sim 0.95 \Rightarrow$ FSR $\sim 15$ GHz, Finesse $\sim 60$
+    \item $\Delta\nu_{FWHM} \sim 250$ MHz (adecuado para canales DWDM 50 GHz)
+\end{itemize}
+
+\textbf{2. Cavidades láser:}
+
+\textbf{Láser FP semiconductor (DFP):}
+\begin{itemize}
+    \item Reflectividad facetas: $R = \left(\frac{n_{\text{SC}} - n_{\text{air}}}{n_{\text{SC}} + n_{\text{air}}}\right)^2 \approx 0.30-0.35$ (InP/GaAs)
+    \item Sin recubrimiento AR: $\mathcal{F}_{\text{spec}} \sim 1.5-2$ (multimodo)
+    \item Con recubrimientos: HR (R $\sim 0.95$) + AR (R < 0.01) $\Rightarrow$ monomodo asimétrico
+\end{itemize}
+
+\textbf{Ecuación de umbral de oscilación:}
+
+Condición de ganancia = pérdidas en estado estacionario:
+\begin{equation}
+    \Gamma g_{\text{th}} = \alpha_i + \alpha_m = \alpha_i + \frac{1}{L}\ln\frac{1}{R_1R_2}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $\Gamma$: factor de confinamiento del modo
+    \item $g_{\text{th}}$: ganancia material en umbral
+    \item $\alpha_i$: pérdidas internas (scattering, absorción de portadores libres)
+    \item $\alpha_m$: pérdidas por espejos (useful loss, emisión)
+\end{itemize}
+
+\textbf{3. Espectroscopia de ultra-alta resolución:}
+
+\textbf{Cavity Ring-Down Spectroscopy (CRDS):}
+
+Medida del tiempo de decaimiento exponencial de la intensidad intracavidad:
+\begin{equation}
+    I(t) = I_0 e^{-t/\tau_p}
+\end{equation}
+
+Permite detectar absorciones débiles ($\alpha \sim 10^{-10}$ cm$^{-1}$) midiendo $\Delta\tau_p$.
+
+\textbf{Frequency comb stabilization:}
+
+Cavidades FP de referencia ultra-estables ($\mathcal{F} > 10^5$, $Q > 10^{11}$) para:
+\begin{itemize}
+    \item Estabilización de láseres de ancho de línea ultra-estrecho
+    \item Calibración de peines de frecuencia ópticos
+    \item Relojes atómicos ópticos (precisión $\sim 10^{-18}$)
+\end{itemize}
+
+\subsection{Sensibilidad y Limitaciones}
+
+\textbf{Sensibilidad de fase:}
+\begin{equation}
+    \frac{dI}{d\phi} \bigg|_{\phi=\pi/2} = I_0 \quad \Rightarrow \quad \delta\phi_{\text{min}} = \frac{\delta I}{I_0}
+\end{equation}
+
+\textbf{Ruido de detección (shot noise):}
+\begin{equation}
+    \text{SNR} = \frac{I_0}{\sqrt{2eBI_0}} = \sqrt{\frac{I_0}{2eB}} \quad \Rightarrow \quad \delta\phi_{\text{shot}} = \sqrt{\frac{2eB}{I_0}}
+\end{equation}
+
+\textbf{Limitaciones prácticas:}
+\begin{itemize}
+    \item Estabilidad mecánica: vibraciones limitan $\delta L < \lambda/100$
+    \item Deriva térmica: $\Delta L/\Delta T \sim 10^{-6}$ K$^{-1}$
+    \item Ruido de frecuencia láser: requiere estabilización activa
+\end{itemize}
+
+%=============================================================================
+\section{Acopladores Ópticos Integrados}
+%=============================================================================
+
+\subsection{Teoría de Modos Acoplados (CMT)}
+
+\textbf{Ecuaciones de acoplamiento para dos guías idénticas:}
+\begin{align}
+    \frac{dA_1}{dz} &= i\beta A_1 + i\kappa A_2 \\
+    \frac{dA_2}{dz} &= i\kappa A_1 + i\beta A_2
+\end{align}
+
+\textbf{Solución analítica:}
+\begin{align}
+    P_1(z) &= P_0\cos^2(\kappa z)\\
+    P_2(z) &= P_0\sin^2(\kappa z)
+\end{align}
+
+\textbf{Longitud de acoplamiento:}
+\begin{equation}
+    L_c = \frac{\pi}{2\kappa} \quad \text{(transferencia 100\%)}
+\end{equation}
+
+\textbf{Acoplador 3-dB:} $L_{3dB} = L_c/2 = \pi/(4\kappa)$
+
+\textbf{Parámetros de diseño:}
+\begin{itemize}
+    \item Coeficiente de acoplamiento: $\kappa \propto e^{-d/\delta}$ (d: separación, $\delta$: penetración evanescente)
+    \item Sensibilidad a longitud de onda: $\Delta L_c/\Delta\lambda \sim -L_c/\lambda$
+    \item Tolerancia de fabricación: $\Delta d < 50$ nm para $\Delta P < 0.5$ dB
+\end{itemize}
+
+\subsection{Acopladores MMI (Multimode Interference)}
+
+\textbf{Principio de auto-imagen:}
+
+En una guía multimodo de ancho $W$, los modos interfieren constructivamente a distancias periódicas.
+
+\textbf{Constantes de propagación modales:}
+\begin{equation}
+    \beta_\nu = k_0 n_{\text{eff}} - \frac{(\nu+1)^2\pi}{4n_{\text{eff}}W^2}, \quad \nu = 0, 1, 2, \ldots
+\end{equation}
+
+\textbf{Longitud de batido (beat length):}
+\begin{equation}
+    L_\pi = \frac{4n_{\text{eff}}W^2}{3\lambda_0} \approx \frac{W^2}{\lambda_0} \quad \text{(simplificado)}
+\end{equation}
+
+\textbf{Posiciones de auto-imagen:}
+\begin{align}
+    z &= p \cdot 3L_\pi \quad \text{(imagen directa)} \\
+    z &= (2p+1) \cdot \frac{3L_\pi}{2} \quad \text{(imagen especular)}
+\end{align}
+
+\textbf{Imágenes N×:}
+Para generar N imágenes de la entrada:
+\begin{equation}
+    L_{N} = \frac{p}{N} \cdot 3L_\pi, \quad \gcd(p, N) = 1
+\end{equation}
+
+\begin{importante}
+\textbf{Ventajas MMI vs. acopladores direccionales:}
+\begin{itemize}
+    \item Tolerancia fabricación: $\Delta W \pm 5\%$ admisible
+    \item Insensibilidad a polarización: $< 0.2$ dB PDL
+    \item Bandwidth óptico: $> 100$ nm (limitado solo por geometría)
+    \item Compactos: típicamente $L < 500$ $\mu$m
+\end{itemize}
+\textbf{Aplicaciones:} Divisores de potencia (1×N, N×N), combinadores, filtros, moduladores
+\end{importante}
+
+%=============================================================================
+\section{Fotodetectores Semiconductores: Teoría y Diseño}
+%=============================================================================
+
+\subsection{Física de Semiconductores Aplicada}
+
+\subsubsection{Teoría de Bandas y Absorción Óptica}
+
+\textbf{Estructura de bandas en semiconductores:}
+
+La estructura cristalina periódica conduce a bandas de energía permitidas separadas por un gap (banda prohibida):
+
+\begin{itemize}
+    \item \textbf{Banda de valencia (BV)}: Estados electrónicos ocupados a T = 0 K
+    \item \textbf{Banda de conducción (BC)}: Estados disponibles para conducción
+    \item \textbf{Banda prohibida (bandgap $E_g$)}: Diferencia energética BC-BV
+\end{itemize}
+
+\textbf{Relación energía-momento (dispersión):}
+
+Cerca de los extremos de banda (aproximación parabólica):
+\begin{align}
+    E_c(\vec{k}) &= E_c + \frac{\hbar^2k^2}{2m_e^*} \quad \text{(banda conducción)}\\
+    E_v(\vec{k}) &= E_v - \frac{\hbar^2k^2}{2m_h^*} \quad \text{(banda valencia)}
+\end{align}
+
+donde $m_e^*$ y $m_h^*$ son las masas efectivas de electrones y huecos.
+
+\textbf{Condición de absorción fotoeléctrica:}
+
+Para que un fotón sea absorbido creando un par electrón-hueco:
+\begin{equation}
+    E_{\text{fotón}} = h\nu = \frac{hc}{\lambda} \geq E_g
+\end{equation}
+
+Longitud de onda de corte (cut-off):
+\begin{equation}
+    \lambda_c [\mu\text{m}] = \frac{1.24}{E_g [\text{eV}]}
+\end{equation}
+
+\textbf{Transiciones directas vs. indirectas:}
+
+\begin{itemize}
+    \item \textbf{Gap directo} (GaAs, InP, InGaAs): Máximo de BV y mínimo de BC al mismo $\vec{k}$
+    \begin{itemize}
+        \item Transición vertical en diagrama E-k
+        \item Alta probabilidad de absorción/emisión: $\alpha \sim 10^4$ cm$^{-1}$
+        \item Eficiente para fotodetectores y láseres
+    \end{itemize}
+    
+    \item \textbf{Gap indirecto} (Si, Ge): Máximo BV y mínimo BC a diferentes $\vec{k}$
+    \begin{itemize}
+        \item Requiere fonón para conservar momento: proceso de tres partículas
+        \item Baja probabilidad: $\alpha \sim 10^2-10^3$ cm$^{-1}$
+        \item Menos eficiente para emisión, aceptable para detección
+    \end{itemize}
+\end{itemize}
+
+\textbf{Coeficiente de absorción:}
+
+Para un semiconductor de gap directo:
+\begin{equation}
+    \alpha(\lambda) \approx A\sqrt{\frac{h\nu - E_g}{h\nu}}
+\end{equation}
+
+donde $A$ es una constante dependiente del material ($\sim 10^5$ cm$^{-1}$ para III-V).
+
+\begin{table}[h]
+\centering
+\caption{Propiedades de semiconductores para fotodetectores}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Material} & \textbf{$E_g$ [eV]} & \textbf{$\lambda_c$ [nm]} & \textbf{Tipo gap} & \textbf{Aplicación} \\
+\hline
+Si & 1.12 & 1107 & Indirecto & 800-1100 nm, solar \\
+Ge & 0.66 & 1880 & Indirecto & 1100-1650 nm \\
+GaAs & 1.42 & 873 & Directo & 700-870 nm, VCSEL \\
+InP & 1.35 & 920 & Directo & Sustrato 1.3-1.55 $\mu$m \\
+In$_{0.53}$Ga$_{0.47}$As & 0.75 & 1650 & Directo & 1.0-1.65 $\mu$m telecom \\
+In$_{0.82}$Ga$_{0.18}$As$_{0.39}$P$_{0.61}$ & 0.95 & 1305 & Directo & 1.31 $\mu$m optimizado \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Fotodiodo PIN: Estructura y Principio de Operación}
+
+\textbf{Arquitectura de capas:}
+
+\begin{enumerate}
+    \item \textbf{Capa P$^+$ (< 0.5 $\mu$m):} 
+    \begin{itemize}
+        \item Alta concentración de aceptores ($N_A \sim 10^{18}-10^{19}$ cm$^{-3}$)
+        \item Contacto óhmico de baja resistencia
+        \item Delgada para minimizar absorción inactiva
+        \item Ventana con coating antirreflejos (AR)
+    \end{itemize}
+    
+    \item \textbf{Región intrínseca I (1-5 $\mu$m):}
+    \begin{itemize}
+        \item Dopaje residual muy bajo ($N_D \sim 10^{14}-10^{15}$ cm$^{-3}$)
+        \item Zona de absorción activa
+        \item Campo eléctrico elevado ($\sim 10^4-10^5$ V/cm)
+        \item Espesor optimizado: compromiso rendimiento/velocidad
+    \end{itemize}
+    
+    \item \textbf{Capa N$^+$ (sustrato):}
+    \begin{itemize}
+        \item Alta concentración de donores
+        \item Contacto óhmico inferior
+        \item Absorción residual tolerable (lejos de junction)
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Polarización inversa (reverse bias):}
+
+Aplicando $V_R > 0$ (P negativo, N positivo):
+\begin{itemize}
+    \item Ensanchamiento de la ZCE (zona de carga espacial)
+    \item Campo eléctrico intenso: $\mathcal{E} = V_R/d$
+    \item Separación rápida de pares e$^-$-h$^+$ fotogenerados
+    \item Reducción de capacidad de unión: $C_j \propto 1/\sqrt{V_R}$
+\end{itemize}
+
+\textbf{Corriente de oscuridad:}
+
+Corriente residual sin iluminación, originada por:
+\begin{enumerate}
+    \item \textbf{Corriente de difusión} (desde regiones neutras):
+    \begin{equation}
+        I_{\text{diff}} = qA\left[\frac{D_n n_i^2}{L_n N_A} + \frac{D_p n_i^2}{L_p N_D}\right](e^{qV/k_BT} - 1)
+    \end{equation}
+    
+    \item \textbf{Corriente de generación} (en ZCE):
+    \begin{equation}
+        I_{\text{gen}} = \frac{qAW n_i}{2\tau_0}
+    \end{equation}
+    
+    \item \textbf{Corriente superficial} (estados de superficie, defectos):
+    \begin{equation}
+        I_{\text{surf}} \propto \text{Perimeter} \times \text{Surface recombination velocity}
+    \end{equation}
+\end{enumerate}
+
+donde:
+\begin{itemize}
+    \item $n_i$: concentración intrínseca ($n_i^2 \propto T^3 e^{-E_g/k_BT}$)
+    \item $\tau_0$: tiempo de vida de generación-recombinación
+    \item $W$: ancho de la ZCE
+\end{itemize}
+
+\textbf{Dependencia térmica:}
+
+La corriente de oscuridad se duplica aproximadamente cada 8-10°C:
+\begin{equation}
+    I_{\text{dark}}(T) \approx I_{\text{dark}}(T_0)\exp\left[\frac{E_g}{k_B}\left(\frac{1}{T_0} - \frac{1}{T}\right)\right]
+\end{equation}
+
+Para InGaAs @ 25°C: $I_{\text{dark}} \sim 1-5$ nA (típico).
+
+\subsection{Responsividad y Eficiencia Cuántica}
+
+\subsubsection{Proceso de Fotogeneración y Colección}
+
+\textbf{Balance de fotones-electrones:}
+
+Cada fotón absorbido con $E > E_g$ genera (idealmente) un par e$^-$-h$^+$. El proceso completo involucra:
+
+\begin{enumerate}
+    \item \textbf{Incidencia}: Flujo de fotones $\Phi_{\text{inc}} = P_{\text{opt}}/(h\nu)$ [fotones/s]
+    \item \textbf{Transmisión}: Pérdidas por reflexión Fresnel
+    \item \textbf{Absorción}: Atenuación exponencial según Ley de Beer-Lambert
+    \item \textbf{Colección}: Separación y transporte de portadores
+\end{enumerate}
+
+\textbf{Rendimiento cuántico interno ($\eta_{\text{int}}$):}
+
+Probabilidad de que un fotón absorbido genere un par e$^-$-h$^+$ colectado:
+\begin{equation}
+    \eta_{\text{int}} = \frac{\text{Nº pares colectados}}{\text{Nº fotones absorbidos}}
+\end{equation}
+
+Factores limitantes:
+\begin{itemize}
+    \item Recombinación superficial en capa P$^+$ de entrada
+    \item Recombinación en volumen (centros profundos, defectos)
+    \item Colección incompleta (portadores lentos en regiones neutras)
+\end{itemize}
+
+En fotodiodos PIN bien diseñados: $\eta_{\text{int}} > 0.95$ (95\%).
+
+\textbf{Rendimiento cuántico externo ($\eta_{\text{ext}}$):}
+
+Incluye todas las pérdidas desde la incidencia hasta la colección:
+\begin{equation}
+    \eta_{\text{ext}} = (1 - R_{\text{Fresnel}})(1 - e^{-\alpha d})\eta_{\text{int}}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $R_{\text{Fresnel}} = \left(\frac{n-1}{n+1}\right)^2$: reflexión en interfaz aire-semiconductor
+    \begin{itemize}
+        \item Sin AR coating: $R \sim 30-35\%$ (InP, InGaAs con $n \sim 3.5$)
+        \item Con AR coating optimizado: $R < 1\%$
+    \end{itemize}
+    
+    \item $(1 - e^{-\alpha d})$: fracción de luz absorbida en espesor $d$ de zona activa
+    \begin{itemize}
+        \item Para $\alpha d \gg 1$: absorción casi completa (> 99\%)
+        \item Compromiso: $d$ pequeño reduce $\tau_{\text{tr}}$ (mejora bandwidth)
+    \end{itemize}
+\end{itemize}
+
+\textbf{Optimización del espesor de absorción:}
+
+Eficiencia de absorción vs. espesor:
+\begin{equation}
+    \eta_{\text{abs}}(d) = 1 - e^{-\alpha d}
+\end{equation}
+
+Para lograr $\eta_{\text{abs}} = 90\%$:
+\begin{equation}
+    d_{90\%} = \frac{\ln(10)}{\alpha} \approx \frac{2.3}{\alpha}
+\end{equation}
+
+Ejemplos:
+\begin{itemize}
+    \item InGaAs @ 1550 nm: $\alpha \approx 8 \times 10^3$ cm$^{-1} \Rightarrow d_{90\%} \approx 2.9$ $\mu$m
+    \item Si @ 850 nm: $\alpha \approx 7 \times 10^2$ cm$^{-1} \Rightarrow d_{90\%} \approx 33$ $\mu$m
+\end{itemize}
+
+\textbf{Responsividad espectral:}
+
+Relación entre fotocorriente y potencia óptica incidente:
+\begin{equation}
+    \mathcal{R}(\lambda) = \frac{I_{ph}}{P_{\text{opt}}} = \eta_{\text{ext}}(\lambda)\frac{q}{h\nu} = \eta_{\text{ext}}(\lambda)\frac{q\lambda}{hc}
+\end{equation}
+
+Fórmula práctica:
+\begin{equation}
+    \mathcal{R}[\text{A/W}] = 0.807 \cdot \eta_{\text{ext}} \cdot \lambda[\mu\text{m}]
+\end{equation}
+
+\textbf{Valores típicos de responsividad:}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\hline
+\textbf{Fotodiodo} & \textbf{$\lambda$ [nm]} & \textbf{$\eta_{\text{ext}}$} & \textbf{$\mathcal{R}$ [A/W]} & \textbf{Comentario} \\
+\hline
+Si PIN & 850 & 0.65 & 0.45 & Datacom, bajo costo \\
+InGaAs PIN & 1310 & 0.75 & 0.80 & Metro, GPON \\
+InGaAs PIN & 1550 & 0.85 & 1.05 & Long-haul, óptimo \\
+Ge PIN & 1550 & 0.50 & 0.65 & Menor $\eta$, económico \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{importante}
+\textbf{Punto de operación óptimo:}
+
+La máxima responsividad se alcanza donde:
+\begin{itemize}
+    \item $\lambda$ cercana a $\lambda_c$ (máximo $\mathcal{R} \propto \lambda$)
+    \item Pero no demasiado cerca: $\alpha$ disminuye drásticamente cerca del borde
+    \item Compromiso típico: $\lambda \sim 0.7-0.9 \times \lambda_c$
+\end{itemize}
+
+Ejemplo InGaAs ($\lambda_c = 1650$ nm):
+\begin{itemize}
+    \item Óptimo @ 1550 nm: $\mathcal{R} \sim 1.0$ A/W
+    \item @ 1600 nm: $\mathcal{R} \sim 1.1$ A/W (mayor, pero $\alpha$ menor)
+    \item @ 1650 nm: $\mathcal{R}$ cae rápidamente ($\alpha \to 0$)
+\end{itemize}
+\end{importante}
+
+\subsection{Análisis de Ruido en Fotodetectores}
+
+\subsubsection{Fuentes de Ruido Fundamental}
+
+\textbf{1. Shot Noise (Ruido de disparo):}
+
+Origen: naturaleza discreta y aleatoria del flujo de fotones y electrones.
+
+Para una corriente promedio $I$, las fluctuaciones siguen estadística de Poisson:
+\begin{equation}
+    \langle(\Delta n)^2\rangle = \langle n\rangle \quad \Rightarrow \quad \text{SNR}_{\text{Poisson}} = \sqrt{N}
+\end{equation}
+
+\textbf{Densidad espectral de corriente de ruido (bilateral):}
+\begin{equation}
+    S_I(f) = 2qI \quad [\text{A}^2/\text{Hz}]
+\end{equation}
+
+\textbf{Varianza de corriente en bandwidth $B$:}
+\begin{equation}
+    \sigma_{\text{shot}}^2 = \int_0^{2B} S_I(f)df = 2q(I_{ph} + I_{\text{dark}})B
+\end{equation}
+
+Corriente RMS de ruido:
+\begin{equation}
+    i_{n,\text{shot}} = \sqrt{2q(I_{ph} + I_{\text{dark}})B}
+\end{equation}
+
+\textbf{2. Thermal Noise (Johnson-Nyquist):}
+
+Origen: agitación térmica de portadores en resistencias (carga, amplificador).
+
+\textbf{Densidad espectral de voltaje (resistencia $R$):}
+\begin{equation}
+    S_V(f) = 4k_BT R \quad [\text{V}^2/\text{Hz}]
+\end{equation}
+
+\textbf{Corriente RMS equivalente (en resistencia de carga $R_L$):}
+\begin{equation}
+    i_{n,\text{th}} = \sqrt{\frac{4k_BTB}{R_L}}
+\end{equation}
+
+Para $R_L = 50$ $\Omega$, $T = 300$ K, $B = 10$ GHz:
+\begin{equation}
+    i_{n,\text{th}} \approx 57 \text{ $\mu$A (RMS)}
+\end{equation}
+
+\textbf{3. Ruido del amplificador (TIA - Transimpedance Amplifier):}
+
+Un TIA práctico introduce ruido adicional caracterizado por:
+\begin{itemize}
+    \item \textbf{Corriente de ruido de entrada} $i_n$: típicamente 5-20 pA/$\sqrt{\text{Hz}}$
+    \item \textbf{Voltaje de ruido de entrada} $e_n$: típicamente 1-5 nV/$\sqrt{\text{Hz}}$
+\end{itemize}
+
+\textbf{Corriente RMS total de ruido del TIA:}
+\begin{equation}
+    i_{n,\text{TIA}}^2 = i_n^2 B + \left(\frac{e_n}{R_f}\right)^2 B + \left(\frac{e_n}{Z_i}\right)^2 B
+\end{equation}
+
+donde $R_f$ es la resistencia de transimpedancia y $Z_i$ la impedancia de entrada.
+
+\subsubsection{Relación Señal-Ruido (SNR) y Sensibilidad}
+
+\textbf{SNR en detección directa:}
+
+La relación entre potencia de señal y potencia total de ruido:
+\begin{equation}
+    \text{SNR} = \frac{I_{ph}^2}{\sigma_{\text{shot}}^2 + \sigma_{\text{th}}^2 + \sigma_{\text{amp}}^2}
+\end{equation}
+
+Para un sistema limitado por shot noise ($\sigma_{\text{shot}} \gg \sigma_{\text{th}}, \sigma_{\text{amp}}$):
+\begin{equation}
+    \text{SNR}_{\text{shot}} = \frac{I_{ph}^2}{2q I_{ph} B} = \frac{I_{ph}}{2qB} = \frac{\mathcal{R}P_{\text{opt}}}{2qB}
+\end{equation}
+
+\textbf{Potencia óptica mínima (sensibilidad):}
+
+Para lograr un SNR objetivo (por ejemplo, BER = $10^{-9} \Rightarrow$ SNR $\sim$ 36 = 15.6 dB):
+\begin{equation}
+    P_{\text{min}} = \frac{2qB \cdot \text{SNR}_{\text{req}}}{\mathcal{R}}
+\end{equation}
+
+\textbf{Límite cuántico (quantum limit):}
+
+En el caso ideal (shot noise puro, $\eta = 1$, sin dark current):
+\begin{equation}
+    P_{\text{min,quantum}} = \frac{2h\nu B \cdot \text{SNR}_{\text{req}}}{1} = 2h\nu B Q^2
+\end{equation}
+
+para BER = $10^{-9}$, $Q \approx 6$:
+\begin{equation}
+    P_{\text{min,quantum}} \approx 72 h\nu B
+\end{equation}
+
+Número de fotones por bit requerido:
+\begin{equation}
+    N_{\text{ph/bit}} = \frac{P_{\text{min,quantum}}}{h\nu B} \approx 72 \text{ fotones/bit}
+\end{equation}
+
+\textbf{Sensibilidades prácticas @ 10 Gbit/s:}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\hline
+\textbf{Receptor} & \textbf{$P_{\text{min}}$ [dBm]} & \textbf{Comentario} \\
+\hline
+Límite cuántico & -42.0 & Ideal inalcanzable \\
+APD optimizada & -28 a -30 & Mejor real (comercial) \\
+PIN + TIA bajo ruido & -24 a -26 & Típico telecom \\
+PIN + TIA estándar & -18 a -20 & Datacom, bajo costo \\
+Receptor coherente & -32 a -35 & Con LO, DSP \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Fotodiodo de Avalancha (APD)}
+
+\textbf{Factor de multiplicación:}
+\begin{equation}
+    M = \frac{1}{1 - (V/V_{\text{breakdown}})^n}
+\end{equation}
+
+con $n \approx 3-6$ (dependiente del material).
+
+\textbf{Responsividad con ganancia:}
+\begin{equation}
+    \mathcal{R}_{\text{APD}} = M \cdot \mathcal{R}_{\text{PIN}}
+\end{equation}
+
+\begin{importante}
+\textbf{Compromiso ganancia-ruido:}
+
+La APD amplifica tanto la señal como el ruido. El factor de exceso de ruido es:
+\begin{equation}
+    F(M) = M^x, \quad x = \begin{cases}
+    0.3-0.5 & \text{(Si)} \\
+    0.7-1.0 & \text{(InGaAs)}
+    \end{cases}
+\end{equation}
+
+\textbf{Ganancia óptima:} Existe un $M_{\text{opt}}$ que maximiza SNR, típicamente:
+\begin{equation}
+    M_{\text{opt}} \approx \left(\frac{4k_BT}{qR_LI_{\text{dark}}}\right)^{1/(2+x)}
+\end{equation}
+\end{importante}
+
+\subsection{Análisis de Ruido}
+
+\textbf{Fuentes de ruido en receptor óptico:}
+
+\textbf{1. Shot noise (ruido de disparo):}
+\begin{equation}
+    \sigma_{\text{shot}}^2 = 2q(I_{ph} + I_{\text{dark}})M^2F(M)B
+\end{equation}
+
+\textbf{2. Ruido térmico (Johnson):}
+\begin{equation}
+    \sigma_{\text{thermal}}^2 = \frac{4k_BT}{R_L}B + 4k_BT\Gamma F_n B
+\end{equation}
+
+donde $F_n$ es la figura de ruido del amplificador y $\Gamma$ su transconductancia.
+
+\textbf{3. Ruido amplificador (TIA):}
+\begin{equation}
+    \sigma_{\text{amp}}^2 = i_n^2 B
+\end{equation}
+
+con densidad espectral $i_n \sim$ 5-20 pA/$\sqrt{\text{Hz}}$ (típica).
+
+\textbf{Sensibilidad del receptor:}
+
+\textbf{Potencia mínima detectable (BER = $10^{-9}$):}
+\begin{equation}
+    P_{\text{min}} = \frac{Q\sqrt{\sigma_{\text{shot}}^2 + \sigma_{\text{thermal}}^2 + \sigma_{\text{amp}}^2}}{\mathcal{R}M}
+\end{equation}
+
+con $Q \approx 6$ para BER $= 10^{-9}$.
+
+\textbf{Valores típicos @ 10 Gbit/s:}
+\begin{itemize}
+    \item PIN + TIA: $P_{\text{min}} \sim -18$ dBm
+    \item APD optimizada: $P_{\text{min}} \sim -24$ dBm (ganancia 6 dB)
+    \item Receptor coherente: $P_{\text{min}} \sim -30$ dBm
+\end{itemize}
+
+%=============================================================================
+\section{Moduladores Electro-Ópticos}
+%=============================================================================
+
+\subsection{Modulación Directa vs. Externa}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\hline
+\textbf{Parámetro} & \textbf{Directa} & \textbf{Externa} \\
+\hline
+Bandwidth & < 25 GHz & > 100 GHz \\
+Chirp ($\alpha_H$) & 3-7 & 0-0.7 \\
+Extinction ratio & 8-10 dB & > 20 dB \\
+Potencia RF & 50-100 mW & 0.5-2 W \\
+Complejidad & Baja & Alta \\
+Coste & Bajo & Medio-Alto \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Chirp en modulación directa:}
+
+La variación de densidad de portadores modula simultáneamente $n$ y $\alpha$:
+\begin{equation}
+    \Delta\phi(t) = -\frac{\alpha_H}{2}\ln\left(\frac{P(t)}{P_0}\right), \quad \alpha_H = -\frac{4\pi}{\lambda}\frac{dn/dN}{d\alpha/dN}
+\end{equation}
+
+Esto limita la distancia de transmisión por dispersión cromática.
+
+\subsection{Modulador Mach-Zehnder (MZM)}
+
+\subsubsection{Efecto Electro-Óptico (Pockels)}
+
+\textbf{LiNbO$_3$ (cristal uniaxial):}
+\begin{equation}
+    \Delta n = -\frac{1}{2}n^3 r_{33} E_z = -\frac{1}{2}n^3 r_{33}\frac{V}{d}
+\end{equation}
+
+con $r_{33} = 30.8 \times 10^{-12}$ m/V (coeficiente electro-óptico).
+
+\textbf{Desfase inducido:}
+\begin{equation}
+    \Delta\phi = \frac{2\pi\Delta n L}{\lambda} = \frac{\pi V}{V_\pi}
+\end{equation}
+
+\textbf{Tensión de semi-onda:}
+\begin{equation}
+    V_\pi = \frac{\lambda d}{n^3 r_{33} L \Gamma}
+\end{equation}
+
+donde $\Gamma$ es el factor de solapamiento del modo óptico con el campo eléctrico.
+
+\textbf{Transmisión normalizada:}
+\begin{equation}
+    T(V) = \frac{1}{2}\left[1 + \cos\left(\frac{\pi V}{V_\pi} + \phi_{\text{bias}}\right)\right]
+\end{equation}
+
+\textbf{Puntos de operación:}
+\begin{itemize}
+    \item \textbf{Quadrature} ($\phi_{\text{bias}} = \pi/2$): Máxima linearidad, ER $\sim$ 6 dB
+    \item \textbf{Null} ($\phi_{\text{bias}} = \pi$): Máxima extinción, chirp nulo
+    \item \textbf{Push-pull}: $V_1 = -V_2$, reduce $V_\pi$ a $V_\pi/2$, chirp cero
+\end{itemize}
+
+\begin{importante}
+\textbf{Parámetros críticos de diseño:}
+\begin{itemize}
+    \item $V_\pi$: LiNbO$_3$ (3-6 V), InP (1.5-3 V), polímeros (< 1 V)
+    \item Bandwidth 3-dB: Limitado por $RC$ (capacidad electrodos) y velocity mismatch
+    \item Insertion loss: 3-6 dB (LiNbO$_3$), 8-12 dB (InP integrado)
+    \item Extinction ratio: Limitado por desbalance brazos y acoplamiento no ideal
+\end{itemize}
+\end{importante}
+
+\subsection{Modulador de Electro-Absorción (EAM)}
+
+\textbf{Principio físico:}
+
+Campo eléctrico aplicado modifica el borde de absorción del semiconductor:
+
+\textbf{1. Efecto Franz-Keldysh (bulk):}
+\begin{equation}
+    \alpha(E, \lambda) = \alpha_0(\lambda) + \Delta\alpha_{\text{FK}}(E, \lambda)
+\end{equation}
+
+con ensanchamiento del borde proporcional a $E^{2/3}$.
+
+\textbf{2. Quantum-Confined Stark Effect (QCSE) - pozos cuánticos:}
+
+Campo perpendicular al pozo desplaza niveles de energía:
+\begin{equation}
+    \Delta E_{\text{exc}} \approx -p E_{\perp} - \beta E_{\perp}^2
+\end{equation}
+
+Efecto más fuerte que FK: $\Delta\alpha/\Delta V$ mayor en ×10-100.
+
+\textbf{Transmisión:}
+\begin{equation}
+    T(V) = \exp[-\Gamma\alpha(V)L] \cdot (1-R_{\text{Fresnel}})^2
+\end{equation}
+
+\textbf{Extinction ratio:}
+\begin{equation}
+    \text{ER [dB]} = 10\log_{10}\left(\frac{T(V_{\text{off}})}{T(V_{\text{on}})}\right) = 4.343 \cdot \Gamma L \cdot \Delta\alpha
+\end{equation}
+
+\begin{importante}
+\textbf{Ventajas EAM:}
+\begin{itemize}
+    \item Bajo chirp: $\alpha_H \sim 0.5-1.5$ (vs. 3-7 modulación directa)
+    \item Compacto: $L \sim 100-300$ $\mu$m
+    \item Integración monolítica con láser DFB
+    \item Bajo $V_\pi$: 1.5-3 V, baja potencia RF
+    \item Alta velocidad: $>$ 40 GHz demostrado
+\end{itemize}
+
+\textbf{Desventajas:}
+\begin{itemize}
+    \item Insertion loss: 6-12 dB (absorción residual)
+    \item ER limitado: típicamente 10-15 dB
+    \item Sensible a temperatura
+    \item Fotocorriente: carga capacitiva, limita bandwidth
+\end{itemize}
+\end{importante}
+
+%=============================================================================
+\section{Láseres Semiconductores}
+%=============================================================================
+
+\subsection{Arquitecturas y Parámetros}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lcccc}
+\hline
+\textbf{Tipo} & \textbf{$\Delta\lambda$ [nm]} & \textbf{$P_{\text{out}}$} & \textbf{$I_{\text{th}}$} & \textbf{Aplicación} \\
+\hline
+FP & 2-10 & 1-10 mW & 10-50 mA & Metro, corto alcance \\
+DFB & 0.0001-0.001 & 1-20 mW & 15-40 mA & DWDM, long-haul \\
+DBR & 0.001-0.01 & 1-10 mW & 20-50 mA & Sintonizable \\
+VCSEL & 0.5-3 & 0.5-5 mW & 0.5-5 mA & Datacom, corto \\
+ECL & < 0.0001 & 1-100 mW & --- & Coherente, metrología \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Ecuaciones de Tasa}
+
+\textbf{Sistema acoplado fotones-portadores:}
+\begin{align}
+    \frac{dN}{dt} &= \frac{\eta_i I}{qV} - \frac{N}{\tau_n} - v_g g(N) S \\
+    \frac{dS}{dt} &= \Gamma v_g g(N) S + \frac{\Gamma\beta_{\text{sp}}N}{\tau_n} - \frac{S}{\tau_p}
+\end{align}
+
+donde:
+\begin{itemize}
+    \item $N$: densidad de portadores [cm$^{-3}$]
+    \item $S$: densidad de fotones en la cavidad [cm$^{-3}$]
+    \item $\eta_i$: eficiencia de inyección ($\sim$ 0.7-0.9)
+    \item $I$: corriente inyectada [A]
+    \item $V$: volumen activo [cm$^3$]
+    \item $\tau_n$: tiempo de vida de recombinación ($\sim$ 1-3 ns)
+    \item $\tau_p$: tiempo de vida del fotón en cavidad ($\sim$ 1-5 ps)
+    \item $\Gamma$: factor de confinamiento ($\sim$ 0.01-0.3)
+    \item $\beta_{\text{sp}}$: emisión espontánea acoplada ($\sim 10^{-4}$)
+    \item $v_g$: velocidad de grupo ($\sim c/n_g$)
+\end{itemize}
+
+\textbf{Ganancia material:}
+\begin{equation}
+    g(N) = g_0(N - N_{\text{tr}}) = a(N - N_0)
+\end{equation}
+
+con $g_0 \sim 10^{-16}$ cm$^2$ (ganancia diferencial) y $N_{\text{tr}} \sim 10^{18}$ cm$^{-3}$ (transparencia).
+
+\subsection{Condiciones de Umbral}
+
+\textbf{Balance de ganancia-pérdidas en estado estacionario:}
+
+En umbral ($S \to 0$, pero $dS/dt = 0$):
+\begin{equation}
+    \Gamma g(N_{\text{th}}) = \frac{1}{\tau_p} = \frac{1}{2L}\left(\alpha_i + \frac{1}{L}\ln\frac{1}{R}\right) \equiv \alpha_{\text{total}}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $\alpha_i$: pérdidas internas ($\sim$ 10-50 cm$^{-1}$)
+    \item $\alpha_m = \frac{1}{L}\ln\frac{1}{R}$: pérdidas por espejos
+    \item $R = R_1 \cdot R_2$: reflectividad efectiva
+\end{itemize}
+
+\textbf{Corriente de umbral:}
+\begin{equation}
+    I_{\text{th}} = \frac{qV}{\eta_i\tau_n}\left(N_{\text{th}} + \frac{N_{\text{th}}}{\tau_n \Gamma v_g g_0}\alpha_{\text{total}}\right)
+\end{equation}
+
+Aproximación lineal:
+\begin{equation}
+    I_{\text{th}} = I_0 \exp\left(\frac{T}{T_0}\right)
+\end{equation}
+
+con $T_0 \sim$ 50-120 K (parámetro térmico característico).
+
+\textbf{Eficiencia diferencial (slope efficiency):}
+\begin{equation}
+    \eta_d = \frac{\Delta P_{\text{out}}}{\Delta I} = \frac{\eta_i h\nu}{q} \cdot \frac{\alpha_m}{\alpha_m + \alpha_i}
+\end{equation}
+
+Valores típicos: $\eta_d \sim$ 0.2-0.4 W/A.
+
+\subsection{Respuesta Dinámica}
+
+\textbf{Pequeña señal (linealización alrededor del estado estacionario):}
+
+Frecuencia de relajación de resonancia:
+\begin{equation}
+    f_R = \frac{1}{2\pi}\sqrt{\frac{\Gamma v_g g_0 S_0}{\tau_p}} \propto \sqrt{P_{\text{out}}}
+\end{equation}
+
+\textbf{Ancho de banda 3-dB:}
+\begin{equation}
+    f_{3dB} \approx \sqrt{2} f_R \approx 1.55 \sqrt{P_{\text{out}}[\text{mW}]} \text{ GHz}
+\end{equation}
+
+\textbf{Limitaciones:}
+\begin{itemize}
+    \item Resonancia de relajación: pico en respuesta frecuencial
+    \item Damping: aumenta con $I - I_{\text{th}}$, límite por ganancia no lineal
+    \item Efectos térmicos: reducen $f_{3dB}$ a altas corrientes
+    \item Parasíticos: capacitancias limitan respuesta eléctrica
+\end{itemize}
+
+\begin{importante}
+\textbf{Límite K-factor:}
+\begin{equation}
+    f_R^2 = K(I - I_{\text{th}})
+\end{equation}
+
+K-factor típico: 0.3-0.8 GHz$^2$/mA
+
+Para 40 GHz: requiere $I - I_{\text{th}} > 50$ mA $\Rightarrow$ alta disipación térmica
+\end{importante}
+
+\subsection{Láseres DFB (Distributed Feedback)}
+
+\textbf{Red de Bragg integrada:}
+\begin{equation}
+    \lambda_B = 2n_{\text{eff}}\Lambda
+\end{equation}
+
+\textbf{Coeficiente de acoplamiento:}
+\begin{equation}
+    \kappa L \sim 1-3 \quad \text{(típico para DFB)}
+\end{equation}
+
+\textbf{Supresión de modos laterales (SMSR):}
+\begin{equation}
+    \text{SMSR} = 10\log_{10}\left(\frac{P_{\text{modo principal}}}{P_{\text{modo lateral}}}\right) > 40 \text{ dB}
+\end{equation}
+
+\textbf{Ventajas DFB:}
+\begin{itemize}
+    \item Emisión monomodo estable
+    \item $\Delta\lambda < 0.1$ nm (típicamente 0.001-0.01 nm)
+    \item Temperatura: sintonización $\sim$ 0.08-0.12 nm/°C
+    \item Aplicaciones DWDM: spacing 50-100 GHz
+\end{itemize}
+
+\subsection{VCSEL (Vertical Cavity Surface Emitting Laser)}
+
+\textbf{Características distintivas:}
+\begin{itemize}
+    \item Cavidad corta: $L \sim \lambda$ ($<$ 1 $\mu$m)
+    \item Reflectividad alta: $R > 0.99$ (DBR con 20-40 pares)
+    \item Emisión gaussiana: TEM$_{00}$, acoplamiento eficiente a fibra
+    \item Corriente umbral baja: $I_{\text{th}} \sim$ 0.5-5 mA
+    \item Fabricación: test en oblea, bajo coste
+\end{itemize}
+
+\textbf{FSR elevado:}
+\begin{equation}
+    \text{FSR} \sim \frac{c}{2n_{\text{eff}}L} > 100 \text{ nm} \quad \Rightarrow \quad \text{monomodo natural}
+\end{equation}
+
+\textbf{Limitaciones:}
+\begin{itemize}
+    \item Potencia limitada: $P_{\text{out}} < 10$ mW (disipación térmica)
+    \item Principalmente 850 nm (GaAs): aplicaciones datacom corta distancia
+    \item 1310/1550 nm VCSEL: tecnología más compleja (InP)
+\end{itemize}
+
+%=============================================================================
+\section{Formatos de Modulación}
+%=============================================================================
+
+\subsection{Modulación de Intensidad - Detección Directa (IM-DD)}
+
+\textbf{OOK (On-Off Keying):} Modulación binaria de amplitud
+
+\textbf{Formatos principales:}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\hline
+\textbf{Formato} & \textbf{Duty cycle} & \textbf{BW espectral} & \textbf{Tolerancia CD} & \textbf{Tolerancia PMD} \\
+\hline
+NRZ & 100\% & $\sim$ B & Baja & Media \\
+RZ (50\%) & 50\% & $\sim$ 2B & Media & Alta \\
+RZ (33\%) & 33\% & $\sim$ 3B & Alta & Alta \\
+CS-RZ & 67\% & $\sim$ 1.5B & Media-Alta & Alta \\
+Duobinary & 100\% & $\sim$ B/2 & Alta & Baja \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{NRZ (Non-Return-to-Zero):}
+
+\begin{itemize}
+    \item Pulso rectangular: ancho = período de bit $T_b$
+    \item Espectro: componente DC, ancho $\sim$ B (bit-rate)
+    \item Eficiencia espectral: máxima (1 bit/s/Hz teórico)
+    \item Penalti CD: $\sim$ 1 dB por 1000 ps/nm @ 10 Gbit/s
+    \item Limitación: recuperación de reloj para secuencias largas 0s/1s
+\end{itemize}
+
+\textbf{RZ (Return-to-Zero):}
+
+\begin{itemize}
+    \item Pulso: duty cycle < 100\%, retorna a cero entre bits
+    \item Generación: MZM data + MZM pulse carver @ B/2
+    \item Espectro: sin DC, componente fuerte @ B/2 (clock recovery fácil)
+    \item Tolerancia CD: $\times$2-3 mejor que NRZ (pulsos más estrechos)
+    \item Tolerancia efectos no lineales (SPM, XPM): superior
+    \item Desventaja: mayor BW óptico requerido
+\end{itemize}
+
+\textbf{CS-RZ (Carrier-Suppressed RZ):}
+\begin{itemize}
+    \item Desfase de $\pi$ entre bits adyacentes
+    \item Espectro: supresión de portadora óptica
+    \item Mejor tolerancia a efectos no lineales que RZ
+    \item Generación: MZM @ $V_{\text{bias}} = V_\pi$, drive @ 2$V_\pi$ pico-pico, clock @ B/2
+\end{itemize}
+
+%=============================================================================
+\section{Componentes Pasivos Integrados}
+%=============================================================================
+
+\subsection{Especificaciones de Performance}
+
+\textbf{Parámetros críticos:}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{llc}
+\hline
+\textbf{Parámetro} & \textbf{Definición} & \textbf{Valor típico} \\
+\hline
+IL (Insertion Loss) & Pérdidas de inserción & < 0.5 dB \\
+PDL (Polarization Dependent Loss) & Variación con polarización & < 0.3 dB \\
+WDL (Wavelength Dependent Loss) & Variación espectral & < 0.5 dB (banda C) \\
+RL (Return Loss) & Pérdidas por reflexión & > 45 dB \\
+Crosstalk & Aislamiento entre canales & < -40 dB \\
+Directivity & Aislamiento direccional & > 50 dB \\
+Extinction Ratio & Relación ON/OFF & > 20 dB \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Componentes de Gestión de Polarización}
+
+\textbf{Representación de Jones:}
+\begin{equation}
+    \vec{E} = \begin{pmatrix} E_x \\ E_y \end{pmatrix} = \begin{pmatrix} E_{0x}e^{i\phi_x} \\ E_{0y}e^{i\phi_y} \end{pmatrix}
+\end{equation}
+
+\textbf{Parámetros de Stokes (medibles):}
+\begin{align}
+    S_0 &= E_x^2 + E_y^2 \quad \text{(potencia total)} \\
+    S_1 &= E_x^2 - E_y^2 \quad \text{(polarización horizontal vs. vertical)} \\
+    S_2 &= 2E_xE_y\cos\delta \quad \text{(polarización }±45°\text{)} \\
+    S_3 &= 2E_xE_y\sin\delta \quad \text{(polarización circular)}
+\end{align}
+
+con $S_0^2 = S_1^2 + S_2^2 + S_3^2$ (esfera de Poincaré).
+
+\textbf{Matriz de Jones - Componentes básicos:}
+
+\textbf{Polarizador lineal (eje x):}
+\begin{equation}
+    M_{\text{pol}} = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}
+\end{equation}
+
+\textbf{Lámina retardadora (fase $\delta$):}
+\begin{equation}
+    M_{\lambda/4} = e^{i\delta/2}\begin{pmatrix} e^{-i\delta/2} & 0 \\ 0 & e^{i\delta/2} \end{pmatrix}, \quad \delta = \frac{\pi}{2}
+\end{equation}
+
+\textbf{Rotador de Faraday ($\theta$ grados):}
+\begin{equation}
+    M_{\text{Faraday}} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}
+\end{equation}
+
+\textbf{Aislador óptico (45°):}
+\begin{equation}
+    \text{Forward: } \text{Pol}_1 \rightarrow \text{Faraday}_{45°} \rightarrow \text{Pol}_2 \quad (T \sim 1)
+\end{equation}
+\begin{equation}
+    \text{Backward: } \text{Pol}_2 \rightarrow \text{Faraday}_{45°} \rightarrow \text{Pol}_1 \quad (T \sim 0)
+\end{equation}
+
+Isolation: > 30-40 dB, IL: 0.5-1 dB.
+
+\subsection{Sistemas WDM/DWDM}
+
+\textbf{Grillas ITU-T:}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Sistema} & \textbf{Espaciado} & \textbf{Nº canales} & \textbf{Capacidad (10G/canal)} \\
+\hline
+CWDM & 20 nm & 8-18 & 80-180 Gbit/s \\
+DWDM (100 GHz) & 0.8 nm & 40-50 & 0.4-0.5 Tbit/s \\
+DWDM (50 GHz) & 0.4 nm & 80-96 & 0.8-0.96 Tbit/s \\
+DWDM (25 GHz) & 0.2 nm & 160+ & > 1.6 Tbit/s \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Frecuencia central (ITU-T G.694.1):}
+\begin{equation}
+    f_n = 193.1 \text{ THz} + n \cdot \Delta f, \quad \Delta f = 12.5, 25, 50, 100 \text{ GHz}
+\end{equation}
+
+\textbf{Tecnologías de multiplexación/demultiplexación:}
+\begin{itemize}
+    \item AWG (Arrayed Waveguide Grating): resolución < 50 GHz, crosstalk < -30 dB
+    \item Thin-film filters (TFF): cascada de filtros dieléctricos
+    \item FBG (Fiber Bragg Gratings): add/drop selectivo de canales
+\end{itemize}
+
+%=============================================================================
+\section{Ensanchamiento Espectral}
+%=============================================================================
+
+\subsection{Mecanismos Físicos}
+
+\textbf{Ensanchamiento homogéneo (Lorentziano):}
+
+Origen: colisiones atómicas, tiempos de vida finitos
+
+\begin{equation}
+    g_L(\nu) = \frac{\Delta\nu_L/2\pi}{(\nu - \nu_0)^2 + (\Delta\nu_L/2)^2}
+\end{equation}
+
+$\Delta\nu_L = 1/(\pi\tau_c)$ con $\tau_c$ tiempo de coherencia.
+
+\textbf{Ensanchamiento inhomogéneo (Gaussiano):}
+
+Origen: efecto Doppler, inhomogeneidades del medio
+
+\begin{equation}
+    g_G(\nu) = \frac{1}{\Delta\nu_G}\sqrt{\frac{4\ln 2}{\pi}}\exp\left[-4\ln 2\left(\frac{\nu - \nu_0}{\Delta\nu_G}\right)^2\right]
+\end{equation}
+
+$\Delta\nu_G \propto \sqrt{T/M}$ (Maxwell-Boltzmann).
+
+\textbf{Perfil de Voigt (convolución):}
+\begin{equation}
+    g_V(\nu) = \int_{-\infty}^{\infty} g_L(\nu')g_G(\nu - \nu')d\nu'
+\end{equation}
+
+No tiene forma analítica cerrada, se aproxima numéricamente.
+
+\begin{importante}
+\textbf{Ancho de línea láser (linewidth):}
+
+Schawlow-Townes (límite teórico):
+\begin{equation}
+    \Delta\nu_{\text{ST}} = \frac{2\pi h\nu(\Delta\nu_c)^2}{P_{\text{out}}} (1 + \alpha_H^2)
+\end{equation}
+
+Para DFB típico: $\Delta\nu \sim$ 1-10 MHz (ensanchamiento 1/f por ruido técnico).
+
+ECL (External Cavity Laser): $\Delta\nu < 100$ kHz.
+\end{importante}
+
+\subsection{Coherencia}
+
+\textbf{Longitud de coherencia:}
+\begin{equation}
+    L_c = \frac{c}{\Delta\nu} = \frac{\lambda^2}{\Delta\lambda}
+\end{equation}
+
+\textbf{Valores típicos:}
+\begin{itemize}
+    \item LED: $L_c \sim$ 10-100 $\mu$m
+    \item FP laser: $L_c \sim$ 100 $\mu$m - 1 mm
+    \item DFB laser: $L_c \sim$ 10-100 m
+    \item ECL: $L_c \sim$ 1-10 km
+\end{itemize}
+
+\textbf{Implicaciones:}
+\begin{itemize}
+    \item Interferometría: diferencia de caminos $< L_c$
+    \item Multiplexación coherente: requiere DFB o mejor
+    \item Reflexiones Rayleigh: backscattering coherente si $\Delta L < L_c$
+\end{itemize}
+
+%=============================================================================
+\section{Transmisión Coherente y Modulación Avanzada}
+%=============================================================================
+
+\subsection{Detección Coherente: Fundamentos}
+
+\subsubsection{Principio de la Detección Heterodina/Homodina}
+
+\textbf{Configuración básica:}
+
+La señal óptica $E_s(t)$ se mezcla con un oscilador local (LO) $E_{LO}(t)$ en un fotodetector:
+
+\begin{align}
+    E_s(t) &= A_s e^{i(\omega_s t + \phi_s(t))} \\
+    E_{LO}(t) &= A_{LO} e^{i(\omega_{LO} t + \phi_{LO})}
+\end{align}
+
+\textbf{Fotocorriente resultante:}
+
+El fotodetector responde a la intensidad total:
+\begin{equation}
+    I_{ph} \propto |E_s + E_{LO}|^2 = |E_s|^2 + |E_{LO}|^2 + 2\text{Re}[E_s E_{LO}^*]
+\end{equation}
+
+Filtrando componentes DC y manteniendo el término de batido (IF):
+\begin{equation}
+    i_{IF}(t) = 2\mathcal{R}\sqrt{P_s P_{LO}}\cos[(\omega_s - \omega_{LO})t + \phi_s(t) - \phi_{LO}]
+\end{equation}
+
+\textbf{Ventajas de detección coherente:}
+
+\begin{enumerate}
+    \item \textbf{Ganancia de conversión:} Amplificación por LO antes de conversión eléctrica
+    \begin{equation}
+        i_{IF} \propto \sqrt{P_{LO}} \quad \text{(vs. } i_{DD} \propto P_s \text{ en DD)}
+    \end{equation}
+    
+    \item \textbf{Selectividad de frecuencia:} Filtrado eléctrico de canal deseado
+    
+    \item \textbf{Acceso a fase y polarización:} Recuperación completa del campo $E(t)$
+    
+    \item \textbf{Mayor sensibilidad:} Límite shot-noise mejorado en 10-15 dB vs. DD
+\end{enumerate}
+
+\textbf{Mejora de sensibilidad:}
+
+Considerando ruido shot del LO dominante:
+\begin{equation}
+    \text{SNR}_{\text{coh}} = \frac{(\mathcal{R}\sqrt{P_s P_{LO}})^2}{2q\mathcal{R}P_{LO}B} = \frac{\mathcal{R}P_s}{2qB}
+\end{equation}
+
+Comparado con DD (sin LO):
+\begin{equation}
+    \text{SNR}_{\text{DD}} = \frac{(\mathcal{R}P_s)^2}{2q\mathcal{R}P_s B + \sigma_{\text{th}}^2}
+\end{equation}
+
+Para potencias bajas donde $\sigma_{\text{th}}^2 \gg$ shot noise:
+\begin{equation}
+    \frac{\text{SNR}_{\text{coh}}}{\text{SNR}_{\text{DD}}} \approx \frac{\mathcal{R}P_{LO}}{2qB} \gg 1
+\end{equation}
+
+\subsubsection{Receptor Coherente de Polarización Dual}
+
+\textbf{Arquitectura 90° hybrid (IQ demodulator):}
+
+Separación simultánea de componentes en fase (I) y cuadratura (Q):
+
+\begin{align}
+    I_I &\propto E_s \cos(\Delta\phi) \\
+    I_Q &\propto E_s \sin(\Delta\phi)
+\end{align}
+
+donde $\Delta\phi = \phi_s - \phi_{LO}$.
+
+\textbf{Receptor dual-polarization coherente completo:}
+
+Detecta ambas polarizaciones ortogonales (X, Y) con I y Q cada una:
+\begin{itemize}
+    \item PBS (Polarization Beam Splitter): separa pol-X y pol-Y
+    \item Dos 90° hybrids: uno por polarización
+    \item 4 fotodetectores balanceados: $I_X$, $Q_X$, $I_Y$, $Q_Y$
+    \item 4 ADCs: conversión a dominio digital
+\end{itemize}
+
+\textbf{Campo complejo recuperado:}
+\begin{align}
+    E_X(t) &= I_X(t) + iQ_X(t) \\
+    E_Y(t) &= I_Y(t) + iQ_Y(t)
+\end{align}
+
+\begin{importante}
+\textbf{Capacidad de información:}
+
+La detección coherente dual-pol recupera 4 grados de libertad (4D):
+\begin{itemize}
+    \item Amplitud X, Fase X
+    \item Amplitud Y, Fase Y
+\end{itemize}
+
+Esto permite formatos de modulación avanzados (QAM) y multiplexación de polarización (PDM).
+
+\textbf{Ganancia de capacidad vs. IM-DD:}
+\begin{equation}
+    C_{\text{coh}} = 2 \times C_{\text{DD}} \quad \text{(factor 2 por polarización dual)}
+\end{equation}
+\end{importante}
+
+\subsection{Formatos de Modulación Coherente}
+
+\subsubsection{Modulación de Fase (PSK - Phase Shift Keying)}
+
+\textbf{BPSK (Binary PSK):}
+\begin{equation}
+    E(t) = A e^{i\phi_k}, \quad \phi_k \in \{0, \pi\}
+\end{equation}
+
+2 símbolos $\Rightarrow$ 1 bit/símbolo $\Rightarrow$ 1 bit/s/Hz (eficiencia espectral).
+
+\textbf{QPSK (Quadrature PSK):}
+\begin{equation}
+    E(t) = A e^{i\phi_k}, \quad \phi_k \in \{0, \pi/2, \pi, 3\pi/2\}
+\end{equation}
+
+4 símbolos $\Rightarrow$ 2 bits/símbolo $\Rightarrow$ 2 bits/s/Hz.
+
+\textbf{Constelación en plano IQ:}
+
+Los símbolos se representan como puntos en el plano complejo:
+\begin{equation}
+    s_k = I_k + iQ_k = |s_k|e^{i\phi_k}
+\end{equation}
+
+\textbf{8-PSK, 16-PSK:} Mayor número de símbolos en círculo unitario.
+
+\subsubsection{Modulación de Amplitud en Cuadratura (QAM)}
+
+\textbf{M-QAM:} Combina modulación de amplitud y fase.
+
+Símbolos distribuidos en rejilla rectangular en plano IQ:
+\begin{equation}
+    s_k = (2m - M - 1) + i(2n - M - 1), \quad m,n \in \{1, \ldots, \sqrt{M}\}
+\end{equation}
+
+\textbf{Niveles comunes:}
+\begin{itemize}
+    \item 16-QAM: 4 bits/símbolo $\Rightarrow$ 4 bits/s/Hz
+    \item 64-QAM: 6 bits/símbolo $\Rightarrow$ 6 bits/s/Hz
+    \item 256-QAM: 8 bits/símbolo $\Rightarrow$ 8 bits/s/Hz
+    \item 1024-QAM: 10 bits/símbolo (estado del arte)
+\end{itemize}
+
+\textbf{Distancia euclidiana mínima:}
+\begin{equation}
+    d_{\min}^2 = \frac{6E_s}{M - 1}
+\end{equation}
+
+donde $E_s$ es la energía promedio por símbolo.
+
+\textbf{Probabilidad de error (aproximación):}
+\begin{equation}
+    P_e \approx 4\left(1 - \frac{1}{\sqrt{M}}\right)Q\left(\sqrt{\frac{3\text{SNR}}{M-1}}\right)
+\end{equation}
+
+\textbf{Compromiso SNR-Eficiencia:}
+
+Para mantener BER = $10^{-3}$:
+\begin{itemize}
+    \item QPSK: SNR $\sim$ 9 dB
+    \item 16-QAM: SNR $\sim$ 14 dB (+5 dB)
+    \item 64-QAM: SNR $\sim$ 20 dB (+11 dB total)
+    \item 256-QAM: SNR $\sim$ 26 dB (+17 dB total)
+\end{itemize}
+
+\subsubsection{Polarization Division Multiplexing (PDM)}
+
+\textbf{Multiplexación de polarización:}
+
+Transmite dos señales independientes en polarizaciones ortogonales:
+\begin{align}
+    \vec{E}(t) &= E_X(t)\hat{x} + E_Y(t)\hat{y} \\
+    &= [A_X e^{i\phi_X(t)}]\hat{x} + [A_Y e^{i\phi_Y(t)}]\hat{y}
+\end{align}
+
+\textbf{Ventajas:}
+\begin{itemize}
+    \item Duplica la capacidad espectral
+    \item Compatible con cualquier formato (PDM-QPSK, PDM-16QAM, etc.)
+    \item Compensación digital de PMD y rotación de polarización
+\end{itemize}
+
+\textbf{PDM-QPSK (estándar 100G):}
+\begin{equation}
+    \text{Bit-rate} = 2 \text{ pol} \times 2 \text{ bits/symbol} \times R_{\text{symbol}}
+\end{equation}
+
+Para 100 Gbit/s netos (sin FEC):
+\begin{equation}
+    R_{\text{symbol}} = \frac{100}{2 \times 2} = 25 \text{ GBaud}
+\end{equation}
+
+Con FEC 20\% overhead:
+\begin{equation}
+    R_{\text{symbol}} = 28 \text{ GBaud} \quad \text{(típico 100G)}
+\end{equation}
+
+\subsection{Digital Signal Processing (DSP) en Receptores Coherentes}
+
+\subsubsection{Cadena de Procesamiento Digital}
+
+\textbf{Secuencia de algoritmos DSP:}
+
+\begin{enumerate}
+    \item \textbf{Normalización y compensación DC:} Remoción de offset
+    
+    \item \textbf{Compensación de dispersión cromática (CDC):}
+    
+    Filtro FIR con respuesta:
+    \begin{equation}
+        H_{\text{CD}}(\omega) = \exp\left[i\frac{\beta_2}{2}L\omega^2\right]
+    \end{equation}
+    
+    Implementación eficiente en dominio frecuencia (overlap-save FFT).
+    
+    \item \textbf{Clock recovery:} Sincronización de símbolo (Gardner, Mueller-Müller)
+    
+    \item \textbf{Compensación de polarización (PMDC):}
+    
+    Filtro adaptativo 2×2 (butterfly):
+    \begin{equation}
+        \begin{pmatrix} E_X' \\ E_Y' \end{pmatrix} = \begin{pmatrix} h_{XX} & h_{XY} \\ h_{YX} & h_{YY} \end{pmatrix} * \begin{pmatrix} E_X \\ E_Y \end{pmatrix}
+    \end{equation}
+    
+    Algoritmo CMA (Constant Modulus Algorithm) o LMS.
+    
+    \item \textbf{Recuperación de portadora (CPR):}
+    
+    Estimación y compensación de offset de frecuencia y fase:
+    \begin{equation}
+        E'(t) = E(t)e^{-i(\Delta\omega t + \hat{\phi}(t))}
+    \end{equation}
+    
+    Métodos: Viterbi-Viterbi (para M-PSK), BPS (Blind Phase Search).
+    
+    \item \textbf{Decisión/Ecualización:}
+    
+    Mapeo de símbolos recibidos a constelación ideal:
+    \begin{equation}
+        \hat{s}_k = \arg\min_{s_i \in \mathcal{S}} |r_k - s_i|^2
+    \end{equation}
+    
+    \item \textbf{Decodificación FEC:} LDPC, Turbo codes, etc.
+\end{enumerate}
+
+\textbf{Complejidad computacional:}
+
+Para 100G PDM-QPSK:
+\begin{itemize}
+    \item CDC: $\sim$ 500-1000 taps FIR $\times$ 4 (I/Q, X/Y)
+    \item PMD: $\sim$ 50-100 taps FIR $\times$ 4 (matriz 2×2)
+    \item Total: $\sim$ 5000-8000 operaciones complejas por símbolo
+    \item @ 28 GBaud: $\sim$ 150-250 GMACS (Giga Multiply-Accumulate/s)
+\end{itemize}
+
+ASICs modernos (7nm, 5nm): 1-5 W consumo para DSP completo.
+
+\subsection{Sistemas de Transmisión de Alta Capacidad}
+
+\subsubsection{Evolución de Capacidad}
+
+\begin{table}[h]
+\centering
+\caption{Evolución de sistemas coherentes comerciales}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Generación} & \textbf{Año} & \textbf{Formato} & \textbf{Bit-rate} & \textbf{SE [b/s/Hz]} & \textbf{Alcance} \\
+\hline
+100G & 2010 & PDM-QPSK & 100 Gbit/s & 2 & 2000 km \\
+200G & 2013 & PDM-16QAM & 200 Gbit/s & 4 & 1000 km \\
+400G & 2017 & PDM-16QAM & 400 Gbit/s & 4 & 500 km \\
+600G & 2020 & PDM-64QAM & 600 Gbit/s & 6 & 300 km \\
+800G & 2022 & PCS-64QAM & 800 Gbit/s & 6 & 200 km \\
+1.6T & 2024 & PCS-128QAM & 1.6 Tbit/s & 8 & 100 km \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Límite de Shannon en fibra óptica:}
+
+Capacidad teórica máxima considerando ruido no lineal:
+\begin{equation}
+    C = B\log_2\left(1 + \frac{P}{\sigma_{\text{ASE}}^2 + \sigma_{\text{NL}}^2(P)}\right)
+\end{equation}
+
+Para fibra SMF estándar:
+\begin{equation}
+    C_{\max} \approx 100-150 \text{ Tbit/s} \quad \text{(single fiber, banda C+L)}
+\end{equation}
+
+\subsubsection{Técnicas de Shaping y Codificación Avanzada}
+
+\textbf{Probabilistic constellation shaping (PCS):}
+
+Modulación con símbolos no equiprobables:
+\begin{itemize}
+    \item Símbolos centrales (baja amplitud): alta probabilidad
+    \item Símbolos externos (alta amplitud): baja probabilidad
+\end{itemize}
+
+Ganancia de shaping:
+\begin{equation}
+    \gamma_{\text{shaping}} = \frac{1.53 \text{ dB}}{1} \quad \text{(distribución Gaussiana óptima)}
+\end{equation}
+
+\textbf{Forward Error Correction (FEC) avanzado:}
+
+Códigos LDPC (Low-Density Parity Check):
+\begin{itemize}
+    \item SD-FEC (Soft-Decision): umbral $\sim$ 4.5 × 10$^{-3}$ pre-FEC BER
+    \item HD-FEC (Hard-Decision): umbral $\sim$ 2 × 10$^{-2}$ pre-FEC BER
+    \item Overhead: 15-25\%
+    \item Ganancia neta de codificación (NCG): 10-12 dB
+\end{itemize}
+
+%=============================================================================
+\section{Tecnologías Emergentes en Fotónica}
+%=============================================================================
+
+\subsection{Fotónica Integrada (Silicon Photonics)}
+
+\textbf{Ventajas de integración en silicio:}
+\begin{itemize}
+    \item Fabricación CMOS compatible (economías de escala)
+    \item Alto contraste de índice: $\Delta n \sim 2$ (Si/SiO$_2$)
+    \item Dispositivos ultra-compactos (radio de curvatura < 5 $\mu$m)
+    \item Co-integración con electrónica (CMOS drivers, TIAs)
+\end{itemize}
+
+\textbf{Componentes clave:}
+\begin{itemize}
+    \item Moduladores: MZI, ring resonator (hasta 50-100 GHz)
+    \item (De)Multiplexores: AWG, echelle gratings
+    \item Fotodetectores: Ge-on-Si (integración heterogénea)
+    \item Amplificadores: Híbridos (III-V bonding, Raman on-chip)
+\end{itemize}
+
+\textbf{Limitaciones:}
+\begin{itemize}
+    \item Ausencia de emisión eficiente (gap indirecto)
+    \item Absorción de dos fotones (TPA) a altas potencias
+    \item Pérdidas de propagación: 1-3 dB/cm (vs. 0.2 dB/km fibra)
+\end{itemize}
+
+\subsection{Multiplexación Espacial (SDM)}
+
+\textbf{Multi-Core Fiber (MCF):}
+\begin{itemize}
+    \item Múltiples núcleos independientes en una fibra (7-19 cores típico)
+    \item Capacidad: N × capacidad single-core
+    \item Crosstalk inter-core: < -40 dB (diseño optimizado)
+\end{itemize}
+
+\textbf{Few-Mode Fiber (FMF):}
+\begin{itemize}
+    \item Propagación de múltiples modos espaciales (LP$_{01}$, LP$_{11}$, LP$_{21}$...)
+    \item MIMO digital para separar modos
+    \item Complejidad DSP: crece como $M^2$ (M modos)
+\end{itemize}
+
+\textbf{Capacidad récord demostrado (2023):}
+\begin{equation}
+    C = 22.9 \text{ Pbit/s} \quad \text{(over 1 km, 38-core, 3-mode fiber)}
+\end{equation}
+
+\subsection{Comunicaciones Cuánticas}
+
+\textbf{QKD (Quantum Key Distribution):}
+
+Distribución de claves criptográficas con seguridad garantizada por mecánica cuántica.
+
+\textbf{Protocolo BB84:}
+\begin{itemize}
+    \item Codificación en fotones individuales (polarización o fase)
+    \item Detección de espionaje por perturbación cuántica
+    \item Tasa clave: $\sim$ kbit/s sobre 50-100 km
+\end{itemize}
+
+\textbf{Limitaciones prácticas:}
+\begin{itemize}
+    \item Atenuación fibra: alcance limitado (< 100-200 km sin repetidores)
+    \item Eficiencia detectores: requiere SPADs (Single-Photon Avalanche Diodes)
+    \item Tasa de error cuántico (QBER): debe ser < 11\% (seguridad)
+\end{itemize}
+
+%=============================================================================
+\appendix
+\section{Constantes Físicas Fundamentales}
+%=============================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\hline
+\textbf{Constante} & \textbf{Símbolo} & \textbf{Valor} & \textbf{Unidades} \\
+\hline
+Velocidad de la luz (vacío) & $c$ & $2.998 \times 10^8$ & m/s \\
+Constante de Planck & $h$ & $6.626 \times 10^{-34}$ & J·s \\
+Constante reducida de Planck & $\hbar$ & $1.055 \times 10^{-34}$ & J·s \\
+Carga del electrón & $q, e$ & $1.602 \times 10^{-19}$ & C \\
+Masa del electrón & $m_e$ & $9.109 \times 10^{-31}$ & kg \\
+Permitividad del vacío & $\epsilon_0$ & $8.854 \times 10^{-12}$ & F/m \\
+Permeabilidad del vacío & $\mu_0$ & $4\pi \times 10^{-7}$ & H/m \\
+Constante de Boltzmann & $k_B$ & $1.381 \times 10^{-23}$ & J/K \\
+\hline
+\end{tabular}
+\end{table}
+
+%=============================================================================
+\section{Conversiones y Relaciones Útiles}
+%=============================================================================
+
+\subsection{Energía del Fotón}
+
+\begin{equation}
+    E = h\nu = \frac{hc}{\lambda} = \frac{1.2398}{\lambda[\mu\text{m}]} \text{ eV} \approx \frac{1.24}{\lambda[\mu\text{m}]} \text{ eV}
+\end{equation}
+
+\textbf{Ejemplos:}
+\begin{itemize}
+    \item $\lambda = 1.55$ $\mu$m: $E = 0.80$ eV
+    \item $\lambda = 1.31$ $\mu$m: $E = 0.95$ eV
+    \item $\lambda = 850$ nm: $E = 1.46$ eV
+\end{itemize}
+
+\subsection{Unidades Logarítmicas (Decibelios)}
+
+\textbf{Potencia absoluta:}
+\begin{align}
+    P_{\text{dBm}} &= 10\log_{10}\left(\frac{P_{\text{mW}}}{1\text{ mW}}\right)\\
+    P_{\text{mW}} &= 10^{P_{\text{dBm}}/10}
+\end{align}
+
+\textbf{Atenuación/Ganancia relativa:}
+\begin{align}
+    G_{\text{dB}} &= 10\log_{10}\left(\frac{P_{\text{out}}}{P_{\text{in}}}\right)\\
+    \alpha_{\text{dB}} &= -G_{\text{dB}} = 10\log_{10}\left(\frac{P_{\text{in}}}{P_{\text{out}}}\right)
+\end{align}
+
+\textbf{Relaciones útiles:}
+\begin{itemize}
+    \item +3 dB $\equiv \times$2 (potencia)
+    \item -3 dB $\equiv \div$2 (potencia)
+    \item +10 dB $\equiv \times$10
+    \item +20 dB $\equiv \times$100
+    \item 0 dBm = 1 mW
+    \item +10 dBm = 10 mW
+    \item -10 dBm = 100 $\mu$W
+    \item -30 dBm = 1 $\mu$W
+\end{itemize}
+
+\subsection{Dispersión Cromática}
+
+\textbf{Ensanchamiento temporal:}
+\begin{equation}
+    \Delta t = D \cdot L \cdot \Delta\lambda \quad \text{[ps]}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $D$: parámetro de dispersión [ps/(nm·km)]
+    \item $L$: longitud de fibra [km]
+    \item $\Delta\lambda$: ancho espectral fuente [nm]
+\end{itemize}
+
+\textbf{Relación con GVD:}
+\begin{equation}
+    D = -\frac{2\pi c}{\lambda^2}\beta_2 \quad \text{[ps/(nm·km)]}
+\end{equation}
+
+\textbf{Valores típicos @ 1.55 $\mu$m:}
+\begin{itemize}
+    \item SMF-28: $D \approx +17$ ps/(nm·km)
+    \item DCF (fibra compensadora): $D \approx -100$ a $-200$ ps/(nm·km)
+    \item NZDSF: $D \approx +2$ a $+6$ ps/(nm·km)
+\end{itemize}
+
+\subsection{Parámetros de Fibra}
+
+\textbf{Longitud efectiva no lineal:}
+\begin{equation}
+    L_{\text{eff}} = \frac{1 - e^{-\alpha L}}{\alpha} \approx \frac{1}{\alpha} \quad \text{(para } \alpha L \gg 1\text{)}
+\end{equation}
+
+\textbf{Potencia crítica no lineal:}
+\begin{equation}
+    P_{\text{crit}} = \frac{16}{27}\frac{A_{\text{eff}}}{\gamma L_{\text{eff}}} \approx \frac{1}{\gamma L_{\text{eff}}}
+\end{equation}
+
+Para SMF ($\gamma \sim 1.3$ W$^{-1}$km$^{-1}$, $L_{\text{eff}} \sim 20$ km): $P_{\text{crit}} \sim 40$ mW.
+
+\textbf{Área efectiva:}
+\begin{equation}
+    A_{\text{eff}} = \frac{\left(\int\int |E(x,y)|^2 dx dy\right)^2}{\int\int |E(x,y)|^4 dx dy}
+\end{equation}
+
+Valores típicos:
+\begin{itemize}
+    \item SMF-28: $A_{\text{eff}} \approx 80$ $\mu$m$^2$
+    \item NZDSF: $A_{\text{eff}} \approx 50-70$ $\mu$m$^2$
+    \item Large effective area: $A_{\text{eff}} > 100$ $\mu$m$^2$
+\end{itemize}
+
+%=============================================================================
+\section{Tablas de Referencia}
+%=============================================================================
+
+\subsection{Bandas Espectrales ITU-T}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Banda} & \textbf{Rango [nm]} & \textbf{Aplicación} & \textbf{Atenuación típica} \\
+\hline
+O-band & 1260-1360 & Metro, GPON & 0.35 dB/km \\
+E-band & 1360-1460 & Extended range & 0.30 dB/km \\
+S-band & 1460-1530 & Raman amplification & 0.23 dB/km \\
+C-band & 1530-1565 & EDFA, DWDM & 0.20 dB/km \\
+L-band & 1565-1625 & EDFA extended & 0.22 dB/km \\
+U-band & 1625-1675 & Ultra-long haul & 0.25 dB/km \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Materiales Semiconductores III-V}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\hline
+\textbf{Material} & \textbf{$E_g$ [eV]} & \textbf{$\lambda_g$ [nm]} & \textbf{$n$} & \textbf{Aplicación} \\
+\hline
+GaAs & 1.42 & 874 & 3.6 & VCSEL 850 nm, LED \\
+InP & 1.35 & 920 & 3.2 & Sustrato 1.3-1.55 $\mu$m \\
+In$_{0.53}$Ga$_{0.47}$As & 0.75 & 1650 & 3.6 & Fotodiodos, láseres \\
+In$_{0.74}$Ga$_{0.26}$As$_{0.57}$P$_{0.43}$ & 0.95 & 1310 & 3.4 & Láseres 1.31 $\mu$m \\
+In$_{0.59}$Ga$_{0.41}$As$_{0.9}$P$_{0.1}$ & 0.80 & 1550 & 3.5 & Láseres 1.55 $\mu$m \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Estándares de Fibra Óptica}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lcccc}
+\hline
+\textbf{Tipo} & \textbf{Core [$\mu$m]} & \textbf{NA} & \textbf{Atenuación} & \textbf{Aplicación} \\
+\hline
+SMF-28 & 8.2 & 0.14 & 0.20 dB/km @ 1.55 & Long-haul \\
+G.652.D & 8-10 & 0.12-0.14 & < 0.4 dB/km & Estándar \\
+G.655 (NZDSF) & 8-10 & 0.12-0.14 & < 0.25 dB/km & DWDM \\
+OM3 (50/125) & 50 & 0.20 & 3.5 dB/km @ 850 & 10G Ethernet \\
+OM4 (50/125) & 50 & 0.20 & 3.0 dB/km @ 850 & 40/100G \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Estándares Ethernet Ópticos}
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lcccc}
+\hline
+\textbf{Estándar} & \textbf{Bit-rate} & \textbf{$\lambda$ [nm]} & \textbf{Alcance} & \textbf{Fibra} \\
+\hline
+100BASE-FX & 100 Mbit/s & 1310 & 2 km & MMF \\
+1000BASE-SX & 1 Gbit/s & 850 & 550 m & OM2 MMF \\
+1000BASE-LX & 1 Gbit/s & 1310 & 10 km & SMF \\
+10GBASE-SR & 10 Gbit/s & 850 & 400 m & OM4 MMF \\
+10GBASE-LR & 10 Gbit/s & 1310 & 10 km & SMF \\
+10GBASE-ER & 10 Gbit/s & 1550 & 40 km & SMF \\
+40GBASE-SR4 & 40 Gbit/s & 850 & 150 m & OM4 MMF \\
+100GBASE-LR4 & 100 Gbit/s & 4×1310 & 10 km & SMF \\
+400GBASE-DR4 & 400 Gbit/s & 4×1310 & 500 m & SMF \\
+\hline
+\end{tabular}
+\end{table}
+
+%=============================================================================
+\section{Fórmulas Principales por Tema}
+%=============================================================================
+
+\subsection{Fibras Ópticas}
+
+\begin{itemize}
+    \item Apertura numérica: $NA = \sqrt{n_1^2 - n_2^2} \approx n_1\sqrt{2\Delta}$
+    \item Frecuencia normalizada: $V = \frac{2\pi a}{\lambda}NA$ (SMF si $V < 2.405$)
+    \item Dispersión intermodal: $\Delta t \approx \frac{L(NA)^2}{2cn_1}$
+    \item NLSE: $\frac{\partial A}{\partial z} = -\frac{i\beta_2}{2}\frac{\partial^2 A}{\partial t^2} + i\gamma|A|^2A - \frac{\alpha}{2}A$
+\end{itemize}
+
+\subsection{Interferómetros}
+
+\begin{itemize}
+    \item Visibilidad: $V = \frac{I_{\max} - I_{\min}}{I_{\max} + I_{\min}} = \frac{2\sqrt{I_1I_2}}{I_1 + I_2}$
+    \item FSR Fabry-Pérot: $\Delta\nu_{\text{FSR}} = \frac{c}{2nL}$
+    \item Finesse: $\mathcal{F} = \frac{\pi\sqrt{R}}{1-R}$, FWHM: $\Delta\nu = \frac{\text{FSR}}{\mathcal{F}}$
+    \item Factor Q: $Q = \frac{\nu_0}{\Delta\nu}$
+\end{itemize}
+
+\subsection{Fotodetectores}
+
+\begin{itemize}
+    \item Responsividad: $\mathcal{R} = \eta\frac{q\lambda}{hc} = \eta\frac{\lambda[\mu\text{m}]}{1.24}$ [A/W]
+    \item Shot noise: $\sigma_{\text{shot}}^2 = 2qI_{ph}M^2F(M)B$
+    \item Thermal noise: $\sigma_{\text{th}}^2 = \frac{4k_BT}{R_L}B$
+    \item SNR: $\text{SNR} = \frac{(I_{ph}M)^2}{\sigma_{\text{shot}}^2 + \sigma_{\text{th}}^2}$
+\end{itemize}
+
+\subsection{Moduladores}
+
+\begin{itemize}
+    \item MZM: $T = \cos^2\left(\frac{\pi V}{2V_\pi}\right)$, $V_\pi = \frac{\lambda d}{n^3r_{33}L\Gamma}$
+    \item Chirp: $\alpha_H = -\frac{4\pi}{\lambda}\frac{dn/dN}{d\alpha/dN}$
+    \item EAM: $T = e^{-\Gamma\alpha(V)L}$
+    \item ER: $\text{ER[dB]} = 10\log_{10}(T_{\text{off}}/T_{\text{on}})$
+\end{itemize}
+
+\subsection{Láseres}
+
+\begin{itemize}
+    \item Umbral: $\Gamma g(N_{\text{th}}) = \alpha_i + \frac{1}{L}\ln\frac{1}{R}$
+    \item Eficiencia: $\eta_d = \frac{\eta_i h\nu}{q}\frac{\alpha_m}{\alpha_m + \alpha_i}$
+    \item Frecuencia relajación: $f_R = \frac{1}{2\pi}\sqrt{\frac{\Gamma v_g g_0 S}{\tau_p}}$
+    \item Schawlow-Townes: $\Delta\nu = \frac{2\pi h\nu(\Delta\nu_c)^2}{P}(1+\alpha_H^2)$
+\end{itemize}
+
+\end{document}

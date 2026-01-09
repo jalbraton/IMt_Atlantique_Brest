@@ -1,0 +1,508 @@
+% Formulario de Technologies Optiques - IMT Atlantique
+\documentclass[10pt,a4paper,landscape]{article}
+
+% Paquetes
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{siunitx}
+
+\geometry{a4paper, landscape, margin=1cm}
+
+% Configuración
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Formulario Technologies Optiques}
+\cfoot{\thepage}
+\setlength{\columnsep}{1cm}
+\setlength{\parindent}{0pt}
+
+% Comandos personalizados
+\newcommand{\fbox}[1]{\fcolorbox{black}{yellow!20}{#1}}
+\newcommand{\secbox}[1]{\colorbox{blue!20}{\textbf{#1}}}
+
+\begin{document}
+
+\begin{center}
+\LARGE{\textbf{FORMULARIO - TECHNOLOGIES OPTIQUES}}\\
+\large{IMT Atlantique - 2025/2026}
+\end{center}
+
+\begin{multicols}{3}
+\small
+
+%=============================================================================
+\secbox{CONSTANTES FÍSICAS}
+%=============================================================================
+
+\begin{tabular}{ll}
+$c$ & $3 \times 10^8$ m/s \\
+$h$ & $6.626 \times 10^{-34}$ J·s \\
+$q$ & $1.602 \times 10^{-19}$ C \\
+$\epsilon_0$ & $8.854 \times 10^{-12}$ F/m \\
+$\mu_0$ & $4\pi \times 10^{-7}$ H/m \\
+\end{tabular}
+
+\vspace{0.3cm}
+\textbf{Energía del fotón:}
+\begin{equation*}
+\boxed{E = h\nu = \frac{hc}{\lambda} = \frac{1.24}{\lambda[\mu m]} \text{ eV}}
+\end{equation*}
+
+%=============================================================================
+\secbox{FIBRAS ÓPTICAS}
+%=============================================================================
+
+\textbf{Ley de Snell-Descartes:}
+\begin{equation*}
+\boxed{n_1 \sin\theta_1 = n_2 \sin\theta_2}
+\end{equation*}
+
+\textbf{Apertura Numérica (NA):}
+\begin{equation*}
+\boxed{NA = \sqrt{n_1^2 - n_2^2} = n_1\sqrt{2\Delta}}
+\end{equation*}
+
+\textbf{Índice relativo:}
+\begin{equation*}
+\boxed{\Delta = \frac{n_1 - n_2}{n_1}}
+\end{equation*}
+
+\textbf{Vector de onda:}
+\begin{equation*}
+\boxed{k = n\frac{2\pi}{\lambda} = n\frac{\omega}{c}}
+\end{equation*}
+
+\textbf{Dispersión modal (SI):}
+\begin{equation*}
+\boxed{\Delta\tau = \frac{L \cdot n_1 \cdot \Delta}{c}}
+\end{equation*}
+
+\textbf{Producto B·L (Step-Index):}
+\begin{equation*}
+\boxed{B \cdot L < \frac{c}{n_1 \cdot \Delta}}
+\end{equation*}
+
+\textbf{Producto B·L (Graded-Index):}
+\begin{equation*}
+\boxed{B \cdot L \sim 10^{10} \text{ bit/s·km}}
+\end{equation*}
+
+%=============================================================================
+\secbox{ECUACIONES DE MAXWELL}
+%=============================================================================
+
+\begin{align*}
+&\boxed{\nabla \times \vec{E} = -\frac{\partial \vec{B}}{\partial t}}\\
+&\boxed{\nabla \times \vec{H} = \vec{J} + \frac{\partial \vec{D}}{\partial t}}\\
+&\boxed{\nabla \cdot \vec{D} = \rho_v}\\
+&\boxed{\nabla \cdot \vec{B} = 0}
+\end{align*}
+
+\textbf{Ecuación de onda:}
+\begin{equation*}
+\boxed{\nabla \times \nabla \times \vec{E} = -\frac{1}{c^2}\frac{\partial^2 \vec{E}}{\partial t^2} - \mu_0 \frac{\partial^2 \vec{P}}{\partial t^2}}
+\end{equation*}
+
+%=============================================================================
+\secbox{INTERFERÓMETROS}
+%=============================================================================
+
+\textbf{Campo eléctrico:}
+\begin{equation*}
+\boxed{E = E_0 e^{i(\omega t - kz + \phi_0)}}
+\end{equation*}
+
+\textbf{Intensidad:}
+\begin{equation*}
+\boxed{I \propto E^2}
+\end{equation*}
+
+\textbf{Patrón de interferencia:}
+\begin{equation*}
+\boxed{I \propto \cos^2(k_0 \sin\theta \cdot z)}
+\end{equation*}
+
+\textbf{Mach-Zehnder - Salidas:}
+\begin{align*}
+&\boxed{I_{SA} = I_0 \cos^2\left(\frac{\Delta\phi}{2}\right)}\\
+&\boxed{I_{SB} = I_0 \sin^2\left(\frac{\Delta\phi}{2}\right)}
+\end{align*}
+
+\textbf{Desfase:}
+\begin{equation*}
+\boxed{\Delta\phi = \frac{2\pi}{\lambda}\Delta l = \frac{2\pi n e}{\lambda}}
+\end{equation*}
+
+\textbf{Fabry-Pérot - Transmisión:}
+\begin{equation*}
+\boxed{I = I_0 \frac{T^2}{1 + R^2 - 2R\cos\Delta\phi}}
+\end{equation*}
+
+\textbf{Condición de resonancia:}
+\begin{equation*}
+\boxed{\Delta\phi = 2k\pi \Rightarrow \frac{2L}{\lambda} = k}
+\end{equation*}
+
+\textbf{Intervalo Espectral Libre:}
+\begin{equation*}
+\boxed{\Delta\nu_{ISL} = \frac{c}{2nL}}
+\end{equation*}
+
+\textbf{Finesse:}
+\begin{equation*}
+\boxed{\text{Finesse} = \frac{ISL}{\Delta\lambda}}
+\end{equation*}
+
+\textbf{Condición de Bragg:}
+\begin{equation*}
+\boxed{\lambda_{Bragg} = 2n\Lambda}
+\end{equation*}
+
+%=============================================================================
+\secbox{ACOPLADORES}
+%=============================================================================
+
+\textbf{Acoplador direccional (2 guías):}
+\begin{align*}
+&\boxed{P_1(z) = P_0 \cos^2(\kappa z)}\\
+&\boxed{P_2(z) = P_0 \sin^2(\kappa z)}
+\end{align*}
+
+\textbf{Acoplador 3dB:}
+\begin{equation*}
+\boxed{z = \frac{\pi}{4\kappa}}
+\end{equation*}
+
+\textbf{MMI - Vector de onda:}
+\begin{equation*}
+\boxed{k_{z\nu} = k_0 n_1 - \frac{(\nu+1)^2 \pi}{4n_1 W^2}}
+\end{equation*}
+
+\textbf{MMI - Longitud de auto-imagen:}
+\begin{equation*}
+\boxed{L_\pi = \frac{4n_1 W^2}{3\lambda}}
+\end{equation*}
+
+\textbf{MMI - Auto-imagen:}
+\begin{equation*}
+\boxed{z = 2k \cdot 3L_\pi}
+\end{equation*}
+
+\textbf{MMI - Imagen espejo:}
+\begin{equation*}
+\boxed{z = (2k+1) \cdot 3L_\pi}
+\end{equation*}
+
+%=============================================================================
+\secbox{FOTODIODOS}
+%=============================================================================
+
+\textbf{Fotocorriente:}
+\begin{equation*}
+\boxed{I_{ph} = \mathcal{R} \cdot P_{opt}}
+\end{equation*}
+
+\textbf{Responsividad:}
+\begin{equation*}
+\boxed{\mathcal{R} = \eta \frac{q\lambda}{hc} = \eta \frac{q\lambda}{1.24} \text{ [A/W]}}
+\end{equation*}
+($\lambda$ en $\mu$m)
+
+\textbf{Energía del gap:}
+\begin{equation*}
+\boxed{h\nu \geq E_g \Rightarrow \text{absorción}}
+\end{equation*}
+
+\textbf{APD - Ganancia:}
+\begin{itemize}
+\item Si: $V \sim$ 500V, $M \sim$ 100
+\item Ge: $V \sim$ 30V, $M \sim$ 10
+\end{itemize}
+
+\textbf{Ruido térmico:}
+\begin{equation*}
+\boxed{P_{noise} = i_n^2 \cdot \Delta f}
+\end{equation*}
+
+%=============================================================================
+\secbox{MODULADORES}
+%=============================================================================
+
+\textbf{Chirp - Modulación directa:}
+\begin{equation*}
+\boxed{[n] = f(t) \Rightarrow n = f(t) \Rightarrow \lambda = f(t)}
+\end{equation*}
+
+\textbf{Mach-Zehnder - Desfase:}
+\begin{equation*}
+\boxed{\Delta\phi = \frac{\pi V(t)}{V_\pi}}
+\end{equation*}
+
+\textbf{Tensión $V_\pi$ (LiNbO$_3$):}
+\begin{equation*}
+\boxed{V_\pi = \frac{\lambda e}{n_e^3 r_{33} L}}
+\end{equation*}
+($r_{33} = 30.8 \times 10^{-12}$ m/V)
+
+\textbf{MZ - Potencia de salida:}
+\begin{equation*}
+\boxed{P_{out} = P_{in} \cos^2\left(\frac{\pi V}{2V_\pi}\right)}
+\end{equation*}
+
+\textbf{Electro-absorción:}
+\begin{equation*}
+\boxed{P_{out} = P_0 e^{-\Gamma \alpha(V) L}}
+\end{equation*}
+
+\textbf{Factor de Henry (chirp):}
+\begin{equation*}
+\boxed{\alpha_H = \frac{d\phi/dt}{d|E|/dt}}
+\end{equation*}
+
+\begin{tabular}{ll}
+Mod. directa & $\alpha_H = 3$ a $7$ \\
+MZ simple & $\alpha_H = -0.7$ \\
+MZ push-pull & $\alpha_H = 0$ \\
+\end{tabular}
+
+%=============================================================================
+\secbox{LÁSERES}
+%=============================================================================
+
+\textbf{Condición de resonancia:}
+\begin{equation*}
+\boxed{2kL = 2m\pi}
+\end{equation*}
+
+\textbf{ISL (cavidad FP):}
+\begin{equation*}
+\boxed{\Delta\nu_{ISL} = \frac{c}{2nL}}
+\end{equation*}
+
+\textbf{Tiempo de vida del fotón:}
+\begin{equation*}
+\boxed{\tau_c = \frac{-2L}{c \ln R}}
+\end{equation*}
+
+\textbf{Potencia de salida:}
+\begin{equation*}
+\boxed{P = \frac{N \cdot h\nu}{\tau_c}}
+\end{equation*}
+
+\textbf{Ley de Bernard-Duraffourg:}
+\begin{equation*}
+\boxed{h\nu < F_c - F_v}
+\end{equation*}
+
+\textbf{Ganancia:}
+\begin{equation*}
+\boxed{G = g(\lambda) \cdot (N - N_0)}
+\end{equation*}
+
+\textbf{Ecuaciones de tasa:}
+\begin{align*}
+&\boxed{\frac{dN}{dt} = \frac{i}{eV} - \frac{N}{\tau_n} - gP(N - N_0)}\\
+&\boxed{\frac{dP}{dt} = \beta_s \frac{N}{\tau_n} + gP(N - N_0) - \frac{P}{\tau_c}}
+\end{align*}
+
+\textbf{Valores típicos:}
+\begin{tabular}{ll}
+$\beta_s$ & $\sim 10^{-4}$ \\
+$\tau_c$ & $\sim 10^{-12}$ s \\
+$\tau_n$ & $\sim 10^{-9}$ s \\
+$N_0$ & $\sim 10^{18}$ cm$^{-3}$ \\
+$g$ & $\sim 10^{-6}$ cm$^3$/s \\
+\end{tabular}
+
+%=============================================================================
+\secbox{POLARIZACIÓN}
+%=============================================================================
+
+\textbf{Ecuación de la elipse:}
+\begin{equation*}
+\boxed{\left(\frac{E_x}{E_{0x}}\right)^2 + \left(\frac{E_y}{E_{0y}}\right)^2 - 2\frac{E_x E_y}{E_{0x}E_{0y}}\cos\delta = \sin^2\delta}
+\end{equation*}
+
+\textbf{Parámetros de Stokes:}
+\begin{align*}
+&\boxed{I = E_{0x}^2 + E_{0y}^2}\\
+&\boxed{Q = E_{0x}^2 - E_{0y}^2 = I_{0°} - I_{90°}}\\
+&\boxed{U = 2E_{0x}E_{0y}\cos\epsilon = I_{45°} - I_{135°}}\\
+&\boxed{V = 2E_{0x}E_{0y}\sin\epsilon = I_{CD} - I_{CG}}
+\end{align*}
+
+%=============================================================================
+\secbox{ESPECTROS}
+%=============================================================================
+
+\textbf{Perfil Lorentziano:}
+\begin{equation*}
+\boxed{I_L(\lambda) = \frac{1}{1 + 4\pi^2 c^2 \frac{(\lambda - \lambda_0)^2}{\Delta\lambda_L^2}}}
+\end{equation*}
+
+\textbf{Perfil Gaussiano:}
+\begin{equation*}
+\boxed{I_G(\lambda) = \exp\left(-\frac{(\lambda - \lambda_0)^2}{2\sigma^2}\right)}
+\end{equation*}
+
+\textbf{Ancho espectral Gaussiano:}
+\begin{equation*}
+\boxed{\Delta\lambda_G = \frac{2\sigma}{\sqrt{2\ln 2}}}
+\end{equation*}
+
+\textbf{Ancho espectral y coherencia:}
+\begin{equation*}
+\boxed{\Delta\lambda \approx \frac{c}{L_c}}
+\end{equation*}
+
+%=============================================================================
+\secbox{DECIBELIOS}
+%=============================================================================
+
+\textbf{Potencia en dBm:}
+\begin{equation*}
+\boxed{P_{dBm} = 10\log_{10}\left(\frac{P_{mW}}{1\text{ mW}}\right)}
+\end{equation*}
+
+\textbf{Atenuación en dB:}
+\begin{equation*}
+\boxed{A_{dB} = 10\log_{10}\left(\frac{P_{in}}{P_{out}}\right)}
+\end{equation*}
+
+\textbf{Ley de Beer-Lambert:}
+\begin{equation*}
+\boxed{I(z) = I_0 e^{-\alpha z}}
+\end{equation*}
+
+\textbf{Atenuación lineal:}
+\begin{equation*}
+\boxed{\alpha_{dB/km} = \frac{10}{L}\log_{10}\left(\frac{P_{in}}{P_{out}}\right)}
+\end{equation*}
+
+%=============================================================================
+\secbox{VENTANAS DE TRANSMISIÓN}
+%=============================================================================
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Ventana} & \textbf{$\lambda$} & \textbf{Material} \\
+\midrule
+1ª & 850 nm & Si, GaAs \\
+2ª & 1.3 $\mu$m & InP (III-V) \\
+3ª & 1.55 $\mu$m & InP (III-V) \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.2cm}
+\textbf{Características:}
+\begin{itemize}
+\item 1ª: Fibras multimodo
+\item 2ª: Mínima dispersión
+\item 3ª: Mínima atenuación
+\end{itemize}
+
+%=============================================================================
+\secbox{ESPECIFICACIONES TÍPICAS}
+%=============================================================================
+
+\textbf{Componentes pasivos:}
+\begin{tabular}{ll}
+IL & < 0.2 dB \\
+PDL & < 0.3 dB \\
+WDL & < 0.3 dB (30 nm) \\
+ORL & > 40 dB \\
+$P_{max}$ & > 27 dBm \\
+Temp. op. & -5°C a +65°C \\
+Temp. alm. & -40°C a +80°C \\
+\end{tabular}
+
+%=============================================================================
+\secbox{FUENTES DE LUZ}
+%=============================================================================
+
+\textbf{LED:}
+\begin{itemize}
+\item $P$: 0.1-0.5 mW
+\item $\lambda$: 850-1300 nm
+\item $\Delta\lambda$: 50-150 nm
+\item $B_{max}$: cientos Mbit/s
+\end{itemize}
+
+\textbf{Láser multimodo (FP, VCSEL):}
+\begin{itemize}
+\item $P$: 1-10 mW
+\item $\lambda_{FP}$: 1300-1550 nm
+\item $\lambda_{VCSEL}$: 850 nm
+\item $\Delta\lambda$: 2-10 nm
+\item $B_{max}$: hasta 10 Gbit/s
+\end{itemize}
+
+\textbf{Láser monomodo (DFB, DBR):}
+\begin{itemize}
+\item $P$: 1-10 mW
+\item $\lambda$: 1300-1550 nm
+\item $\Delta\lambda$: 0.1-0.5 pm
+\item $B_{max}$: hasta 10 Gbit/s
+\end{itemize}
+
+%=============================================================================
+\secbox{RELACIONES IMPORTANTES}
+%=============================================================================
+
+\textbf{Frecuencia-longitud de onda:}
+\begin{equation*}
+\boxed{c = \lambda \nu}
+\end{equation*}
+
+\textbf{Número de fotones:}
+\begin{equation*}
+\boxed{N_{photons} = \frac{P \cdot t}{h\nu} = \frac{P \lambda}{hc}}
+\end{equation*}
+
+\textbf{Densidad de potencia:}
+\begin{equation*}
+\boxed{I = \frac{P}{A} \text{ [W/m}^2\text{]}}
+\end{equation*}
+
+\textbf{Campo-Intensidad:}
+\begin{equation*}
+\boxed{I = \frac{1}{2}n\epsilon_0 c |E|^2}
+\end{equation*}
+
+%=============================================================================
+\secbox{WDM}
+%=============================================================================
+
+\textbf{Espaciado ITU:}
+\begin{equation*}
+\boxed{\Delta\lambda = \lambda_{i+1} - \lambda_i = 0.8 \text{ nm}}
+\end{equation*}
+
+\textbf{OSNR (Optical SNR):}
+\begin{equation*}
+\boxed{OSNR = \frac{P_{signal}}{P_{ASE}}}
+\end{equation*}
+
+%=============================================================================
+\secbox{RÉCORDS}
+%=============================================================================
+
+\begin{itemize}
+\item \textbf{Fibra monomodo}: 319 Tbit/s (3000 km, 2021)
+\item \textbf{Fibra multimodo}: 1 Pbit/s (23 km, 2020)
+\item \textbf{Progreso}: $10^{10}$ × en 40 años (capacidad × distancia)
+\end{itemize}
+
+\end{multicols}
+
+\end{document}

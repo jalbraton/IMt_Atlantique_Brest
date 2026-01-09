@@ -1,0 +1,2408 @@
+
+
+
+
+
+OPTICAL FIBRES
+THÉMATIQUE D'APPROFONDISSEMENT
+INGÉNIERIE DES SYSTÈMES DE COMMUNICATION
+UE TECHNOLOGIES OPTIQUES
+TAF STAR/TOPT
+
+
+Luiz ANET NETO
+luiz.anetneto@imt-atlantique.fr
+
+
+
+
+
+
+
+
+
+
+
+FOREWORD
+
+
+
+About this UE
+? 40h taking place in January (UE E)
+? Part of the track Telecommunications and Networks (parcours Télécoms et Réseaux)
+Practical
+? https://moodle.imt- atlantique.fr/course/view.php?id=763
+Teachers
+? CM
+- L. ANET NETO, L. DUPONT, Br. FRACASSO,
+M. MORVAN
+? 
+TPs, TDs, BEs
+- L. ANET NETO, M. MORVAN,
+M.-L. MOULINARD, D. STONESCU
+Evaluation
+? Written test on January 23rd
+? TP/TD/BE reports
+Contact
+? C03-124B (Optics Department)
+? luiz.anetneto@imt-atlantique.fr
+
+
+Evaluated compétences générales
+? CG1: "Comprendre et analyser, synthétiser un problème et/ou une situation complexes"
+? CG2: "Résoudre un problème complexe en alliant théorie et pratique"
+? Will evolve to a bloc de compétences BC04i - Concevoir et dimensionner une chaîne de transmission par fibre optique, en analysant les phénomènes de propagation, en sélectionnant les composants optiques adéquats et en validant les performances par le calcul, la simulation et des travaux expérimentaux.
+Student feedback
+? Moodle survey to be completed (end of January)
+CM - Cours Magistraux
+? 11 x 1h15 slots
+? Optical fibers, interferometers, passive/active optical devices, optical modulation
+TD, TP, BE
+? 20 x 1h15 slots
+? Organize yourselves: 4 trios, 2 duos
+
+
+
+
+
+TD - travaux dirigés (a.k.a. PC - petite classe)
+? 4 x TDs, 4 x 1h15 slots
+? Teachers can provide help if needed
+? Optical couplers, lasers, photodiodes, optical access use-case
+? Reports (per TD, per group) should be
+provided at the end of each class
+
+BE - bureau d'études
+? 3 x BEs, 3 x 2h30 slots
+? Optical fibers, interferometers, light
+polarization
+? Some help will provided by the supervisors but this is mostly an autonomous activity
+? Reports (per BE, per group) should be provided within one week after each BE
+
+TP - travaux pratiques (lab work)
+? Rotating groups per experimental bench/TP
+? Reports (per TP & group) should be provided within one week after each TP, 16/01 & 20/01 classes only
+
+
+Optical fibers
+? Objective: physical phenomena characterizing fibre propagation
+? Morning: CM, afternoon: BE on optical fibers
+Recommended bibliographic references
+? Books: Agrawal, G. P. (2002). Fiber-optic communication systems (3rd ed.). John Wiley & Sons, ch.1 and 2, Agrawal, G. P. (2001). Nonlinear fiber optics (3rd ed.). Academic Press extended biblio., (focus on nonlinear effects, not for the faint-hearted)
+? Software: VPI Transmission Maker, Python ofiber module
+(https://ofiber.readthedocs.io/en/latest/index.html)
+? Other: whichever reference that helps you, just don't forget to be critical about it (https://www.youtube.com/watch?v=MzRCDLre1b4&t=920s, https://www.youtube.com/playlist?list=PLyqSpQzTE6M8Ki6mNmm3RvFVm AlksTo_L Lecs.42-59, IIT Madras)
+
+OUTLINE
+1. 
+INTRODUCTION
+1.1 Optical fibers: why and where?
+1.2 Brief history of fibre comms
+1.3 Perspectives
+
+2. LIGHT PROPAGATION, GEOMETRICAL APPROACH
+2.1 Step-index fibers
+2.2 Graded-index fibers
+2.3 Recap
+
+3. LIGHT PROPAGATION, ELECTROMAGNETIC WAVE APPROACH
+3.1 Intuition
+3.2 Vector calculus brief recap
+3.3 Maxwell' equations
+3.4 A quick detour: some PDE examples
+3.5 Fiber modes
+3.6 Single-mode fibers
+4. 
+ENVELOPE PROPAGATION
+4.1 Pulse propagation equation
+4.2 Chromatic dispersion
+4.3 Third order dispersion
+4.4 Polarization mode dispersion
+4.5 Attenuation
+4.6 Non-linear effects
+
+5. CONCLUSIONS
+5.1 1 medium, 3 descriptions
+5.2 Key takeaways for telecommunications
+
+APPENDIX
+Fiber types defined by the ITU-T
+Vector field operators in cylindrical coordinates Other attenuation sources
+
+
+
+
+
+
+
+
+
+CHAPTER 1
+INTRODUCTION
+
+
+
+
+
+Dielectric waveguide, circular section, flexible, compact
+? Different materials: silica, plastic and even "hollow"
+? Different applications: telecommunications, sensors, audio, decoration, medical...
+
+
+Naked fiber	Plastic optical fiber	S/PDIF cable
+
+		
+
+
+
+Hollow core optical fiber[1]
+Dual fiber cable	Armored fiber cable	Prysmian cable 3456F Ø28 mm
+
+
+
+[1] R. Yu et al., "Hollow-Core Photonic Crystal Fiber Gas Sensing," Sensors, vol. 20, no. 10, p. 2996, May 2020, doi: 10.3390/s20102996
+
+
+
+Several applications, different domains
+? Telecommunications
+- No other transmission media can provide the capacities allowed by optical fibers
+- From transoceanic links to the last mile or fiber-to-the-premises (FTTx - antenna, cabinet, room, etc) passing through intra and inter datacenter connectivity systems
+? Sensing
+- Oceanography (measuring earthquakes, monitoring climate change), proactive network failure detection, road traffic monitoring, spectroscopy...
+? Other: light diffusion (illumination), medical applications, war, etc.
+
+
+'Beyond telecommunications'. https://spie.org/news/photonics-focus/septoct-2021/fiber-optic-cables-enable-deep-ocean-science (accessed Dec. 14, 2021).
+F. Boitier et al., "Proactive Fiber Damage Detection in Real-time Coherent Receiver," 2017 European Conference on Optical Communication (ECOC), 2017.
+S. Logunov et al., "Light diffusing optical fiber for Illumination," in Renewable Energy and the Environment, OSA Technical Digest (Optical Society of America, 2013), paper DT3E.4.
+
+
+
+ 
+Stimulated emissions
+
+IBM's cryogenically cooled laser
+
+The first optical communications enablers
+? 1900: Planck, relationship between discretized chunks of energy (quanta) and radiation frequency
+? 1905: Einstein, light also delivers energy in chunks (photons)
+? 1917: from spontaneous to stimulated emissions (Einstein)
+? 1950's: PIN & avalanche photodiodes (Nishizawa)
+? 1957/58: masers proven to operate in the optical/infrared, "LASER" acronym
+? 1960: Maiman's laser: synthetic ruby + silver-coated ends (Fabry-Perot resonator)
+
+Maiman and his
+ruby laser
+
+Quantun-dot DML, ANR DIQDOT project
+
+
+
+Charles K. Kao, father of fiber optics
+? 
+1962: first (cryogenically cooled), semiconductor laser (GE, IBM and MIT)
+? 1966: 1000 dB/km in glass (5-10 dB/km in coaxial cables) due to impurities that could be removed (Kao and Hockham)
+? 1970: first "usable" fibers with ~20 dB/km attenuation (Corning)
+? Many Nobel prizes: Bohr, Planck, Einstein, Raman, Schrödinger, Kao...
+
+
+
+
+
+100000
+10000
+1000
+100
+10
+1
+0.1
+0.01
+0.001
+0.0001
+
+
+
+" 1G "
+Multimode
+fibers
+
+
+
+" 2G "
+Monomode
+fibers
+
+
+
+
+
+
+" 3G "
+Amplification, dispersion management & wavelength division multiplexing
+
+
+
+
+
+
+" 4G "
+Coherent detection and digital signal processing
+
+1975	1980	1985	1990	1995	2000	2005	2010	2015
+Year
+
+
+
+
+
+
+
+
+
+
+Optical Communication: Its History and Recent Progress https://link.springer.com/chapter/10.1007/978-3-319-31903-2_8
+
+
+
+
+Submarine (international)
+
+
+Core (national)
+
+
+
+
+Metro-core
+
+
+Metro-access
+
+
+Passive Optical LAN (POL)
+
+
+Fiber-to-the-room
+(FTTR)
+
+
+
+
+
+Access
+
+
+ 
+
+
+
+Intra-datacenter networks
+
+
+
+
+
+< ~1 km
+
+
+
+
+
+
+
+
+
+
+
+	
+
+Lionix's optical beamsteering devices for 5G applications
+
+
+
+An minimum mean squared error (MMSE) feed-forward equalizer (FFE) predistorted non return to zero (NRZ) signal ready for transmission
+
+
+
+
+Alice and Bob are archetypes often used in quantum cryptography. Image from Physics World
+
+Where do we go from here?
+? >10 Pb/s already achieved over 13 km
+? 2020 NTT's IOWN (Innovative Optical and Wireless Network) initiative for future communications infrastructures using cutting-edge technologies like photonics and computing technologies
+? Hand-to-hand with wireless technologies: optical beam- steering, mmW frequency conversions, free-space optics
+? Hand-to-hand with the cloud: network abstraction, and
+virtualization
+? Hand-to-hand with signal processing and electronics
+? Hand-to-hand with quantum cryptography and computing
+
+
+
+
+
+
+
+Vendor-agnostic, intent-driven PON optimization @ IMT Atlantique
+L. Inglés et al., "Experimental Demonstration of Demand-Driven PON Configuration for Fixed-Mobile Convergence," ECOC 25
+L. Inglés et al., "PON Physical Twin: Enabling Third-party Research on FTTH Optimization with Open Datasets," ECOC 25
+L. Inglés et al., "AI Learns G-PON: Toward Adaptive T-CONT Configuration for Fixed-mobile Convergence," OFC 26
+L. Inglés et al., "Autonomous Intent-driven Optimization of PONs: A Vendor-agnostic DRL Demonstration ," OFC 26
+
+
+
+Some COTS optical transceivers
+
+
+
+
+
+
+
+
+               CHAPTER 2 LIGHT PROPAGATION, GEOMETRICAL APPROACH
+
+
+
+
+
+
+cladding
+    core Coating/
+strength member/
+outer jacket
+
+Step-index (SI) fibre
+
+Multi-mode SI fiber
+
+
+
+
+
+??
+?? =
+??
+
+cross-section
+
+
+
+
+??
+??	??
+ refractive index profile
+
+light path
+
+
+
+
+
+
+
+
+https://www.flowvis.org/2013/05/09/total-internal-
+reflection-in-a-water-stream-traps-three-lasers/
+
+
+
+? Core radius >> light ?
+? Refraction ("light bending"), reflection
+? Total internal reflection:
+Snell-Descartes law
+? Geometry insight & symmetries
+
+
+
+? Air-core interface:
+
+???????? sin
+
+= ??1 sin
+
+
+Multi-mode SI fibre
+? 
+Core-cladding interface:
+
+??1 sin
+
+= ??2 sin
+
+
+
+ light source
+
+
+
+? Total internal reflection if:
+
+???? = ??????sin
+
+
+
+= ????,
+
+
+? Numerical aperture (NA) & relative refractive index ?:
+
+?? - ??
+
+
+
+light path
+
+???? =
+
+?= 	1	2
+??1
+
+??1 > ??2
+? 
+NA: coupling of light into the fiber ? ? but ? multipath
+(intermodal) dispersion
+
+Multi-mode SI fibre
+? 
+Insight on the effects of modal dispersion (ray approximation)
+- Shortest & longest paths
+
+
+- Propagation delay difference
+
+
+
+
+
+L
+0	1	1	0	0	1	0	1	0	0
+- 
+Supposing an NRZ signal
+
+?? ????????/??	???? <
+
+- Conservative assumption
+
+
+
+????2
+
+??2?
+
+• Skew (helical) rays scatter out of the core (bends, irregularities)
+• Oblique meridional rays: more attenuation than paraxial rays
+? How to reduce intermodal dispersion?
+
+Graded-index (GI) fibre
+
+
+
+
+
+
+??
+??	??
+
+Multi-mode GI fiber
+
+
+? Change n(r) ? ray velocity changes; shortest path ? slowest (highest index) and inversely
+? B ? L ~ 1010 bit/s ? km for n1 = 1.5 and ? = 10-2 and an optimal ? = 1.98 (demonstration not provided here)
+? Higher B ? L only with single-mode fibers (SMF) ? ?? ? ?
+
+
+
+* Propagation
+* ??»??: Snell-Descartes law, geometric light propagation P
+
+
+Ø125-400 µm
+Transversal cut
+
+
+Refraction index
+
+
+Longitudinal cut
+P
+
+???? sin
+
+= ???? sin
+t	t
+
+* Light confinement condition
+???? > ????
+
+
+Modal
+P	dispersion
+
+
+
+t
+P
+
+t
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TAF STAR/TOPT
+
+
+
+
+
+
+               CHAPTER 3 LIGHT PROPAGATION, ELECTROMAGNETIC  WAVE
+APPROACH
+
+
+
+? Light is (also) a wave, wave front analysis (sinusoidal ? to ray, same phase)
+? Intuition: interference pattern
+? Standing waves, only specific incident angles (modes) within the acceptance cone can propagate
+? Depends on refractive indices, light wavelength, core radius and shift ?? up reflection (Goos-Handschen)
+? Evanescent field in the cladding (core- cladding continuity)
+
+
+Multi-mode SI fibre
+
+Characteristic intensity (or field) transverse profile
+
+
+
+https://skullsinthestars.com/2016/02/11/hilda-hanchen-and-the-goos-hanchen-effect/
+
+
+
+Divergence and curl: the
+? 
+Gradient: change of a scalar field ??; points towards the direction of its highest variation ? vector field
+? Curl: tendency of a vector field ?? to rotate around an axis ? vector field
+? Divergence: how much a vector field ?? tends to flow out of or towards small
+regions near a point; energy source or sink ? scalar field
+? Laplacian: shows peaks and valleys of the scalar field ??; second derivative of the function ? scalar field (can also act on a vector field ?? and return a vector field)
+
+
+
+
+
+
+CHAPTER 3: ELECTROMAGNETIC WAVE APPROACH	28
+3.3 Maxwell's equations
+
+? Maxwell's equations govern propagation of optical fields in fibers
+
+?? = (?, ?, ??)
+???? ??, ??
+
+- ??/??, ??/?? : electric/magnetic field vectors, electric/magnetic
+flux densities
+- ?? and ?? are the space and time variables (4D)
+
+? × ?? ??, ??	= -
+
+? × ?? ??, ??	= ?? +
+
+????
+???? ??, ??
+????
+
+- ?? and ???? are the current density vector and charge density but are null (nonconducting medium with no free charges)
+- ??0, ??0: vacuum permittivity and permeability
+- ?? and ??: induced electric and magnetic polarizations, ?? = ??
+for optical fibers (silica is non-magnetic)
+- ?? has both linear and nonlinear components, here we will not include fibre birefringence (core shape variations, local strain)
+
+? · ?? ??, ??	= ????
+? · ?? ??, ??	= 0
+
+
+
+??	??
+
+
+CHAPTER 3: ELECTROMAGNETIC WAVE APPROACH	29
+3.3 Maxwell's equations
+
+? Macroscopic phenomenological relation can be assumed for optical fibers with ?'s between 0.5 and 2 µm (telecom channels), with ??(1) the is 1st order (linear) susceptibility:
+
+?? = (?, ?, ??)
+???? ??, ??
+? × ?? ??, ??	= -
+????
+???? ??, ??
+
+8
+?? ??, ??	= ?
+
+??(1) ??, ?? - ??' ?? ??, ??' ????' + ?????? ??, ??
+
+? × ?? ??, ??	=
+
+????
+
+-8
+
+? Maxwell's equations read:
+- Rotation of electric/magnetic field ? time variation of magnetic/electric flux
+- No electric/magnetic field sources or sinks
+? It's easy to demonstrate that:
+
+? · ?? ??, ??	= 0
+? · ?? ??, ??	= 0
+
+
+
+
+
+
+
+? × ? × ??
+
+1
+= - ??2
+
+??2??
+????2	- ??0
+
+??2??
+
+????2
+
+
+
+
+? × ? × ??
+
+1
+= - ??2
+
+??2??
+????2	- ??0
+
+??2??
+????2
+ 
+Generic formalism, not yet fully adapted to our transmission
+
+? Evolution of an electromagnetic field in both time and space
+? What will actually qualify a transmission through an optical fiber?
+- Its boundary conditions
+- Initial conditions (transmitted signal/pulse profile)
+? Questions we need to ask ourselves
+- What simplifications can be applied (for instance in case of a SI fiber)?
+
+medium
+
+
+- Is it possible to isolate a particular propagation phenomenon to simplify the analysis?
+- What mathematical and/or numerical tools exist to help us to solve such equations?
+
+
+
+? Now it's a good time to enjoy this video by Grant Sanderson
+? Feynman lectures: https://www.feynmanlectures.calte ch.edu/
+
+
+
+Heat Equation
+? Temperature evolution in a certain medium (1D space here)
+? Spatial Fourier transform method:
+- ?? is for ?? in a spatial Fourier transform what ?? is for ?? in a time Fourier transform
+- Simplifies solution to ordinary differential equation
+
+????(??, ??)
+-
+????
+
+??
+
+??????(??, ??)
+??????	= ??
+
+??? (??, ??)
+
+????? (??, ??) + ??2??? (??, ??) = 0
+????
+
+
+???
+
+??, ??	= ??? (??, ??0
+
+)??-????2
+
+
+F	× ??-????2	F-1
+
+
+
+??	??? (??, ??0)
+
+??? (??, ??)	??
+
+
+
+D'Alembert's PDE
+? 1D space wave propagation: string instruments
+(guitars, pianos, etc)
+
+??????(??, ??)
+???? 	-
+??????
+
+??????(??, ??)
+
+??????
+
+
+= ??
+
+? Solve second order PDE: separation of
+
+??	= ??
+
+??(??)
+
+= 2????
+
+Klein-Gordon PDE
+? Add dispersive (frequency-selective) term to
+
+??????(??, ??)
+???? 	-
+??????
+
+??????(??, ??)
+
+??????
+
+
+= ????(??, ??)
+
+d'Alembert PDE
+? Plane progressive harmonic (PPH) wave:
+- ?? angular wavenumber or spatial frequency, ??
+wavelength, ?? pulsation or angular frequency,
+?? period and ?? frequency
+
+??
+
+?? =
+
+= ??+ cos
+2??
+,	?? =
+??
+
+
+
+2??
+= 2????
+??
+???? « ??0
+
+? Dispersion relation: ?? = ??(??)
+? Propagating, evanescent and divergent solutions
+
+??2 - ??2
+?? =
+??2
+
+
+??0	??
+
+? Solution: product of a PPH wave moving at phase velocity (carrier) and a slower envelope (information) moving at group velocity
+
+??	= ??(0, ??)?????? ?? ??
+
+
+
+
+? × ? × ??
+
+1
+= - ??2
+
+??2??
+????2	- ??0
+
+??2??
+
+????2
+
+
+? Bottom line is that you already have all the needed tools to solve the fiber propagation PDE
+- Space or time Fourier transforms
+- Separation of variables
+- Taylor series development
+- Typical solutions (for instance ??????(??))
+- Boundary conditions (continuity of fields at interfaces) and initial conditions
+- Guided modes, standing waves
+- Assume only physically feasible solutions
+
+
+
+? Let's try to make this PDE simpler
+1. Simplifications:
+
+
+? × ? × ??
+
+1
+= - ??2
+
+??2??
+????2	- ??0
+
+??2??
+
+????2
+
+- Unchanged transverse profiles along propagation axis
+- No energy outside cladding (only core-cladding boundary is considered)
+- Ignore the nonlinear contribution of ??	(nonlinear propagation effects)
+
+2. Switch to frequency domain (time Fourier transform):
+
+???
+
+??, ??	= ?8 
+
+????????????
+
+
+
+??	= ??
+
+
+
+?? not related to spatial terms
+
+? × ? × ???
+
+
+??, ??
+
+??2
+
+
+??2
+
+??2
+??2 ??
+
+Fourier transform of second order
+
+Fourier transform
+
+??2 ?	?
+
+time derivative
+
+of a convolution
+
+??2 ??
+
+??(1)
+
+1 ??2??
+
+??2??	?	2 ?
+
+? × ? × ??
+
+= - ??2
+
+????2	- ??0
+
+????2	? × ? × ??
+
+- ??
+?
+
+??	= 0
+2
+
+??	= 1 + ??(1)	=
+
+
+3. Define ??	= ??(??, ??) the dielectric constant, related to the refractive index ?? and the
+absorption coefficient ?? (fiber attenuation). Both ?? and ?? are frequency dependent and the former will later relate to dispersion
+4. Simplifications:
+- Temporarily ignore the attenuation component ??
+- Index changes in space occur over a length scale » ??, ??	varies slowly. We can set
+
+? · ???
+
+??, ??	= 0, by recalling that ? · ???
+
+??, ??	= 0 and approximating ???
+
+??, ??	= ?????
+
+??, ?? :
+
+
+
+? × ? × ???
+
+??, ??	= ?
+
+- ????
+
+??, ??	= -????
+
+??, ??
+
+
+5. Thus
+
+with ??0 the free-space wavenumber and ?? the vacuum wavelength of the optical field
+
+6. Take advantage of the fibre cylindrical symmetry:
+
+
+? Optical mode
+- Solution that satisfies a boundary condition and has a certain spatial distribution
+- Guided (signal transmission), leaky or radiation (power transfer) modes
+
+
+
+
+
+
+
+
+
+
+
+
+1 ??
+
+?? ????
+
+1  ??2???
++
+??2
+
+??, ??, ??, ??
+????2
+
+??2???
++
+2??
+
+??, ??, ??, ??
+????2
+??
+
+
+= -??
+
+2 ??0
+
+??0
+
+=	=
+??	??
+
+Maxwell's equations hold, ??(??, ??) ? ??(??, ??): only 2 of 6 spatial components need to be solved, the axial components ????? and ????? of the field vector are usually chosen:
+
+
+
+1 ??
+
+
+
+1 ??2???
++
+
+??2?????
++
+
+
+= -??
+
+2 ??0
+
+2?????
+
+?? ????
+
+??2
+
+????2
+
+????2
+
+
+? Solve the equation reflecting physical symmetries:
+
+- separation of variables ?????
+equations provide a solution:
+
+= ?	T
+
+??	????.The following set of ordinary differential
+
+
+
+??2??(??, ??)
+
+
+????2
+
+
++ ??(??)2??(??, ??) = 0
+
+
+? ??
+
+
+= ??±???? ?? ??
+
+
+longitudinal
+
+
+
+??2?(??, ??)
+
+
+
+
+1 ???(??, ??)
+
+??2T(??, ??)
+
+
+????2
+
+
++ ??2T
+
+
+= 0	? T(??, ??) = ??±??????
+
+
+azimuthal
+
+????2
+
++ ??
+
+????	+
+
+?	= 0 ? ?
+
+= ?	radial
+
+
+with ??	the propagation constant, which appears naturally as a separation constant associated with
+translational invariance along the fiber and ?? ? Z to allow 2?? periodicity in ?? (cylindrical symm.)
+
+
+
+? Azimuthal component:
+- For ?? = 0, no azimuthal variation, field is only a function of ??
+- Mode degeneracy: for ?? ? 0, both:
+
+??2T(??, ??)
+
+????2
+
+
++ ??2T
+
+
+= 0 ? T(??, ??) = ??
+
+
+±??????
+
+cos(????) and ??????(????) provide a solution with the same properties (propagation constant)
+- Actually, we'll see that even for ?? = 0, a two-fold degeneracy occurs due to different polarizations (??, ??)
+- For ?? ? 0, we'll have a four-fold degeneracy (??, ?? polarizations, cos, ??????)
+
+?? = 0
+Azimuth contribution
+for a certain ??
+
+
+
+
+
+
+?? = 1
+Azimuth contribution
+for a certain ??
+
+
+
+
+
+
+
+
+
+Find solutions for ?(??, ??): Bessel functions
+
+
+??2?(??, ??)
++
+????2
+
+1 ???(??, ??)
++
+??	????
+
+
+
+??2, -??2
+
+
+?	= 0
+
+Different solutions for core and cladding:
+
+
+??1????
+
++ ??2????
+
+,	?? = ??
+
+??2 = ??1(??)2??0	2 - ??(??)2
+
+?	= ?
+??3????
+
++ ??4????
+
+,	?? > ??
+
+??2 = ??(??)2 - ??2(??)2
+
+??0	2
+
+
+Where ????	, ????	, ????	, ????	are different kinds of Bessel functions and ??1-4 are
+constants found by applying the fiber boundary conditions
+
+CHAPTER 3: ELECTROMAGNETIC WAVE APPROACH	43
+3.5 Fibre modes (SI fibres)
+
+
+? Radial
+component (contd.)
+? For core propagation with field decaying in the cladding, choose ???? ????
+and ????
+
+
+https://docs.scipy.org/doc/scipy/ref
+erence/special.html
+
+
+
+TAF STAR/TOPT
+
+
+ Bessel function of the first kind
+
+
+
+Core
+    Modified Bessel function of the first kind
+
+
+
+Cladding
+
+
+Bessel function of the second kind
+
+
+
+
+
+Modified Bessel function of the second kind
+
+
+? Radial component (contd.)
+Apply boundary conditions and search for physically meaningful solutions, no singularities at
+?? = 0 and solution should oscillate inside core and decay exponentially at cladding for ?? ? 8
+
+
+??2?(??, ??)
++
+
+1 ???(??, ??)
++
+
+
+?	= 0
+
+????2	??	????
+
+
+??1
+
+2??0
+
+2 - ??
+
+2 > 0
+
+??2
+
+2??0
+
+2 - ??
+
+2 < 0
+
+inside core oscillating
+
+
+??2
+
+
+< ???????? < ??1
+??
+???????? =
+   
+inside cladding decaying (evanescent)
+
+Bessel's differential
+equation
+
+with ???????? the effective refractive index of the mode.
+
+
+? Some comments
+- For each value of ?? (azimuth term), several solutions ?? (radial term) may exist, each of
+which are associated to a propagation constant ?????? of a specific mode.
+- In the geometrical optics, pulse broadening was attributed to different paths followed by different rays. In the electromagnetic description, it is related to the different mode propagation constants or effective refraction indices ???????? associated with different modes.
+? About fiber modes
+- Hybrid modes: ?????, ??? ?? ? 0, ???????? or ???????? depending on whether ??? ?? or ????? dominates
+- ?? = 0, ????0?? or ????0?? are also denoted ????0?? and ????0?? (transverse electric, ????? = ?? and
+transverse magnetic, ??? ?? = ??)
+
+
+? Modes assessment ????????, ????????,
+????0?? , ????0?? (????0?? or ????0?? )
+- The parameter ?? (radial term) gives the number of dark rings (or zero crossings) = ?? - 1,
+- The ?? parameter (azimuth term) gives rise to a "flower" pattern (polar plot of cos or sin)
+- ?? = 0 (TE, TM) corresponds to meridional rays and ?? > 0 (HE,
+EH) to skew rays
+
+
+https://www.youtube.com/watch?v=T55ZTdzY13s&list=P LroRX0g9yBcDR-ZoShmYfdrkyq1mHDxlz&index=8
+
+
+
+? Final solution (at last!)
+
+?
+
+
+
+??1????
+
+
+
+???? ?? ?? ??+???? ,	?? = ??
+
+????
+
+= ?	T	??
+
+= ?
+??3
+
+????
+
+???? ?? ?? ??+???? ,	?? > ??
+
+?	??1'????
+
+???? ?? ?? ??+???? ,	?? = ??
+
+????
+
+= ?	T	??
+
+= ?
+??3
+
+'????
+
+???? ?? ?? ??+???? ,	?? > ??
+
+
+
+- ???
+
+, ????
+
+, ???
+
+, ???
+
+can be derived from ????? and ????? and
+
+from Maxwell's equations
+- ??1,3 and ??1,3' can be found by imposing the continuity at the core-cladding interface, we
+
+can find ??
+
+numerically for a set of ??0, ??1, ??2 and ??.
+
+
+
+? When imposing core-cladding interface continuity, some helpful parameters can be defined:
+- Normalized frequency: helps identify when a mode ceases to be guided (number of propagating modes also depends on the wavelength!)
+
+
+??2 = ??2??2
+
+2
+~2?
+
+
+
+
+- Normalized propagation constant
+
+
+
+
+?? =
+
+
+
+ ??
+??0
+
+
+
+- ??2
+
+
+
+???????? - ??2
+=
+
+??1 - ??2	??1 - ??2
+
+X. Lian, G. Farrell, Q. Wu, W. Han, F. Wei, and Y. Semenova, "Mode Transition in Conventional Step- Index Optical Fibers," 2019 18th
+International Conference on Optical Communications and Networks (ICOCN). IEEE, Aug. 2019. doi: 10.1109/icocn.2019.8
+934113.
+
+
+
+? How many modes for ?? = 5?
+? What's the cutoff condition for single-mode operation?
+? What is the fundamental mode?
+? Core radius for single-mode operation in the 1.2-1.6µm range with ??1 = 1.45 and ? = 5 × 10-3?
+? Single-mode fiber: no modal dispersion
+? Multi(few)-mode fibers have been used lately to increase channel capacity in SDM transmissions thanks to DSP
+
+
+? Weakly guiding approximation
+- If ??1 ? ??2, modes are nearly transverse
+- Sum of modes with similar propagation constants gives rise to ???????? (linearly polarized) modes
+- Scalar wave approximation for the wave equation
+- Arbitrary state of polarization (?? or ??- polarized) with the same propagation constants (polarization degeneracy)
+
+
+
+
+
+
+
+
+
+
+
+
+
+Horizontal polar.
+
+Electrical field distribution of the modes
+
+
+
+
+
+
+
+
+
+
+
+
+
+Vertical polar.
+
+- More energy propagating inside cladding
+
+https://www.youtube.com/watch?v=T55ZTdzY13s&list=P LroRX0g9yBcDR-ZoShmYfdrkyq1mHDxlz&index=8
+
+
+
+
+Horizontal polar.
+
+What combination to create the 4th degenerate LP11 mode?
+
+
+
+? Weakly guiding approximation
+- If ??1 ? ??2, modes are nearly transverse
+- Sum of modes with similar propagation constants gives rise to ???????? (linearly polarized) modes
+- Scalar wave approximation for the wave equation
+- Arbitrary state of polarization (?? or ??- polarized) with the same propagation constants (polarization degeneracy)
+- More energy propagating inside cladding (y-axis of the b vs V plot)
+
+https://www.youtube.com/watch?v=T55ZTdzY13s&list=P LroRX0g9yBcDR-ZoShmYfdrkyq1mHDxlz&index=8
+
+TAF STAR/TOPT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+?? = ??0??
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2??
+~ ?? ????1
+
+
+
+
+
+
+
+??1
+
+
+
+
+
+
+
+??2
+
+
+? Single mode fiber will carry ????01, which has an approximately Gaussian mode field
+? The exact vector fields (????????) ? scalar fields (????????) approx. also holds for higher order
+modes if ?« 1.
+
+
+
+
+     Ping Zhu, Rana Jafari, Travis Jones, and Rick Trebino, "Complete measurement of spatiotemporally complex multi-spatial-mode ultrashort pulses from multimode optical fibers using delay-scanned wavelength- multiplexed holography," Opt. Express 25, 24015-24032 (2017)
+
+
+
+Paristech.institutoptique.fr. [Online]. Available: http://paristech.institutoptique.fr/site.php?id=69&fileid=7208. [Accessed: 04- Jan- 2022]
+
+
+? Python ofiber,?? = 8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHAPTER 4
+ENVELOPE PROPAGATION
+
+
+? In real optical communications, we send pulses, not monochromatic waves
+? Let's assume:
+
+- Single-mode propagation: fixed transverse field distribution
+- Narrowband optical field: pulse spectrum, centered at ??0, with spectral width ???? « ??0, superposition of frequencies
+
+? Recall we solved:
+
+???? « ??0
+
+
+??0	??
+
+
+? × ? × ??
+
+1
+= - ??2
+
+??2?? ??, ??
+????2	- ??0
+
+??2 ????  ??, ??
+????2
+
+
+
+? To get:
+?
+
+??1????
+
+???? ?? ?? ??+???? ,	?? = ??
+
+????
+
+= ?	T	??
+
+= ?
+??3
+
+????
+
+???? ?? ?? ??+???? ,	?? > ??
+
+
+? Demonstration of the solution for the narrowband case is beyond our scope today but involves:
+? Slowly-varying envelope approach:
+- Optical carrier, related to the phase velocity, oscillate extremely fast (hundreds of THz)
+- Information/energy envelope (modulating signal), related to the group velocity, evolves much slower
+
+
+??~??(??, ??)???? ??0??-??0??
+
+Wikipedia
+
+
+? Approximation of the propagation constant ??(??) (dispersion) in the vicinities of ??0 (Taylor series)
+
+
+
+???? =
+
+
+??=??0
+
+,	?? = 0,1,2, . . .
+
+
+? Conversion of frequencies into time-derivatives, addition of attenuation,
+
+adding nonlinear term ??????
+Maxwell's equation...
+
+of induced electric polarizations to
+
+? Under these assumptions, Maxwell's equations reduce to the generalized nonlinear Schrödinger's eq.:
+
+
+
+????(??, ??)
+=
+????
+
+????(??, ??)
+-
+2
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+Group velocity
+
+Group velocity dispersion
+
+Attenuation	Nonlinear Kerr effect
+
+
+
+? We can
+
+????
+
+1
+= ??
+
+(GVD) parameter
+??2??
+??2 = - 2????
+
+Third-order dispersion (TOD)
+
+?? = - ??2??0
+??????????
+
+- Ignore ??0, fast variations of the carrier; phase velocity
+- Change our referential so that it moves at group velocity (with the information envelope)
+
+
+????(??, ??)
+
+
+
+????2 ??2??(??, ??)
+= -	+
+
+??3 ??3??(??, ??)
+-
+
+????(??, ??)
+
+
+
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+????
+
+2	????2
+
+3	????3	2
+
+????(??, ??)
+
+
+????
+? Chromatic dispersion
+
+= - ????2
+2
+
+??2??(??, ??)
+????2	+
+
+??3 3
+
+??3??(??, ??)
+????3	-
+
+????(??, ??) 2
+
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+????2
+
+2nd order partial differential equation; equivalent to heat equation ? solution using the Fourier transform method!
+
+- Group velocity depends on the color/frequency of the light
+- 2 contributions:
+
+??2 = - 2????
+
+• Material: silica refraction index is frequency dependent (Sellmeier eq.)
+• Waveguide: fiber parameters (geometry, indices...)
+- Different fibers, different dispersions ??(??)
+
+??????
+
+- ?? < ??????: normal regime, ??2 > 0
+
+, high frequencies propagate slower,
+
+- ?? > ?????? : anomalous regime, ??2 < 0 (?? > 0), low frequencies propagate slower
+
+- Pulse distortion upon direct detection by a photodiode ??????
+
+? ??(??, ??) 2
+
+Wavelength (µm)
+
+
+	  	 
+
+
+? Example of the dispersion of a legacy submarine link
+? What kind of fibers have been used to provide for such variation?
+
+
+2000
+
+
+1600
+
+
+1200
+
+
+800
+
+
+400
+
+
+0
+0	100	200	300	400	500	600	700	800
+Equivalent distance (km)
+
+
+
+
+
+????(??, ??)
+
+
+
+????2 ??2??(??, ??)
+= -	+
+
+??3 ??3??(??, ??)
+-
+
+????(??, ??)
+
+
+
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+????
+
+2	????2
+
+3	????3	2
+
+
+
+? ß3 is the slope of the dispersion curve (first derivative)
+? Some situations in which the third term may be important
+- When near zero-dispersion: ß3 is then the strongest contribution of the series
+- For ultra-short pulses (Tb < 1 ps): the truncation of the series in no longer justifiable
+- WDM systems
+
+
+? In real-life fibers, different index of refraction for each orthogonally polarized component ? fiber birefringence
+- Variations of the shape of the core along the fiber length, mechanical stress, temperature, wavelength, in-line equipment: amplifiers, add & drop multiplexers...
+- In chapter 3: "For ideal SI fibers, ??	does not vary in space. (...)";
+
+we assumed an isotropic scalar refractive index and neglected birefringence
+? Degeneracy between orthogonally polarized modes is broken
+- Periodic power exchange between components ? loss of linear polarization
+- Fast vs slow axes: components no longer propagate at the same
+(group) velocity ? differential group delay (DGD)
+
+
+
+
+
+
+Agrawal, G. P. (2002). Fiber-optic communication systems (3rd ed.). John Wiley & Sons
+
+
+? PMD: vector with module = DGD that constantly moves in the Poincaré Sphere (geometrical representation of the state of polarization)
+? Birefringence changes randomly (typical fiber: 15 ps DGD on average, instantaneous > 52 ps during 5 minutes/year)
+? As dangerous as the energy distribution between one mode and its
+reciprocal is equilibrated
+? Polarization-maintaining fibers: large birefringence so that random fluctuations become negligible
+? Pulse broadening: complex to analyze (statistical); fiber = infinitesimal slices with constant birefringence ? root-mean-square average over random birefringence changes
+
+????(??, ??)
+
+
+
+????2 ??2??(??, ??)
+= -	+
+
+??3 ??3??(??, ??)
+-
+
+????(??, ??)
+
+
+
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+????
+
+2	????2
+
+3	????3	2
+
+Simplifies to
+
+????
+= -???? ? ??
+
+= ??
+
+??-????
+
+Optical fiber fabricated in 1979
+
+ordinary differential
+equation
+
+? ?? often expressed in dB/km
+
+
+
+????
+
+??????
+
+????
+
+? Material absorption: electrical and vibrational resonances of
+molecules
+- Intrinsic: inherent to the material (infrared and ultraviolet)
+- Extrinsic: related to the impurities generated during fabrication process (metals, water vapor - OH- peak)
+? Rayleigh diffusion: microscopic fluctuations in the density of the material ? ??-4
+? Waveguide imperfections: core/cladding, bending, axial distortions (micro curvatures)
+
+
+
+
+????(??, ??)
+
+
+
+????2 ??2??(??, ??)
+= -	+
+
+??3 ??3??(??, ??)
+-
+
+????(??, ??)
+
+
+
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+????
+??
+
+2	????2
+= ??
+
+3
+?????????? ??,??
+
+????3
+
+?? =
+
+2
+2????2
+
+
+
+
+??2
+
+
+
+is not the cladding index of the fiber but the
+2
+
+??????
+
+= ?? ??
+
+2??
+
+??????????
+
+nonlinear Kerr coefficient, in cm /W
+
+
+
+? Kerr effect: the response of any dielectric material becomes nonlinear for intense electromagnetic
+fields (refractive index variation)
+? Intensity dependent self-induced nonlinear phase modulation (SPM)
+? Leads to spectral broadening of the optical pulses as a consequence of the time-dependence of ?NL
+? By intense, read: P/Aeff ratio: how could we limit the impacts of nonlinear effects only by changing the
+size of the core of the fiber? Would it cause any problems in terms of dispersion?
+
+
+????(??, ??)
+
+
+
+
+????2 ??2??(??, ??)
+= -	+
+
+
+??3 ??3??(??, ??)
+-
+
+
+????(??, ??)
+
+
+
+
+
++ ???? ??(??, ??)2 ??(??, ??)
+
+????
+
+????  ????
+
+????
+
+2	????2
+
+3	????3	2
+
+??0
+
+??1
+
+??2
+
+
+? Two or more channels
+? XPM
+- The nonlinear phase shift of a channel depends not only on the power of that channel but also on the power of other channels; stronger than SPM alone
+? FWM
+- Intermodulation products of 3 wavelengths can be troublesome if matched in phase (near ??????)
+- Overall effects: energy transfer between channels and interchannel cross-talk
+- FWM can also be useful: for example in wavelength conversion & generation
+
+
+
+Hillerkuss, D., Schmogrow, R., Schellinger, T. et al. 26 Tbit s-1 line-rate super-channel transmission utilizing all- optical fast Fourier transform processing. Nature Photon 5, 364-371 (2011). https://doi.org/10.1038/nphoton.2011.74
+
+
+
+? 2 main sources of nonlinear phenomena:
+- Non-linear Phase Modulation: Kerr Effect (included in Shrödinger's equation)
+• SPM, XPM, FWM
+- Stimulated light scattering (not included in Shrödinger's equation)
+• Other effects arise from delayed and inelastic material responses and are not captured by the instantaneous Kerr nonlinearity used to derive the NLSE used in this chapter
+• Scattering of a photon to a lower energy photon: energy difference appears in the form of a phonon (collective excitation of atoms or molecules)
+• Stimulated Raman Scattering (SRS): optical phonons
+• Stimulated Brillouin Scattering (SBS): acoustic phonons
+• Overall effect: loss of power at the incident frequency, gain on other frequencies
+
+
+
+? SRS
+- Pump wave is scattered by the silica molecules
+- Some pump photons give up their energy to lower-energy photons and the remaining energy is absorbed by silica molecules
+- Silica molecules vibrate
+- Occurs in all directions (contrary to SBS)
+- Scattered wave is shifted in frequency
+- Beating between pump and scattered wave in both directions continues to stimulate molecular oscillations: positive feedback
+- Can shift the scattered wavelength by up to dozens of THz (depends on the decay time of the vibrating molecules)
+- Threshold incident power
+
+
+
+
+
+
+
+
+
+
+
+
+G. Simon et al., "Raman scattering impairments caused by 50G-PON introduction and mitigation techniques," in Journal of Optical Communications and Networking, vol. 17, no. 1, pp. 47-57, January 2025
+G. Simon et al., "Quantification of Stimulated Raman Scattering Penalties Induced by Very High Speed PON in Quadruple Coexistence," 2025 Optical Fiber Communications Conference and Exhibition (OFC), San Francisco, CA, USA, 2025, pp. 1-3.
+
+
+? SBS
+- Electrostriction: tendency of materials to become compressed in the presence of an electric field
+- An incident optical pulsing wave (CW, pump) generates an
+acoustic wave at the opposite direction from the channel
+- Results in the change of the optical pulse frequency
+- The beating between the scattered wave and the pump increases the acoustic wave amplitude: positive feedback
+- All power of the pump can be transferred to the scattered wave
+- The scattered light is shifted by about 10 GHz
+- Threshold launched power should not be exceeded
+- The same effect is expected for a high bit-rate modulated signal, but with a higher threshold power
+
+
+
+
+
+
+
+
+
+CHAPTER 5
+CONCLUSIONS
+
+
+
+
+
+
+
+
+
+
+Geometrical optics (?? « ??)
+- Light described as rays, Snell-Descartes law, numerical aperture and acceptance cone
+- Explains how light enters the fiber, cannot explain field distribution or dispersion
+
+Electromagnetic wave
+- Light described as a monochromatic wave, Maxwell's equations + boundary conditions
+- Discrete guided modes, each with a propagation constant ??(??). Modes are eigen-solutions selected by phase self- consistency
+- Fiber is a dispersive waveguide
+
+Pulse & envelope propagation (telecom)
+- Information carried by optical pulses
+- Fast carrier + slowly varying envelope
+- Dispersion from ??(??)
+- Nonlinearity from
+material response
+- The NLSE is a controlled reduction/simplification, not an ad-hoc model
+
+
+CHAPTER 5: CONCLUSIONS	73
+Key takeaways for telecommunications
+
+Limiting propagation effects
+- Dispersions: modal, polarization, chromatic, third order
+- Attenuation
+- Nonlinear effects: Kerr (SPM, XPM, FWM), stimulated scattering (Raman, Brillouin)
+
+Single-mode fibers
+- Attenuation: exponential power decrease
+- No modal dispersion
+- Chromatic dispersion: all-pass frequency-dependent phase-shift filter; upon direct detection, gives rise to a frequency-fading channel response
+- Low bit-rates, short links (< 100 km < several tens of Gb/s): PMD can be neglected
+- TOD: can be neglected unless near zero-dispersion ??
+- NLE: can be neglected for low injection powers (or large effective area fibers - LEAFs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+APPENDIX
+
+
+
+Different fiber types and associated ITU-T standards
+
+G.651.1 Characteristics of a 50/125 µm multimode graded index optical fibre cable for the optical access network07/07G.652 Characteristics of a single-mode optical fibre and cable06/05G.653 Characteristics of a dispersion-shifted single mode optical fibre and cable12/06G.654 Characteristics of a cut-off shifted single-mode fibre and cable12/06G.655 Characteristics of a non-zero dispersion shifted single-mode optical fibre and cable03/06G.656 Characteristics of a fibre and cable with non-zero dispersion for wideband optical transport12/06G.657 Characteristics of a bending loss insensitive single mode optical fibre and cable for the access network12/06G.Sup40 Optical fibre and cable Recommendations and standards guideline11/06
+
+
+
+
+
+
+
+
+
+
+? When connecting two optical fibers, the attenuation due to longitudinal, axial or angular misalignment should be reduced
+? Permanent (fusion-splicing; fuse both fibers by means of an electric arc) or non-permanent (connectors) connections
+? ˜ 0.5dB/connector, <0.1dB for a
+good fusion
+
+
+
+
+
+
+Flat
+< -30 dB
+
+
+PC
+Physical Contact
+< -35 dB
+
+
+		
+
+
+UPC
+Ultra Physical Contact
+< -55 dB
+
+APC
+Angled Physical Contact
+< -65 dB
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

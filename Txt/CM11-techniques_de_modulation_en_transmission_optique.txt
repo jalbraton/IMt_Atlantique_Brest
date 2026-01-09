@@ -1,0 +1,1440 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Techniques de modulation en
+transmission sur fibre optique
+
+
+Michel MORVAN Janvier 2021
+
+
+La fibre optique : une multiplication par 10 milliards en 40 ans du produit capacité X distance !!!
+
+100000
+
+10000
+
+1000
+
+100
+f.o.
+multimode
+1
+
+0,1
+
+0,01
+
+
+0,001
+
+0,0001
+
+
+
+Référence de l'unité en ordonnée : 250 Gbit/s.km
+
+1975	1980	1985	1990	1995	2000	2005	2010	2015
+Année
+
+
+
+
+
+
+
+
+
+
+Modulation " tout ou rien "	Modulation IQ
+
+
+
+
+
+
+
+Modulation directe	Modulation externe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+? Diodes électro-luminescentes (LED)
+• Puissance optique : 0.1 - 0.5 mW
+• Longueur d'onde : 850 - 1300 nm
+• Largeur spectrale : 50 - 150 nm
+• Débit max (DM): qqes centaines de Mbit/s
+??
+? Diodes laser multimodes (Fabry-Pérot, VCSEL)
+• Puissance optique : 1 - 10 mW
+• Longueur d'onde FP : 1300 - 1550 nm
+• Longueur d'onde VCSEL : 850 nm
+• Largeur de l'enveloppe spectrale : 2 - 10 nm
+• Débit max (DM): jusqu'à 10 Gbit/s
+??
+? Diodes laser monomodes (DFB, DBR)
+• Puissance optique : 1 - 10 mW
+• Longueur d'onde : 1300 - 1550 nm
+• Largeur spectrale : 0,1 - 0,5 pm
+• Débit max (DM): jusqu'à 10 Gbit/s
+??
+
+
+
+
+Signal optique émis
+
+
+
+
+
+Modulation externe
+
+
+Porteuse optique
+
+Signal optique émis = Porteuse optique modulée
+
+
+
+f
+Source optique
+continue
+
+f
+modulateur
+externe
+
+
+
+
+
+
+
+
+
+
+analogique
+  
+Signal modulant
+
+numérique
+
+
+
+
+
+
+directe
+
+
+ Mode de modulation
+
+externe
+
+directe
+
+
+ Mode de modulation
+
+externe
+
+
+
+
+
+	
+
+
+
+
+? Principe : modulation d'intensité d'une source optique par un signal électrique binaire.
+
+DL	PD
+
+
+
+
+
+? Modulation d'amplitude à deux états
+• Tout ou rien ou OOK : On-Off Keying
+? Détection de la puissance du signal reçu
+• Présence ou absence d'une impulsion optique
+
+
+
+
+
+DEL ou diode laser
+
+
++
+
+
+
+Fibre optique
+
+PIN ou APD
+
+
++
+
+
+
+
+I	Iph
+
+
+
+-	-
+
+Modulation d'intensité	Détection d'intensité
+
+
+? 	La détection directement par photodiode est une détection d'enveloppe qui n'autorise que les modulations d'intensité.
+? 	Les autres modulations nécessitent une architecture de récepteur plus complexe : interféromètrie ou détection cohérente (4G)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modulation directe
+
+
+
+? Le signal à transmettre est superposé au courant de polarisation du
+
+Poptique
+
+
+
+
+
+
+
+
+
+
+
+I0
+
+
+
+Pmax
+
+
+P0
+
+
+Pmin
+I
+
+laser.
+
+
+
+
+
+
+
+Signal binaire (bipolaire)
+
+
+Proportionnel à
+
+
+		
+
+
+
+
+
+
+I0
+
+Courant de polarisation
+
+Pm
++
+
+
+I=I0+Im
+
+_
+
+
+
+
+Le chirp : effet de la modulation directe des lasers
+
+
+
+
+
+Porteurs
+
+Intensité lumineuse
+
+t
+
+La densité de porteurs est modifiée par la modulation : [n] = f(t)
+? indice du SC n = f( t )
+? longueur d'onde ? =f( t ) C'est le phénomène de " chirp "
+
+
+
+
+
+
+
+ Chirp observé
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Spectre du signal optique émis	Diagrammes de l'œil
+Le chirp à l'émission détermine la dispersion chromatique maximale (en ps/nm) admissible sur la liaison.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modulation externe
+
+
+
+? On utilise un dispositif de modulation séparé de la source.
+• Avantages: modulation correcte de la porteuse optique
+• Inconvénients: plus complexe et plus coûteux (modulateurs + amplis drivers)
+? Technologies :
+• Architecture Mach-Zehnder sur LiNbO3 (historique) et désormais InP
+• Diode à électro-absorption en InP
+
+Données binaires
+
+
+
+
+? En technologie LiNbO3, on utilise l'effet Pockels (variation d'indice du matériau proportionnelle au champ électrique appliqué) pour déphaser le champ optique sur une des branches de l'interféromètre.
+? Le déphasage est proportionnel à la tension V(t) appliquée entre les électrodes.
+? On modifie ainsi l'amplitude du champ à la recombinaison des deux branches.
+
+
+
+
+Ein
+
+Ein
+2
+
+
+
+Eout
+
+
+proportionnel à
+
+
+
+
+
+
+
+
+V(t)
+
+
+
+L	50?
+
+Ein · ei?<p 2
+
+
+
+
+
+
+
+Coupe X	Coupe Z
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+page 17	Modulation en transmission optique
+
+
+
+
+Modulateur à électro-absorption
+
+
+Diode intégrable avec le laser
+
+Sans
+
+
+Puissance optique de sortie
+
+
+
+Puissance optique
+
+Absorption ?
+
+polarisation
+polarisation
+inverse
+
+
+
+
+
+
+??
+
+
+ Tension électrique
+
+
+Tension inverse (?4Vmax)
+
+
+
+En opposition de phase
+
+P0 : puissance couplée dans le guide.
+
+? : le facteur de confinement optique.
+?(V) : coefficient d'absorption fonction de V L : longueur du guide.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modulation externe
+d'amplitude
+
+
+
+
+y
+
+
+
+V=V?
+
+
+
+
+Eout
+
+
+Ein
+2
+
+
+
+
+
+
+Ein · ei?<p 2
+
++
+
+
+V=0
+x
+
+
+
+Pout
+
+
+d'où
+
+
+
+
+Si on note V? la tension pour laquelle le déphasage vaut ? , on a:
+
+
+
+
+
+? Le facteur de couplage phase-amplitude (" chirp ") d'une modulation directe ou externe est défini par :
+
+
+
+
+? Ce coefficient est appelé facteur de Henry. Il vaut
+• plusieurs unités (de 3 à 7) pour une modulation directe.
+• -0,7 pour un modulateur de Mach-Zehnder simple.
+• 0 pour un modulateur de Mach-Zehnder symétrique.
+? 	La modulation d'amplitude est d'autant meilleure que le facteur de Henry est faible.
+
+
+? Le déphasage est appliqué en opposition sur les deux branches : architecture
+" push-pull "
+
+• Tension de modulation divisée par deux
+• Chirp nul si bras équilibrés
+
+
+
+
+V(t)
+
+y
+
+
+V=  n-
+2
+
+
+
+
+
+
+
+
+Eout
+
+
+Ein · ei?<p 2
+
+Eout
+
+
+
+Ein · e-i?<p 2
+
+
+
+
+V=0
+
+x
+
+
+
+
+
+-V(t)
+
+
+
+Polarisation à V= -  n-
+2
+
+Polarisation à V= +  n-
+2
+P
+
+
+Puissance optique
+
+
+
+
+
+
+
+
+
+
+
+
+
+-V?	0
+
+V?/2 V? V
+
+
+
+
+
+
+
+Tension de modutation
+
+
+
+phase	Tension
+électrique
+
+Signaux en opposition de phase
+
+
+
+? C'est le format de modulation classique des systèmes 3G.
+? Modulateur polarisé à mi-puissance (quadrature) et modulé entre V? et 2V?.
+
+
+
+? Modulation d'intensité avec impulsions plus étroites que NRZ.
+? Rapport cyclique typique d'environ 50%.
+? Utilisation d'un modulateur MZ équilibré pour générer les impulsions RZ.
+
+
+
+Popt
+
+
+
+
+
+
+
+V	V
+0	V?	2V?
+
+Source de la figure : White paper du Dr. Ilya Lyubomirsky
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modulation externe
+de phase
+
+
+
+
+e soit pour un modulateur simple ou équilibré, le e par l'extinction du champ optique en sortie mpagne d'un déphasage de ?.
+
+odulation de phase est donc possible en ant une excursion de tension de 2V? eux maxima de la caractéristique.
+
+
+
+
+
+
+
+? Le spectre ne présente plus de raie à la fréquence porteuse.
+? Modulation RZ avec déphasage de ? à chaque bit.
+• Le premier modulateur équilibré est polarisé à son minimum et modulé sinusoïdalement à la fréquence 1/2T entre 0 et 2V? pour générer le train d'impulsions RZ. Le rapport cyclique est de 67%.
+• Le second modulateur joue le rôle de porte optique. Il est polarisé à mi-puissance et modulé par le signal binaire entre V? et 2V?.
+
+Optical CSRZ
+
+
+Popt	Popt
+
+
+
+
+
+
+V
+0	Vpolar	2V?
+
+V
+0	V?	2V?
+
+  ?
+
+
+
+OOK	BPSK
+
+
+Polarisation à :
+
+Vbiais
+
+= V1[
+2
+
+
+Polarisation à :
+
+
+Vbiais = V1[
+
+Excursion de tension :	V1[
+
+Excursion de tension :	2V1[
+
+
+
+
+
+? Modulation à enveloppe constante
+
+
+
+Source de la figure : White paper du Dr. Ilya Lyubomirsky
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modulation I/Q
+
+
+? Avec la montée en débit, les effets de propagation deviennent très délicats à gérer:
+• PMD !!!!
+• Effets non-linéaires intra et intercanaux problématiques
+• Gestion de la dispersion chromatique en ligne de plus en plus délicate
+
+? L'encombrement spectral des signaux devient crucial :
+• Espacement entre canaux WDM
+• Efficacité spectrale (en bit/s/Hz) du format de modulation
+
+
+
+Recouvrement des spectres
+
+
+
+? Le signal émis sur le canal de propagation est de la forme:
+
+ m(t) ? A0
+
+?cos(?0t ? ?0
+
+? ?(t))  où
+
+? (t)
+
+? ??k k
+
+? g(t
+* 
+kT )
+
+? On peut aussi écrire:
+
+m(t)
+
+? A0 ? g(t
+k
+?
+* 
+kT ) ? cos(?0t ? ?
+?
+
+? ?k )
+
+m(t) ? ? A0 ?g(t ? kT) ?cos?k ??cos(?0t ??0 )
+
+?	k	?
+
+?? A ?g(t ? kT) ?sin? ??sin(? t ?? )
+?	k	?
+
+? Pour une modulation à M états de phase, on a:
+
+
+*	PSK: Phase Shift Keying en anglais
+
+
+?	? (2m ?1)  ?  ??
+k	M	0
+
+
+avec
+
+0 ? m ? M ?1
+
+
+
+ 
+
+
+
+On dispose des deux trains de symboles :
+
+a(t ) ?
+
+? ak
+k
+
+? g (t
+* 
+kT )	et
+
+b(t ) ?
+
+? bk
+k
+
+? g (t
+* 
+kT )
+
+avec
+
+ak , bk
+
+? ?? d ,
+
+? 3d ,...,
+
+? (M
+
+?1)d?  où
+
+M ? 2n
+
+
+
+porteuse en phase (I)
+
+porteuse en quadrature (Q)
+
+
+
+m(t) ?
+
+a(t) ? cos? t
+* 
+b(t) ?sin ? t
+
+
+
+
+
+
+
+
+10 ? log?? ( f )?
+
+
+
+10
+
+
+
+
+0
+-	1	-0,5	0	0,5	1	1,5	2
+
+?fT
+
+
+-10
+
+
+
+-20
+
+
+
+-30
+
+
+
+-40
+
+
+
+
+-50
+
+
+1er lobe ? ?f=2/TS
+
+
+ ?f=2 x débit symbole 
+
+
+
+VI / 2
+
+
+
+
+
+
+
+
+VQ / 2	-V / 2
+
+Est équivalent à
+
+
+
+
+
+
+
+
+
+-VQ / 2
+
+?/2
+
+Q
+
+?
+2
+
+f0	I
+
+
+
+
+  
+
+
+Vpolar
+2V?
+
+
+V?
+
+
+
+0	t
+
+
+
+
+Popt
+
+?>0
+
+?<0
+
+
+
+
+
+
+
+ak
+
+
+
+0	V?	2V?
+
+Vpolar
+
+
+ 	
+
+
+
+
+Doublement de la capacité : deux ondes optiques porteuses à la même fréquence et aux polarisations orthogonales.
+
+
+Polarisation verticale
+
+
+Polarisation horizontale
+
+
+Multiplexage des 2 polarisations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Détection cohérente
+
+
+?	E	? jE
+ES		S	OL 
+
+
+
+?	E	? jE
+
+EOL
+
+
++90°
+
+	OL	S 
+
+
+
+
+
+? Le couplage provient du rapprochement de 2 fibres.
+? La longueur de couplage détermine la répartition des champs en sortie
+? La puissance moyenne sur chacune des sorties est égale à la moitié de la puissance totale en entrée (coupleur 3dB)
+
+
+
+
+
+
+
+
+
+?	j ?? t ?? ?	?
+
+E	? jE
+
+ES  ?	e
+s	s
+
+? eS
+
+	S	OL 
+
+
+
+
+
+
+2
+? S ?
+
+
+
+
+
+
+
+j ??OLt ??OL ?	?
+
+jE	? E
+
+EOL ?
+
+POL e
+
+? eOL
+
+	S	OL 
+
+
+
+
+
+
+?	j ?? t ?? ?	?
+
+E	? jE
+
+ES  ?	e
+s	s
+
+? eS
+
+	S	OL 
+
+
+
+
+
+
+j ??OLt ??OL ?	?
+
+jE	? E
+
+EOL ?
+
+POL e
+
+? eOL
+
+	S	OL 
+
+
+
+
+? Les deux courants de battement Ihet1 et Ihet2 sont en opposition de phase et s'ajoutent.
+? Les signaux en mode commun issus de la détection directe comme le bruit d'amplitude du laser OL sont en phase et donc rejetés.
+
+
+
+
+
+
+
+ES ? EOL
+S	2
+ES ? EOL
+2
+
+Combinaison signal et OL
+
+ES ? jEOL
+
+?
+EOL
+
+2
+ES ?
+
+jEOL
+
+Combinaison
+signal et OL en quadrature
+
+?
+jEOL
+
+2
+: porteuse en quadrature
+
+
+
+
+
+
+
+
+
+
+
+? Conversion A/D à
+
+2Fmax
+
+échantillons/s
+
+? Compensation de la dispersion chromatique
+? Compensation de la PMD
+? Démultiplexage des 2 polarisations
+? (Compensation des effets non-linéaires)
+
+? Récupération
+
+?IF
+
+et correction bruit de phase des lasers
+
+
+? Décisions sur les symboles
+
+
+
+? BER cible :
+
+3?10?3
+
+(avant FEC)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Modulations analogiques
+
+
+
+? OFDM : Orthogonal Frequency Division Multiplexing
+• Bien adaptée pour la propagation à trajets multiples.
+• Spectre très compact (Nyquist) qui ressemble à celui du bruit blanc.
+? Principe: on répartit le débit à transmettre sur un grand nombre (N) de sous-porteuses orthogonales espacées de 1/Ts où Ts durée du symbole OFDM.
+• Transmission en parallèle à la vitesse 1/Ts.
+• N égalisations bande étroite Vs 1 égalisation large bande
+? Applications: ADSL, Wi-Fi 802.11n, WiMAX, TNT,...
+
+
+
+
+
+
+f
+2*N/Ts
+Spectre émis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+50 GHz ITU channel
+
+
+
+
+? Modulation I/Q de la porteuse optique par double modulateur de Mach Zehnder
+? Elimination d'une bande latérale par filtrage optique
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

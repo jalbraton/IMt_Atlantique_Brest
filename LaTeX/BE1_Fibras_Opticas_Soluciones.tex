@@ -1,0 +1,1029 @@
+% Soluciones BE1 - Fibras Ópticas
+\documentclass[11pt,a4paper]{article}
+
+% Paquetes
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{xcolor}
+
+\geometry{a4paper, margin=2.5cm}
+
+% Configuración de encabezados
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{BE1 - Fibras Ópticas}
+\lhead{IMT Atlantique}
+\cfoot{\thepage}
+
+\title{\textbf{BE1 : Fibras Ópticas}\\
+\large Soluciones Detalladas\\
+UE Tecnologías Ópticas - IMT Atlantique}
+\author{Año 2025-2026}
+\date{Enero 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+%=============================================================================
+\section{Ejercicio 1: Modelo Geométrico de la Propagación}
+%=============================================================================
+
+\subsection{Datos del Problema}
+
+Tenemos un guía óptico (fibra) con:
+\begin{itemize}
+    \item Índice de refracción del núcleo: $n_c$
+    \item Índice de refracción de la cubierta: $n_g$
+    \item Ángulo de inyección del rayo: $\theta$
+    \item Longitud de la fibra: $L$
+    \item Medio exterior: aire con $n = 1$
+\end{itemize}
+
+\subsection{Pregunta a) Condición para Propagación Guiada}
+
+\textbf{Objetivo:} Encontrar la condición sobre $\theta$ que permite la propagación guiada.
+
+\textbf{Análisis físico:}
+
+Para que un rayo se propague por la fibra, debe sufrir reflexión total interna en la interfaz núcleo-cubierta. Esto requiere que el ángulo de incidencia en la interfaz sea mayor que el ángulo crítico.
+
+\textbf{Paso 1: Aplicar la Ley de Snell en la entrada}
+
+Cuando el rayo entra en la fibra desde el aire:
+\begin{equation}
+    n_{\text{aire}} \sin\theta = n_c \sin\theta'
+\end{equation}
+
+Como el aire tiene $n = 1$:
+\begin{equation}
+    \sin\theta = n_c \sin\theta'
+\end{equation}
+
+donde $\theta'$ es el ángulo de refracción dentro del núcleo respecto a la normal de la entrada.
+
+\textbf{Paso 2: Relación geométrica}
+
+El rayo refractado viaja en el núcleo con un ángulo $\alpha$ respecto al eje de la fibra. Por geometría:
+\begin{equation}
+    \alpha = 90^{\circ} - \theta'
+\end{equation}
+
+Por lo tanto:
+\begin{equation}
+    \sin\theta' = \cos\alpha
+\end{equation}
+
+\textbf{Paso 3: Condición de reflexión total interna}
+
+Para que haya reflexión total en la interfaz núcleo-cubierta, el ángulo $\alpha$ debe ser mayor que el ángulo crítico $\alpha_c$:
+\begin{equation}
+    \sin\alpha_c = \frac{n_g}{n_c}
+\end{equation}
+
+\textbf{Paso 4: Combinar las condiciones}
+
+Sustituyendo en la ecuación de Snell:
+\begin{equation}
+    \sin\theta = n_c \sin\theta' = n_c \cos\alpha
+\end{equation}
+
+Para el ángulo crítico:
+\begin{equation}
+    \sin\theta_{\max} = n_c \cos\alpha_c
+\end{equation}
+
+Usando la identidad trigonométrica $\cos\alpha_c = \sqrt{1 - \sin^2\alpha_c}$:
+\begin{equation}
+    \sin\theta_{\max} = n_c \sqrt{1 - \sin^2\alpha_c} = n_c \sqrt{1 - \frac{n_g^2}{n_c^2}}
+\end{equation}
+
+Simplificando:
+\begin{equation}
+    \sin\theta_{\max} = \sqrt{n_c^2 - n_g^2}
+\end{equation}
+
+\textbf{Condición para propagación guiada:}
+
+El ángulo de inyección debe satisfacer:
+\begin{equation}
+    \sin\theta \leq \sqrt{n_c^2 - n_g^2}
+\end{equation}
+
+o equivalentemente:
+\begin{equation}
+    \theta \leq \arcsin\left(\sqrt{n_c^2 - n_g^2}\right)
+\end{equation}
+
+Este valor máximo se conoce como la \textbf{apertura numérica (NA)} de la fibra:
+\begin{equation}
+    \text{NA} = \sqrt{n_c^2 - n_g^2}
+\end{equation}
+
+\subsection{Pregunta b) Diferencia de Tiempos de Propagación}
+
+\textbf{Objetivo:} Expresar $\Delta t$, la diferencia de tiempos de propagación máxima entre modos.
+
+\textbf{Definición del índice de refracción relativo:}
+
+Se define como:
+\begin{equation}
+    \Delta = \frac{n_c - n_g}{n_c}
+\end{equation}
+
+\textbf{Paso 1: Tiempo de propagación del rayo axial}
+
+Un rayo que viaja paralelo al eje de la fibra recorre la distancia $L$ con velocidad $v = c/n_c$:
+\begin{equation}
+    t_{\min} = \frac{L}{c/n_c} = \frac{Ln_c}{c}
+\end{equation}
+
+\textbf{Paso 2: Tiempo de propagación del rayo más inclinado}
+
+Un rayo que entra con el ángulo máximo $\theta_{\max}$ viaja en zigzag. La distancia total recorrida es mayor que $L$.
+
+El rayo viaja con ángulo $\alpha_c$ respecto al eje. La distancia recorrida por reflexión es:
+\begin{equation}
+    d = \frac{L}{\cos\alpha_c}
+\end{equation}
+
+El tiempo correspondiente es:
+\begin{equation}
+    t_{\max} = \frac{d \cdot n_c}{c} = \frac{Ln_c}{c\cos\alpha_c}
+\end{equation}
+
+Como $\cos\alpha_c = \sin\theta' = n_g/n_c$:
+\begin{equation}
+    t_{\max} = \frac{Ln_c}{c} \cdot \frac{n_c}{n_g} = \frac{Ln_c^2}{cn_g}
+\end{equation}
+
+\textbf{Paso 3: Diferencia de tiempos}
+
+\begin{align}
+    \Delta t &= t_{\max} - t_{\min} \\
+    &= \frac{Ln_c^2}{cn_g} - \frac{Ln_c}{c} \\
+    &= \frac{Ln_c}{c}\left(\frac{n_c}{n_g} - 1\right) \\
+    &= \frac{Ln_c}{c} \cdot \frac{n_c - n_g}{n_g}
+\end{align}
+
+Como $\Delta = (n_c - n_g)/n_c$, tenemos $n_c - n_g = \Delta \cdot n_c$:
+\begin{equation}
+    \Delta t = \frac{Ln_c}{c} \cdot \frac{\Delta n_c}{n_g}
+\end{equation}
+
+Para fibras con $n_g \approx n_c$ (aproximación débilmente guiante):
+\begin{equation}
+    \Delta t \approx \frac{Ln_c\Delta}{c}
+\end{equation}
+
+\textbf{Diferencia de tiempos de propagación:}
+\begin{equation}
+    \Delta t = \frac{Ln_c\Delta}{c}
+\end{equation}
+
+\subsection{Pregunta c) Fenómeno de Propagación}
+
+\textbf{Respuesta:} Esta diferencia de tiempos hace referencia a la \textbf{dispersión modal} o \textbf{dispersión intermodal}.
+
+\textbf{Explicación:}
+
+En una fibra multimodo, diferentes rayos (o modos) pueden propagarse simultáneamente. Cada modo tiene un camino óptico diferente:
+\begin{itemize}
+    \item Los rayos axiales (modo fundamental) viajan la distancia más corta
+    \item Los rayos más inclinados (modos de orden superior) recorren trayectorias más largas en zigzag
+\end{itemize}
+
+Esta diferencia de caminos causa que un pulso de luz se ensanche temporalmente durante la propagación, limitando la capacidad de transmisión de datos.
+
+\subsection{Pregunta d) Débito Máximo}
+
+\textbf{Objetivo:} Determinar el débito máximo considerando la dispersión modal.
+
+\textbf{Razonamiento:}
+
+Para que dos pulsos sucesivos no se superpongan en la recepción, el intervalo entre pulsos debe ser mayor que la dispersión temporal $\Delta t$.
+
+\textbf{Paso 1: Condición de no solapamiento}
+
+El tiempo mínimo entre bits es:
+\begin{equation}
+    T_{\min} = \Delta t
+\end{equation}
+
+\textbf{Paso 2: Débito máximo}
+
+El débito (tasa de bits) es el inverso del tiempo entre bits:
+\begin{equation}
+    B_{\max} = \frac{1}{\Delta t}
+\end{equation}
+
+Sustituyendo la expresión de $\Delta t$:
+\begin{equation}
+    B_{\max} = \frac{c}{Ln_c\Delta}
+\end{equation}
+
+\textbf{Débito máximo:}
+\begin{equation}
+    B_{\max} = \frac{c}{Ln_c\Delta}
+\end{equation}
+
+Esta expresión muestra que:
+\begin{itemize}
+    \item El débito disminuye linealmente con la longitud $L$
+    \item Fibras con menor $\Delta$ (diferencia de índices pequeña) permiten mayor débito
+    \item Para aumentar el débito, se pueden usar fibras monomodo (eliminando la dispersión modal)
+\end{itemize}
+
+\subsection{Pregunta e) Cálculo Numérico}
+
+\textbf{Datos:}
+\begin{itemize}
+    \item $L = 10$ km $= 10^4$ m
+    \item $\Delta = 2 \times 10^{-2}$
+    \item $n_c = 1.5$
+    \item $c = 3 \times 10^8$ m/s
+\end{itemize}
+
+\textbf{Cálculo de $\Delta t$:}
+
+Aplicamos la fórmula:
+\begin{align}
+    \Delta t &= \frac{Ln_c\Delta}{c} \\
+    &= \frac{10^4 \times 1.5 \times 2 \times 10^{-2}}{3 \times 10^8} \\
+    &= \frac{10^4 \times 1.5 \times 0.02}{3 \times 10^8} \\
+    &= \frac{300}{3 \times 10^8} \\
+    &= \frac{100}{10^8} \\
+    &= 10^{-6} \text{ s}
+\end{align}
+
+\textbf{Resultado:}
+\begin{equation}
+    \Delta t = 1 \text{ }\mu\text{s} = 1 \text{ microsegundo}
+\end{equation}
+
+\textbf{Débito máximo correspondiente:}
+\begin{equation}
+    B_{\max} = \frac{1}{\Delta t} = \frac{1}{10^{-6}} = 10^6 \text{ bits/s} = 1 \text{ Mbit/s}
+\end{equation}
+
+\textbf{Interpretación:}
+
+Para una fibra multimodo de 10 km con estos parámetros, la dispersión modal limita el débito a aproximadamente 1 Mbit/s. Este es un valor relativamente bajo para las telecomunicaciones modernas, lo que explica por qué se prefieren las fibras monomodo para transmisiones de larga distancia y alta velocidad.
+
+%=============================================================================
+\section{Ejercicio 2: Onda Electromagnética Monocromática}
+%=============================================================================
+
+\subsection{Datos del Problema}
+
+\begin{itemize}
+    \item Índice de refracción del núcleo: $n_c = 1.4555$
+    \item Índice de refracción de la cubierta: $n_g = 1.4444$
+    \item Longitud de onda: $\lambda = 1.55$ $\mu$m
+\end{itemize}
+
+\subsection{Condición para Fibra Monomodo}
+
+\textbf{Objetivo:} Calcular el diámetro máximo del núcleo para que la fibra sea monomodo.
+
+\textbf{Paso 1: Recordatorio teórico}
+
+Una fibra óptica es monomodo cuando solo permite la propagación del modo fundamental LP$_{01}$. Esto ocurre cuando la frecuencia normalizada $V$ es menor que 2.405:
+\begin{equation}
+    V < 2.405
+\end{equation}
+
+\textbf{Paso 2: Definición de la frecuencia normalizada}
+
+La frecuencia normalizada se define como:
+\begin{equation}
+    V = \frac{2\pi a}{\lambda}\text{NA}
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $a$ es el radio del núcleo
+    \item $\lambda$ es la longitud de onda
+    \item NA es la apertura numérica
+\end{itemize}
+
+\textbf{Paso 3: Cálculo de la apertura numérica}
+
+\begin{align}
+    \text{NA} &= \sqrt{n_c^2 - n_g^2} \\
+    &= \sqrt{(1.4555)^2 - (1.4444)^2} \\
+    &= \sqrt{2.1185 - 2.0863} \\
+    &= \sqrt{0.0322} \\
+    &= 0.1795
+\end{align}
+
+\textbf{Paso 4: Condición monomodo}
+
+Para que la fibra sea monomodo:
+\begin{equation}
+    V \leq 2.405
+\end{equation}
+
+Sustituyendo la expresión de $V$:
+\begin{equation}
+    \frac{2\pi a}{\lambda}\text{NA} \leq 2.405
+\end{equation}
+
+\textbf{Paso 5: Despeje del radio máximo}
+
+\begin{equation}
+    a_{\max} = \frac{2.405 \lambda}{2\pi \text{NA}}
+\end{equation}
+
+\textbf{Paso 6: Cálculo numérico}
+
+\begin{align}
+    a_{\max} &= \frac{2.405 \times 1.55 \times 10^{-6}}{2\pi \times 0.1795} \\
+    &= \frac{3.728 \times 10^{-6}}{1.128} \\
+    &= 3.304 \times 10^{-6} \text{ m} \\
+    &= 3.304 \text{ }\mu\text{m}
+\end{align}
+
+\textbf{Paso 7: Diámetro máximo}
+
+El diámetro es el doble del radio:
+\begin{align}
+    d_{\max} &= 2a_{\max} \\
+    &= 2 \times 3.304 \\
+    &= 6.608 \text{ }\mu\text{m}
+\end{align}
+
+\textbf{Resultado:}
+
+El diámetro máximo del núcleo para que la fibra sea monomodo a $\lambda = 1.55$ $\mu$m es:
+\begin{equation}
+    d_{\max} \approx 6.6 \text{ }\mu\text{m}
+\end{equation}
+
+\textbf{Observación:}
+
+En la práctica, las fibras monomodo estándar G.652 tienen un diámetro de núcleo de aproximadamente 9 $\mu$m, diseñadas para operar en la ventana de 1310 nm y 1550 nm. El valor calculado es consistente con este diseño, considerando que queremos asegurar operación monomodo con un margen de seguridad.
+
+%=============================================================================
+\section{Ejercicio 3: Paquete de Información, Atenuación}
+%=============================================================================
+
+\subsection{Datos del Problema}
+
+\begin{itemize}
+    \item Potencia acoplada a la fibra: $P_{\text{in}} = 100$ $\mu$W
+    \item Longitud de onda: $\lambda = 1550$ nm
+    \item Atenuación medida: $A_{\text{total}} = 30$ dB
+    \item Atenuación por kilómetro: $\alpha = 0.2$ dB/km
+    \item Tipo de fibra: G.652 (monomodo estándar)
+\end{itemize}
+
+\subsection{Pregunta a) Potencia Medida en el Detector}
+
+\textbf{Objetivo:} Calcular la potencia de salida en vatios (W) y en dBm.
+
+\textbf{Paso 1: Recordatorio de la atenuación}
+
+La atenuación en dB se define como:
+\begin{equation}
+    A[\text{dB}] = 10\log_{10}\left(\frac{P_{\text{in}}}{P_{\text{out}}}\right)
+\end{equation}
+
+\textbf{Paso 2: Despejar la potencia de salida}
+
+De la ecuación anterior:
+\begin{equation}
+    \frac{P_{\text{in}}}{P_{\text{out}}} = 10^{A/10}
+\end{equation}
+
+Por lo tanto:
+\begin{equation}
+    P_{\text{out}} = \frac{P_{\text{in}}}{10^{A/10}}
+\end{equation}
+
+\textbf{Paso 3: Conversión de la potencia de entrada}
+
+Primero convertimos la potencia de entrada:
+\begin{align}
+    P_{\text{in}} &= 100 \text{ }\mu\text{W} \\
+    &= 100 \times 10^{-6} \text{ W} \\
+    &= 10^{-4} \text{ W}
+\end{align}
+
+\textbf{Paso 4: Cálculo de la potencia de salida en W}
+
+\begin{align}
+    P_{\text{out}} &= \frac{10^{-4}}{10^{30/10}} \\
+    &= \frac{10^{-4}}{10^3} \\
+    &= 10^{-7} \text{ W} \\
+    &= 0.1 \text{ }\mu\text{W} \\
+    &= 100 \text{ nW}
+\end{align}
+
+\textbf{Potencia de salida en vatios:}
+\begin{equation}
+    P_{\text{out}} = 10^{-7} \text{ W} = 100 \text{ nW}
+\end{equation}
+
+\textbf{Paso 5: Conversión a dBm}
+
+La potencia en dBm se calcula con:
+\begin{equation}
+    P[\text{dBm}] = 10\log_{10}\left(\frac{P[\text{W}]}{10^{-3}}\right)
+\end{equation}
+
+Para la potencia de entrada:
+\begin{align}
+    P_{\text{in}}[\text{dBm}] &= 10\log_{10}\left(\frac{10^{-4}}{10^{-3}}\right) \\
+    &= 10\log_{10}(10^{-1}) \\
+    &= -10 \text{ dBm}
+\end{align}
+
+Para la potencia de salida:
+\begin{align}
+    P_{\text{out}}[\text{dBm}] &= P_{\text{in}}[\text{dBm}] - A[\text{dB}] \\
+    &= -10 - 30 \\
+    &= -40 \text{ dBm}
+\end{align}
+
+Verificación:
+\begin{align}
+    P_{\text{out}}[\text{dBm}] &= 10\log_{10}\left(\frac{10^{-7}}{10^{-3}}\right) \\
+    &= 10\log_{10}(10^{-4}) \\
+    &= -40 \text{ dBm}
+\end{align}
+
+\textbf{Potencia de salida en dBm:}
+\begin{equation}
+    P_{\text{out}} = -40 \text{ dBm}
+\end{equation}
+
+\subsection{Pregunta b) Longitud Estimada de la Fibra}
+
+\textbf{Objetivo:} Calcular la longitud de la fibra a partir de la atenuación.
+
+\textbf{Paso 1: Relación entre atenuación total y longitud}
+
+La atenuación total es el producto de la atenuación por unidad de longitud por la longitud:
+\begin{equation}
+    A_{\text{total}} = \alpha \cdot L
+\end{equation}
+
+\textbf{Paso 2: Despeje de la longitud}
+
+\begin{equation}
+    L = \frac{A_{\text{total}}}{\alpha}
+\end{equation}
+
+\textbf{Paso 3: Cálculo numérico}
+
+\begin{align}
+    L &= \frac{30 \text{ dB}}{0.2 \text{ dB/km}} \\
+    &= 150 \text{ km}
+\end{align}
+
+\textbf{Longitud estimada de la fibra:}
+\begin{equation}
+    L = 150 \text{ km}
+\end{equation}
+
+\textbf{Interpretación:}
+
+Esta longitud de 150 km es típica para enlaces de telecomunicaciones de media distancia. A 1550 nm, la fibra G.652 presenta su mínima atenuación (alrededor de 0.2 dB/km), lo que permite enlaces largos sin necesidad de amplificación. Para distancias mayores, se requerirían amplificadores ópticos (EDFA) o repetidores.
+
+%=============================================================================
+\section{Ejercicio 4: Paquete de Información, Dispersión Cromática}
+%=============================================================================
+
+Este ejercicio requiere implementación de código para simular la propagación en fibra óptica. A continuación se presenta la solución conceptual y las ecuaciones necesarias.
+
+\subsection{Introducción}
+
+El objetivo es simular la propagación de señales en fibra óptica considerando la dispersión cromática, utilizando la ecuación no lineal de Schrödinger (NLSE) en su forma simplificada (solo dispersión).
+
+\subsection{Pregunta a) Generación de Secuencia Binaria}
+
+\textbf{Objetivo:} Crear una secuencia binaria pseudo-aleatoria.
+
+\textbf{Procedimiento:}
+
+En cualquier lenguaje de programación (Python, MATLAB, etc.), generar una secuencia aleatoria de $n_{\text{bits}}$ bits (0 y 1).
+
+Ejemplo conceptual:
+\begin{itemize}
+    \item Definir el número de bits: $n_{\text{bits}} = 100$
+    \item Generar valores aleatorios entre 0 y 1
+    \item Asignar 0 si el valor es menor que 0.5, y 1 en caso contrario
+\end{itemize}
+
+\subsection{Pregunta b) Modulación NRZ}
+
+\textbf{Objetivo:} Convertir la secuencia binaria en una señal temporal continua.
+
+\textbf{Parámetros:}
+\begin{itemize}
+    \item Tasa de muestreo: $F_s$ (Hz)
+    \item Débito: $B$ (bits/s)
+    \item Amplitud: $+1$ V para bit 0, $+2$ V para bit 1
+\end{itemize}
+
+\textbf{Procedimiento:}
+
+La duración de cada bit es:
+\begin{equation}
+    T_{\text{bit}} = \frac{1}{B}
+\end{equation}
+
+El número de muestras por bit es:
+\begin{equation}
+    N_{\text{muestras}} = \frac{F_s}{B}
+\end{equation}
+
+Para modulación NRZ (Non-Return-to-Zero):
+\begin{itemize}
+    \item Cada bit mantiene su amplitud durante toda su duración
+    \item Bit 0 $\rightarrow$ amplitud = 1 V
+    \item Bit 1 $\rightarrow$ amplitud = 2 V
+\end{itemize}
+
+El término DC (componente continua) se añade para emular un láser modulado directamente.
+
+\subsection{Pregunta c) Propagación en Fibra}
+
+\textbf{Ecuación diferencial:}
+
+La envolvente de la señal evoluciona según:
+\begin{equation}
+    \frac{\partial A(z,t)}{\partial z} = -\frac{i\beta_2}{2}\frac{\partial^2 A(z,t)}{\partial t^2}
+\end{equation}
+
+donde $\beta_2$ es el parámetro de dispersión de segundo orden.
+
+\textbf{Relación con el coeficiente de dispersión:}
+
+\begin{equation}
+    \beta_2 = -\frac{D\lambda^2}{2\pi c}
+\end{equation}
+
+Para fibra G.652 a $\lambda = 1550$ nm:
+\begin{itemize}
+    \item $D \approx 17$ ps/(nm·km)
+    \item Longitud de onda: $\lambda = 1550$ nm
+    \item Velocidad de la luz: $c = 3 \times 10^8$ m/s
+\end{itemize}
+
+\textbf{Cálculo de $\beta_2$:}
+
+\begin{align}
+    \beta_2 &= -\frac{17 \times 10^{-12} \times (1550 \times 10^{-9})^2}{2\pi \times 3 \times 10^8 \times 10^3} \\
+    &= -\frac{17 \times 10^{-12} \times 2.4025 \times 10^{-12}}{1.885 \times 10^{12}} \\
+    &\approx -21.7 \times 10^{-27} \text{ s}^2\text{/m}
+\end{align}
+
+\textbf{Método de resolución - Split-Step Fourier:}
+
+La solución analítica en el dominio de Fourier es:
+\begin{equation}
+    \tilde{A}(z,\omega) = \tilde{A}(0,\omega) \exp\left(\frac{i\beta_2\omega^2z}{2}\right)
+\end{equation}
+
+Algoritmo:
+\begin{enumerate}
+    \item Transformada de Fourier de la señal de entrada: $A(0,t) \rightarrow \tilde{A}(0,\omega)$
+    \item Multiplicar por la función de transferencia: $H(\omega) = \exp(i\beta_2\omega^2 L/2)$
+    \item Transformada inversa de Fourier para obtener: $A(L,t)$
+\end{enumerate}
+
+\subsection{Pregunta d) Detección Fotónica}
+
+\textbf{Modelo simplificado:}
+
+El fotodetector genera una corriente proporcional a la intensidad óptica:
+\begin{equation}
+    I_{\text{foto}}(t) \propto |A(L,t)|^2
+\end{equation}
+
+El bloque DC elimina la componente continua:
+\begin{equation}
+    I_{\text{AC}}(t) = I_{\text{foto}}(t) - \langle I_{\text{foto}}(t) \rangle
+\end{equation}
+
+\subsection{Pregunta e) Casos de Uso}
+
+\textbf{Parámetros de simulación:}
+\begin{itemize}
+    \item $\lambda = 1550$ nm
+    \item Fibra G.652: $D = 17$ ps/(nm·km)
+    \item Tasa de muestreo: 32 muestras por símbolo
+\end{itemize}
+
+\textbf{Análisis cualitativo:}
+
+La dispersión cromática causa ensanchamiento temporal del pulso. La longitud de dispersión característica es:
+\begin{equation}
+    L_D = \frac{T_0^2}{|\beta_2|}
+\end{equation}
+
+donde $T_0$ es la duración del pulso.
+
+Para un débito $B$, la duración del bit es $T_{\text{bit}} = 1/B$.
+
+\textbf{Estimación de longitud máxima:}
+
+Para evitar interferencia entre símbolos (ISI), se requiere que el ensanchamiento sea menor que el periodo del bit:
+\begin{equation}
+    \Delta T < T_{\text{bit}}
+\end{equation}
+
+El ensanchamiento por dispersión es aproximadamente:
+\begin{equation}
+    \Delta T \approx D \cdot \Delta\lambda \cdot L
+\end{equation}
+
+Para una fuente con ancho espectral $\Delta\lambda$:
+
+\textbf{Débito 1 Gb/s:}
+\begin{itemize}
+    \item $T_{\text{bit}} = 1$ ns
+    \item Longitud máxima estimada: $L_{\max} \approx 100$ km
+\end{itemize}
+
+\textbf{Débito 10 Gb/s:}
+\begin{itemize}
+    \item $T_{\text{bit}} = 100$ ps
+    \item Longitud máxima estimada: $L_{\max} \approx 10$ km
+\end{itemize}
+
+\textbf{Débito 50 Gb/s:}
+\begin{itemize}
+    \item $T_{\text{bit}} = 20$ ps
+    \item Longitud máxima estimada: $L_{\max} \approx 2$ km
+\end{itemize}
+
+\textbf{Débito 200 Gb/s:}
+\begin{itemize}
+    \item $T_{\text{bit}} = 5$ ps
+    \item Longitud máxima estimada: $L_{\max} \approx 500$ m
+\end{itemize}
+
+\subsection{Pregunta f) Régimen de Dispersión Normal}
+
+En el régimen de dispersión normal (por ejemplo, a $\lambda = 1310$ nm para fibra G.652):
+\begin{itemize}
+    \item El signo de $\beta_2$ cambia
+    \item El ensanchamiento del pulso sigue siendo proporcional a la distancia
+    \item La forma del ensanchamiento es diferente (chirp positivo vs negativo)
+\end{itemize}
+
+El comportamiento general es similar, pero la fase acumulada es opuesta.
+
+\subsection{Pregunta g) Técnicas de Compensación}
+
+\textbf{Compensación de dispersión cromática:}
+
+\begin{enumerate}
+    \item \textbf{Fibra de compensación de dispersión (DCF):}
+    \begin{itemize}
+        \item Usar fibras con dispersión negativa para compensar la acumulada
+        \item Ventaja: totalmente óptico
+        \item Desventaja: introduce pérdidas adicionales
+    \end{itemize}
+    
+    \item \textbf{Redes de Bragg (FBG):}
+    \begin{itemize}
+        \item Filtros que introducen retardos dependientes de la frecuencia
+        \item Compactos y eficientes
+    \end{itemize}
+    
+    \item \textbf{Ecualización electrónica (DSP):}
+    \begin{itemize}
+        \item Procesamiento digital de señal en el receptor
+        \item Muy flexible, permite compensación adaptativa
+        \item Usado en sistemas coherentes modernos
+    \end{itemize}
+    
+    \item \textbf{Pre-compensación (chirp del láser):}
+    \begin{itemize}
+        \item Modular el láser para introducir chirp opuesto
+        \item Compensación en la fuente
+    \end{itemize}
+    
+    \item \textbf{Multiplexación por división de longitud de onda (WDM):}
+    \begin{itemize}
+        \item Usar múltiples canales con menor débito cada uno
+        \item Reduce el impacto de la dispersión por canal
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Pregunta h) Métodos de Simulación Avanzados}
+
+\textbf{Ecuación NLSE completa:}
+
+Para incluir auto-modulación de fase (SPM):
+\begin{equation}
+    \frac{\partial A}{\partial z} = -\frac{\alpha}{2}A - \frac{i\beta_2}{2}\frac{\partial^2 A}{\partial t^2} + i\gamma|A|^2A
+\end{equation}
+
+donde:
+\begin{itemize}
+    \item $\alpha$: atenuación
+    \item $\beta_2$: dispersión
+    \item $\gamma$: coeficiente no lineal
+\end{itemize}
+
+\textbf{Método Split-Step Fourier (SSF):}
+
+Se alterna entre dominio temporal (no linealidad) y frecuencial (dispersión):
+\begin{enumerate}
+    \item Dividir la fibra en segmentos pequeños $\Delta z$
+    \item En cada segmento:
+    \begin{itemize}
+        \item Aplicar operador no lineal: $A \rightarrow A \exp(i\gamma|A|^2\Delta z)$
+        \item Aplicar operador dispersivo en dominio de Fourier
+    \end{itemize}
+    \item Iterar hasta completar la longitud total
+\end{enumerate}
+
+\textbf{Precisión del método:}
+
+El tamaño del paso debe satisfacer:
+\begin{equation}
+    \Delta z < \min(L_D, L_{\text{NL}})
+\end{equation}
+
+donde $L_{\text{NL}} = 1/(\gamma P_0)$ es la longitud no lineal.
+
+%=============================================================================
+\section{Ejercicio 5: Caso de Uso - Cable Óptico Submarino}
+%=============================================================================
+
+\subsection{Análisis de la Estructura del Cable}
+
+Un cable óptico submarino está diseñado para proteger las fibras ópticas en condiciones extremas: alta presión, agua salada, corrientes marinas, y posibles daños mecánicos.
+
+\textbf{Estructura típica (de exterior a interior):}
+\begin{enumerate}
+    \item Polietileno (protección exterior)
+    \item Cinta Mylar (aislamiento)
+    \item Alambres de acero trenzados (resistencia mecánica)
+    \item Barrera de aluminio contra agua
+    \item Policarbonato (aislamiento adicional)
+    \item Tubo de cobre o aluminio
+    \item Gel de petróleo
+    \item Fibras ópticas
+\end{enumerate}
+
+\subsection{Pregunta a) Rol de la Estructura n°6}
+
+\textbf{Estructura n°6: Tubo de cobre o aluminio}
+
+\textbf{Funciones principales:}
+
+\begin{enumerate}
+    \item \textbf{Conducción eléctrica:}
+    \begin{itemize}
+        \item Transporta energía eléctrica para alimentar los repetidores/amplificadores submarinos
+        \item Tensión típica: varios kilovoltios DC
+        \item Corriente: decenas de amperios
+        \item Los repetidores están espaciados cada 50-100 km
+    \end{itemize}
+    
+    \item \textbf{Protección mecánica adicional:}
+    \begin{itemize}
+        \item Proporciona rigidez estructural
+        \item Protege las fibras de esfuerzos de flexión
+    \end{itemize}
+    
+    \item \textbf{Barrera contra humedad:}
+    \begin{itemize}
+        \item Junto con las otras capas, previene la entrada de agua
+        \item El cobre/aluminio no se corroe fácilmente bajo el polietileno
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Importancia en sistemas submarinos:}
+
+En un cable submarino transatlántico de 6000 km, puede haber 60-120 repetidores que necesitan alimentación continua. El tubo conductor es esencial para este propósito.
+
+\subsection{Pregunta b) Protección contra el Agua}
+
+\textbf{¿Por qué proteger las fibras ópticas del agua?}
+
+Aunque el vidrio (sílice) es químicamente estable, el agua causa varios problemas graves:
+
+\begin{enumerate}
+    \item \textbf{Degradación mecánica (fatiga estática):}
+    \begin{itemize}
+        \item Las moléculas de agua atacan los enlaces Si-O-Si en la superficie del vidrio
+        \item Reacción química: Si-O-Si + H$_2$O $\rightarrow$ 2Si-OH
+        \item Esto crea micro-fisuras que se propagan bajo tensión
+        \item Resultado: ruptura de la fibra a largo plazo (años)
+    \end{itemize}
+    
+    \item \textbf{Aumento de la atenuación:}
+    \begin{itemize}
+        \item El agua absorbe fuertemente en el infrarrojo cercano
+        \item Pico de absorción del OH$^-$ a 1383 nm (en la ventana de telecomunicaciones)
+        \item Incluso trazas de humedad aumentan significativamente las pérdidas
+        \item La atenuación puede pasar de 0.2 dB/km a varios dB/km
+    \end{itemize}
+    
+    \item \textbf{Degradación del recubrimiento:}
+    \begin{itemize}
+        \item El recubrimiento de acrilato puede hincharse o degradarse
+        \item Pérdida de las propiedades mecánicas de protección
+    \end{itemize}
+    
+    \item \textbf{Hidrógeno molecular:}
+    \begin{itemize}
+        \item En ambiente húmedo, puede formarse H$_2$
+        \item El H$_2$ difunde en el vidrio y causa pérdidas adicionales
+        \item Efecto particularmente problemático en la ventana de 1550 nm
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Soluciones implementadas:}
+
+\begin{itemize}
+    \item Múltiples barreras herméticas (aluminio, acero)
+    \item Gel hidrófobo (gel de petróleo) que repele el agua
+    \item Recubrimientos especiales resistentes a la humedad
+    \item Hermetic sealing en los empalmes y conectores
+\end{itemize}
+
+\textbf{Consecuencias de la penetración de agua:}
+
+En cables submarinos sin protección adecuada:
+\begin{itemize}
+    \item Vida útil reducida de 25 años a menos de 5 años
+    \item Fallos catastróficos por ruptura de fibras
+    \item Interrupción del servicio (muy costosa en cables submarinos)
+\end{itemize}
+
+\subsection{Pregunta c) Componentes Ópticos en Repetidores}
+
+\textbf{Fenómenos de propagación a compensar:}
+
+En transmisión por fibra monomodo de larga distancia, los principales fenómenos limitantes son:
+
+\begin{enumerate}
+    \item \textbf{Atenuación:}
+    \begin{itemize}
+        \item Pérdida de potencia óptica
+        \item Típicamente 0.2 dB/km a 1550 nm
+        \item En 100 km: 20 dB de pérdida (factor 100)
+    \end{itemize}
+    
+    \item \textbf{Dispersión cromática:}
+    \begin{itemize}
+        \item Ensanchamiento temporal de los pulsos
+        \item Limitante para altos débitos
+    \end{itemize}
+    
+    \item \textbf{Dispersión por modo de polarización (PMD):}
+    \begin{itemize}
+        \item Diferencia de velocidad entre polarizaciones
+        \item Importante en fibras antiguas
+    \end{itemize}
+    
+    \item \textbf{Efectos no lineales:}
+    \begin{itemize}
+        \item Auto-modulación de fase (SPM)
+        \item Mezclado de cuatro ondas (FWM)
+        \item Dispersión Raman estimulada (SRS)
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Componentes necesarios en cada repetidor:}
+
+\begin{enumerate}
+    \item \textbf{Amplificador óptico (EDFA - Erbium Doped Fiber Amplifier):}
+    \begin{itemize}
+        \item Función: Compensar la atenuación acumulada
+        \item Tecnología: Fibra dopada con erbio bombeada a 980 nm o 1480 nm
+        \item Ganancia típica: 20-30 dB
+        \item Ventaja: Amplifica todas las longitudes de onda WDM simultáneamente
+        \item Banda de operación: 1530-1565 nm (banda C)
+    \end{itemize}
+    
+    \item \textbf{Módulo de compensación de dispersión (DCM):}
+    \begin{itemize}
+        \item Función: Compensar la dispersión cromática acumulada
+        \item Tecnologías posibles:
+        \begin{itemize}
+            \item Fibra de compensación de dispersión (DCF): fibra con $D$ negativo
+            \item Redes de Bragg en fibra (FBG): filtros dispersivos
+            \item Compensadores basados en cristales fotónicos
+        \end{itemize}
+        \item Se coloca típicamente después del amplificador
+    \end{itemize}
+    
+    \item \textbf{Filtros ópticos pasa-banda:}
+    \begin{itemize}
+        \item Función: Eliminar el ruido ASE (Amplified Spontaneous Emission) fuera de banda
+        \item El ASE se acumula en cascada de amplificadores
+        \item Mejora la relación señal a ruido óptica (OSNR)
+    \end{itemize}
+    
+    \item \textbf{Ecualizador de ganancia (GEQ):}
+    \begin{itemize}
+        \item Función: Igualar la potencia entre canales WDM
+        \item La ganancia del EDFA no es perfectamente plana
+        \item Evita acumulación de desequilibrio de potencia
+    \end{itemize}
+    
+    \item \textbf{Monitor de desempeño óptico (OPM):}
+    \begin{itemize}
+        \item Función: Supervisión y diagnóstico
+        \item Mide potencia por canal, OSNR
+        \item Permite gestión remota del repetidor
+    \end{itemize}
+    
+    \item \textbf{Aisladores ópticos:}
+    \begin{itemize}
+        \item Función: Prevenir reflexiones hacia atrás
+        \item Protegen al amplificador de realimentación
+        \item Basados en efecto Faraday (no recíproco)
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Configuración típica de un repetidor (en orden):}
+
+\begin{equation}
+    \text{Entrada} \rightarrow \text{Aislador} \rightarrow \text{EDFA} \rightarrow \text{DCM} \rightarrow \text{Filtro} \rightarrow \text{GEQ} \rightarrow \text{Aislador} \rightarrow \text{Salida}
+\end{equation}
+
+\textbf{Parámetros importantes:}
+
+\begin{itemize}
+    \item Espaciamiento entre repetidores: 50-100 km
+    \item Número de canales WDM: 40-100 canales
+    \item Débito por canal: 10-100 Gb/s
+    \item Capacidad total: varios Tb/s
+    \item Vida útil del repetidor: 25 años sin mantenimiento
+\end{itemize}
+
+\textbf{Consideraciones para sistemas submarinos:}
+
+\begin{enumerate}
+    \item \textbf{Fiabilidad extrema:}
+    \begin{itemize}
+        \item Los repetidores deben funcionar sin fallo durante 25 años
+        \item Redundancia en componentes críticos
+        \item Componentes de grado espacial
+    \end{itemize}
+    
+    \item \textbf{Eficiencia energética:}
+    \begin{itemize}
+        \item La potencia se transmite por el cable desde tierra
+        \item Consumo típico: 10-20 W por repetidor
+        \item Bombeo eficiente de los EDFAs
+    \end{itemize}
+    
+    \item \textbf{Gestión térmica:}
+    \begin{itemize}
+        \item Disipación de calor en ambiente de alta presión
+        \item Temperatura estable para operación óptima
+    \end{itemize}
+    
+    \item \textbf{Escalabilidad:}
+    \begin{itemize}
+        \item Diseño que permita futuros upgrades de capacidad
+        \item Ancho de banda del amplificador > ancho de banda usado inicialmente
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Ejemplo: Cable transatlántico}
+
+Un cable submarino de 6000 km entre Europa y América del Norte tendría:
+\begin{itemize}
+    \item 60-100 repetidores espaciados cada 60-100 km
+    \item Capacidad: 10-20 Tb/s
+    \item Costo total: 200-300 millones de euros
+    \item Tiempo de instalación: varios meses
+    \item Vida útil: 25 años
+\end{itemize}
+
+\textbf{Evolución tecnológica:}
+
+Los cables submarinos modernos incorporan:
+\begin{itemize}
+    \item Amplificadores Raman distribuidos (además de EDFAs)
+    \item Multiplexación por división de modo (MDM) experimental
+    \item Fibras de área efectiva grande (para reducir no linealidades)
+    \item Detección coherente en el receptor (en tierra)
+    \item Compensación digital de dispersión (en tierra)
+\end{itemize}
+
+\end{document}
